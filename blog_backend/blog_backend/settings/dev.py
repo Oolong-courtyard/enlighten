@@ -38,6 +38,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'corsheaders',
     'rest_framework',
     'users.apps.UsersConfig',
     'article.apps.ArticleConfig',
@@ -52,7 +53,13 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'corsheaders.middleware.CorsMiddleware',
 ]
+
+
+# 添加 django-cors-headers 的白名单, 使白名单中的 host 可以进行跨域请求
+# CORS_ORIGIN_WHITELIST = ['*']
+CORS_ALLOW_CREDENTIALS = True
 
 ROOT_URLCONF = 'blog_backend.urls'
 
