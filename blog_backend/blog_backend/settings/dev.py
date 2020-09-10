@@ -48,18 +48,14 @@ INSTALLED_APPS = [
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
+    'corsheaders.middleware.CorsMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
-    'corsheaders.middleware.CorsMiddleware',
+
 ]
-
-
-# 添加 django-cors-headers 的白名单, 使白名单中的 host 可以进行跨域请求
-# CORS_ORIGIN_WHITELIST = ['*']
-CORS_ALLOW_CREDENTIALS = True
 
 ROOT_URLCONF = 'blog_backend.urls'
 
@@ -133,3 +129,47 @@ STATIC_URL = '/static/'
 
 # 自定义user模型类
 AUTH_USER_MODEL = 'users.UserProfile'
+
+# ================================================================
+# 允许跨域
+# 添加 django-cors-headers 的白名单, 使白名单中的 host 可以进行跨域请求
+CORS_ORIGIN_WHITELIST = (
+    ['http://localhost:8080']
+)
+# 跨域允许证书
+CORS_ALLOW_CREDENTIALS = True
+
+# 配置允许跨站访问本站的地址
+CORS_ORIGIN_ALLOW_ALL = True
+# CORS_ORIGIN_WHITELIST = (
+#     'localhost:8000',  # 请求的域名(此处仅在CORS_ORIGIN_ALLOW_ALL = False时有效)
+# )
+
+
+# 定义允许的匹配路径正则表达式
+CORS_URLS_REGEX = '^.*$'
+
+# 设置允许访问的方法
+CORS_ALLOW_METHODS = (
+    'DELETE',
+    'GET',
+    'OPTIONS',
+    'PATCH',
+    'POST',
+    'PUT',
+    'VIEW',
+)
+
+# 设置允许的header
+CORS_ALLOW_HEADERS = (
+    'accept',
+    'accept-encoding',
+    'authorization',
+    'content-type',
+    'dnt',
+    'origin',
+    'user-agent',
+    'x-csrftoken',
+    'x-requested-with',
+)
+# ================================================================
