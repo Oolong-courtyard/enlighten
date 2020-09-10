@@ -55,10 +55,10 @@
     },
     created() {
       //获取文章列表页信息
-      getArticleList()
+      getArticleLis()
     },
     methods: {
-      getArticleList() {
+      getArticleLis() {
         getArticleList().then(res => {
           console.log(res)
           this.res_data = res
