@@ -1,44 +1,68 @@
 <template>
-  <!--  <div class="hello">-->
-  <!--    <p>welcome to mamamafeng blog</p>-->
-  <!--    &lt;!&ndash;    <ul class="content">&ndash;&gt;-->
-  <!--    &lt;!&ndash;      <li v-for="item in article_list">{{item.article_id}}</li>&ndash;&gt;-->
-  <!--    &lt;!&ndash;    </ul>&ndash;&gt;-->
+  <!--  整个div的样式要设置一下,屏占比横向 60%-->
+  <div class="outer-div" style="width: 800px; left:0;right:0;margin:0 auto">
+    <div>
+      <el-menu
+        :default-active="activeIndex2"
+        class="el-menu-demo"
+        mode="horizontal"
+        @select="handleSelect"
+        background-color="#545c64"
+        text-color="#fff"
+        active-text-color="#ffd04b">
+        <el-menu-item index="1">首页
+        </el-menu-item>
+        <el-menu-item index="2">项目</el-menu-item>
+        <el-menu-item index="3">历程</el-menu-item>
+        <el-menu-item index="4"><a
+          href="https://github.com/Oolong-courtyard/enlighten"
+          target="_blank">关于</a></el-menu-item>
+        <!--      登陆，注册应当在屏幕右上角-->
+        <el-menu-item index="5" style="margin-right: 0">登陆</el-menu-item>
+        <el-menu-item index="6" style="margin-right: 0">注册</el-menu-item>
+      </el-menu>
+    </div>
 
-  <!--  </div>-->
-  <el-table
-    :data="res_data"
-    style="width: 100%">
-    <el-table-column
-      prop="article_id"
-      label="文章id"
-      width="180">
-    </el-table-column>
-    <el-table-column
-      prop="article_name"
-      label="文章名称"
-      width="180">
-    </el-table-column>
-    <el-table-column
-      prop="summary"
-      label="摘要">
-    </el-table-column>
-    <el-table-column
-      prop="author"
-      label="作者">
-    </el-table-column>
-    <el-table-column
-      prop="content"
-      label="内容">
-    </el-table-column>
-    <el-table-column
-      prop="image_url"
-      label="图片">
-    </el-table-column>
+    <div v-if="this.index1">
+      <ul class="infinite-list" v-infinite-scroll="load" style="overflow:auto">
+        <li v-for="i in count" class="infinite-list-item">{{ i }}</li>
+      </ul>
+    </div>
+<!--    <div v-if="this.index1">-->
+<!--      <el-table-->
+<!--        :data="res_data"-->
+<!--        style="width: 100%">-->
+<!--        <el-table-column-->
+<!--          prop="article_id"-->
+<!--          label="文章id"-->
+<!--          width="180">-->
+<!--        </el-table-column>-->
+<!--        <el-table-column-->
+<!--          prop="article_name"-->
+<!--          label="文章名称"-->
+<!--          width="180">-->
+<!--        </el-table-column>-->
+<!--        <el-table-column-->
+<!--          prop="summary"-->
+<!--          label="文章摘要">-->
+<!--        </el-table-column>-->
+<!--        <el-table-column-->
+<!--          prop="author"-->
+<!--          label="作者">-->
+<!--        </el-table-column>-->
+<!--      </el-table>-->
+<!--    </div>-->
 
-  </el-table>
+    <div v-if="this.index2">
+      这是项目界面
+    </div>
 
+    <div v-if="this.index3">
+      这是历程界面
+    </div>
+  </div>
 </template>
+
 
 <script>
   import {getArticleList} from 'network/home'
@@ -50,62 +74,74 @@
     },
     data() {
       return {
+        //滚动实验
+        count: 0,
+        loading: false,
+        // 控制首页/历程等哪个div显示
+        index1: true,
+        index2: false,
+        index3: false,
+        activeIndex: '1',
+        activeIndex2: '1',
         res_data: [],
-      }
+        //  屏幕宽度
+        fullWidth: document.documentElement.clientWidth
+      };
     },
     created() {
       //获取文章列表页信息
-      getArticleLis()
+      console.log("vue被创建")
+      console.log("整个屏幕的宽度为", this.fullWidth);
+      this.getArticleList()
     },
-    methods: {
-      getArticleLis() {
-        getArticleList().then(res => {
-          console.log(res)
-          this.res_data = res
-        })
+    computed: {
+      noMore () {
+        return this.count >= 20
+      },
+      disabled () {
+        return this.loading || this.noMore
       }
     },
-    // data() {
-    //   return {
-    //     article_list: [
-    //       {
-    //         "article_id": "123",
-    //         "created_time": "2020-09-03T00:34:45+08:00",
-    //         "updated_time": "2020-09-03T00:34:47+08:00",
-    //         "article_name": "今日热点",
-    //         "summary": "最新发现冰山",
-    //         "author": "liuzh",
-    //         "content": "最新发现北极一个地区",
-    //         "image_url": null
-    //       },
-    //       {
-    //         "article_id": "124",
-    //         "created_time": "2020-09-03T01:31:10+08:00",
-    //         "updated_time": "2020-09-03T01:31:12+08:00",
-    //         "article_name": "阿拉panda",
-    //         "summary": "最新发现阿拉panda",
-    //         "author": "liuzh",
-    //         "content": "阿拉panda在潘多拉星球,距离地球300万公里",
-    //         "image_url": null
-    //       }
-    //     ],
-    //
-    //   }
-    // },
+    methods: {
+      //加载滚动
+      load () {
+        this.count += 2
+      },
 
+      //不同选项对应不同的页面
+      handleSelect(key,keyPath) {
+
+        if (key==1){
+          this.index1 = true
+          this.index2 = false
+          this.index3 = false
+        }
+        if(key==2){
+          this.index1 = false
+          this.index2 = true
+          this.index3 = false
+        }
+        if(key==3){
+          this.index1 = false
+          this.index2 = false
+          this.index3 = true
+        }
+        console.log("key-keyPath为",key );
+      },
+      getArticleList() {
+        getArticleList().then(res => {
+          console.log("来到了getArticleList=====")
+          console.log(res)
+          this.res_data = res.data
+        })
+      },
+    }
   }
 </script>
 
-<!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
-  .content {
-    /*取消列表左边的点点*/
-    list-style: none;
-    /*字体大小*/
-    font-size: 50px;
-    /*字体颜色*/
-    color: brown
+  .outer-div {
+    width: 800px;
   }
-
 </style>
 

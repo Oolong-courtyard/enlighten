@@ -82,12 +82,12 @@ WSGI_APPLICATION = 'blog_backend.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.mysql',
+        'ENGINE': 'django.db.backends.postgresql',
         'NAME': 'liuzh_blog',
-        'USER': 'root',
-        'PASSWORD': 'mysql',
-        'HOST': 'localhost',
-        'PORT': '3306',
+        'USER': 'postgres',
+        'PASSWORD': 'gresql',
+        'HOST': '47.101.11.149',
+        'PORT': '5432',
     }
 }
 

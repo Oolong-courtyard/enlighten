@@ -1,14 +1,22 @@
 FROM python:3.7
 
-#将Dockerfile所在目录下的所有文件拷贝到容器内/container_enlighten_app/目录下
-ADD / /container_enlighten_app/
+VOLUME ["/enlighten"]
 
-#指定根目录
-WORKDIR /container_enlighten_app
+RUN mkdir /enlighten
 
-#安装第三方库
-RUN pip install -r requirements.txt
+#Set the application directory
+WORKDIR /enlighten
 
-EXPOSE 8000
+ADD . /enlighten
 
-CMD ["python","manage.py","runserver"]
+ADD requirements.txt /enlighten
+
+ENV PIP_MIRROR=http://mirrors.aliyun.com/pypi/simple/
+
+ENV PIP_TRUST_HOST=mirrors.aliyun.com
+
+RUN pip install --no-cache-dir \
+   -i $PIP_MIRROR --trusted-host $PIP_TRUST_HOST \
+   -r requirements.txt
+
+CMD ["python","manage.py","runserver","0.0.0.0:8000"]

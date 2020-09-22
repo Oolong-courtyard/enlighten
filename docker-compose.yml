@@ -1,43 +1,39 @@
-verison: '3'
+version: "3.3"
 
 services:
-
   blog_backend:
-    build:
-      context: ./blog_backend/
-      dockerfile: Dockerfile
-#    ports:
-#      -8001:8001
-    depends_on:
+    build: ./blog_backend/.
+    volumes:
+      - ./blog_backend:/enlighten
+    ports:
+      - "8000:8000"
+    links:
       - mysql
-    environment:
-      BLOG_BACKEND_DB_HOST: mysql
-      BLOG_BACKEND_DB_PASSWORD: mysql
     networks:
-      - my-bridge
+      - front-tier
+      - back-tier
 
-  blog_fronted:
-    build:
-      context: ./blog_frontend/
-      dockerfile: Dockerfile
-#    ports:
-#    - 8002:8002
+  blog_frontend:
+    build: ./blog_frontend/.
+    volumes:
+      - ./blog_frontend:/enlighten
+    ports:
+      - "8001:8001"
+    links:
+      - mysql
     networks:
-      - my-bridge
-
+      - front-tier
+      - back-tier
   mysql:
     image: mysql:8.0.21
-    environment:
-      MYSQL_ROOT_PASSWORD: root
-      MYSQL_DATABASE: blog_backend
     volumes:
-      - mysql-data:/var/lib/mysql
+      - "db-data:/var/lib/mysql/data"
     networks:
-      - my-bridge
+      - back-tier
 
 volumes:
-  mysql-data:
+  db-data:
 
 networks:
-  my-bridge:
-    driver: bridge
+  front-tier:
+  back-tier:
