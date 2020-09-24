@@ -31,7 +31,38 @@
           <el-menu-item></el-menu-item>
           <el-menu-item></el-menu-item>
           <el-menu-item></el-menu-item>
-          <el-menu-item index="5" style="margin-right: 0" route="">登陆
+          <el-menu-item index="5" style="margin-right: 0">
+            <!--登录弹框 -->
+            <el-popover
+              placement="bottom"
+              trigger="click"
+            >
+              <div style="background-color: white;"
+              >
+                <!--登录弹框样式设置-->
+                <form action="" method="post">
+                  <div class="input_control">
+                    <input type="text"
+                           class="phone_input"
+                           placeholder="请输入手机号"
+                           v-model="telephone"
+                    />
+                  </div>
+                  <div class="input_control_code">
+                    <input type="text" class="code_input" placeholder="验证码"/>
+                    <!--无法触发定义的函数 getVerifyCode-->
+                    <div class="get_verify_code" @click="getVerifyCode">
+                      获取验证码
+                    </div>
+                  </div>
+                  <div class="input_control">
+                    <input type="submit" class="form_input" name="" value="登录">
+                  </div>
+                </form>
+              </div>
+
+              <el-button slot="reference">登录</el-button>
+            </el-popover>
           </el-menu-item>
           <el-menu-item index="6" style="margin-right: 0">注册</el-menu-item>
         </el-menu>
@@ -43,18 +74,17 @@
 
           <ul class="infinite-list" v-infinite-scroll="load"
               style="overflow:auto;margin:0 auto">
-            <li v-for="res_item in res_data" class="infinite-list-item"
+            <li v-for="(res_item,index) in res_data" class="infinite-list-item"
                 style="list-style: none">
 
               <!--display:flex 让div内子元素水平排列,而不是默认的垂直排列-->
-              <div style="margin-top: 20px;
-                                        width: 100%;
-                                        height: 100px;
-                                        display: flex;
-                                        "
-                   onmouseenter=""
+              <div class="item-list"
+                   style="margin-top: 20px;
+                         width: 100%;
+                         height: 100px;
+                         display: flex;"
+                   onmouseenter="changeItemColor(index)"
               >
-
                 <div style="width: 70%">
                   <div style="text-align: left;font-size: 10px">
                     <!--更新/发布时间后续处理为几小时或者几天前-->
@@ -62,6 +92,7 @@
                     {{res_item.summary}}
                   </div>
                   <div
+                    class="article-name"
                     style="text-align: center;font-size: 15px;font-weight: bold;margin-top: 10px">
                     {{res_item.article_name}}
                   </div>
@@ -72,6 +103,7 @@
                 </div>
 
               </div>
+
               <!--添加分割线-->
               <hr style="height:1px;border:none;border-top:1px solid #555555;">
             </li>
@@ -103,6 +135,10 @@
     },
     data() {
       return {
+        //输入的手机号码
+        telephone: '',
+        //登陆弹框
+        visible: false,
         //滚动实验
         count: 50,
         loading: false,
@@ -132,17 +168,28 @@
       }
     },
     methods: {
-      //改变文章列表item背景颜色
-
-
-      //加载滚动
+      getVerifyCode() {
+        //  获取验证码
+        let reg = /^1[0-9]{10}$/
+        if (reg.test(this.telephone)) {
+          console.log("验证码为",1234)
+        } else {
+          //  获取验证码
+          //  开发阶段先用mock code
+          alert("账号格式错误")
+        }
+      },
+      changeItemColor() {
+        //改变文章列表item背景颜色
+        console.log("当前遍历的index为", index);
+      },
       load() {
+        //加载滚动
         this.count += 2
       },
 
-      //不同选项对应不同的页面
       handleSelect(key, keyPath) {
-
+        //不同选项对应不同的页面
         if (key == 1) {
           this.index1 = true
           this.index2 = false
@@ -160,8 +207,8 @@
         }
         console.log("key-keyPath为", key);
       },
-      //获取文章列表
       getArticleList() {
+        //获取文章列表
         getArticleList().then(res => {
           console.log("来到了getArticleList=====")
           console.log(res)
@@ -173,8 +220,108 @@
 </script>
 
 <style scoped>
+  .input_control_code {
+    width: 250px;
+    margin: 20px auto;
+    display: flex;
+  }
+
+  .input_control {
+    width: 250px;
+    margin: 20px auto;
+  }
+
+  .code_input {
+    box-sizing: border-box;
+    text-align: center;
+    font-size: 1em;
+    height: 1.8em;
+    border-radius: 4px;
+    border: 1px solid #c8cccf;
+    color: #6a6f77;
+    -moz-appearance: none;
+    display: block;
+    outline: 0;
+    padding: 0 1em;
+    text-decoration: none;
+    width: 60%;
+  }
+
+  .code_input:focus {
+    border: 1px solid #ff7496;
+  }
+
+  .get_verify_code {
+    cursor: pointer;
+    box-sizing: border-box;
+    text-align: center;
+    font-size: 1em;
+    height: 1.8em;
+    color: #90CAA4;
+    -moz-appearance: none;
+    display: block;
+    outline: 0;
+    padding: 0 1em;
+    text-decoration: none;
+    width: 40%;
+  }
+
+  .form_input {
+    background-color: #90CAA4;
+    cursor: pointer;
+    box-sizing: border-box;
+    text-align: center;
+    font-size: 1em;
+    height: 1.8em;
+    border-radius: 4px;
+    border: 1px solid #c8cccf;
+    color: white;
+    -moz-appearance: none;
+    display: block;
+    outline: 0;
+    padding: 0 1em;
+    text-decoration: none;
+    width: 100%;
+  }
+
+  .form_input:focus {
+    border: 1px solid #ff7496;
+  }
+
+  .phone_input {
+    box-sizing: border-box;
+    text-align: center;
+    font-size: 1em;
+    height: 1.8em;
+    border-radius: 4px;
+    border: 1px solid #c8cccf;
+    color: #6a6f77;
+    -moz-appearance: none;
+    display: block;
+    outline: 0;
+    padding: 0 1em;
+    text-decoration: none;
+    width: 100%;
+  }
+
+  .phone_input:focus {
+    border: 1px solid #ff7496;
+  }
+
+
   .outer-div {
     width: 800px;
+  }
+
+  /*hover(css选择器)：当鼠标移动上去时添加特殊样式*/
+  .item-list:hover {
+    background-color: #EFEFEF;
+    /*cursor 鼠标移动上去变小手*/
+    cursor: pointer;
+  }
+
+  .article-name:hover {
+    text-decoration: underline
   }
 </style>
 
