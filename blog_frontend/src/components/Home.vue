@@ -99,7 +99,7 @@
                 </div>
 
                 <div style="width: 30%">
-                  <img src="../assets/logo.png" alt="" width="40" height="40">
+                  <img :src="res_item.image" alt="" width="40" height="40">
                 </div>
 
               </div>
@@ -135,6 +135,8 @@
     },
     data() {
       return {
+        //图片地址
+        imagePath:'',
         //输入的手机号码
         telephone: '',
         //登陆弹框
@@ -185,7 +187,7 @@
       },
       load() {
         //加载滚动
-        this.count += 2
+        this.imagePath = res_ite
       },
 
       handleSelect(key, keyPath) {
