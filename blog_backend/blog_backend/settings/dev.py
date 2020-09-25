@@ -14,6 +14,7 @@ import os
 import sys
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
+# Specify the directory path to the root path.
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 # 把apps加入项目的搜索包路径中
 sys.path.insert(0, os.path.join(BASE_DIR, 'apps'))
@@ -25,6 +26,9 @@ sys.path.insert(0, os.path.join(BASE_DIR, 'apps'))
 SECRET_KEY = 'ef-@^(&ol522la&9a&p0ie)!)7r+iw$oj4x-vr_^o7_$kt%*!g'
 
 # SECURITY WARNING: don't run with debug turned on in production!
+"""
+当 DEBUG=False时，django不再对外提供静态文件
+"""
 DEBUG = True
 
 ALLOWED_HOSTS = ["*"]
@@ -123,9 +127,23 @@ USE_L10N = True
 USE_TZ = True
 
 # Static files (CSS, JavaScript, Images)
-# https://docs.djangoproject.com/en/2.2/howto/static-files/
-
+# 一般我们把项目中的CSS、图片、js以及html等看做静态文件
+"""
+Django 仅在调试模式下（DEBUG=True）能对外提供静态文件。
+当DEBUG=False工作在生产模式时，Django不再对外提供静态文件，
+需要是用collectstatic命令来收集静态文件并交由其他静态文件服务器来提供。
+"""
+# 存放查找静态文件的路径
+STATICFILES_DIRS = [os.path.join(BASE_DIR, 'static_files'),
+                    os.path.join(BASE_DIR, 'static_files'),
+                    ]
+# 访问静态文件的url前缀
 STATIC_URL = '/static/'
+# 图片保存的位置:
+# 我们保存在static_files下面的media文件夹下:
+MEDIA_ROOT = os.path.join(BASE_DIR, "static_files/media")
+# 上传文件的URL
+MEDIA_URL = "/static_files/media/"
 
 # 自定义user模型类
 AUTH_USER_MODEL = 'users.UserProfile'
