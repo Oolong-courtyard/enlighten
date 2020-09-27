@@ -31,7 +31,7 @@ SECRET_KEY = 'ef-@^(&ol522la&9a&p0ie)!)7r+iw$oj4x-vr_^o7_$kt%*!g'
 """
 DEBUG = True
 
-ALLOWED_HOSTS = ["*"]
+ALLOWED_HOSTS = ["*", "api.enlighten.site"]
 
 # Application definition
 
@@ -60,6 +60,12 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 
 ]
+
+# 配置文件中增加异常处理的相关配置
+REST_FRAMEWORK = {
+    # 异常处理
+    'EXCEPTION_HANDLER': 'blog_backend.utils.exceptions.exception_handler',
+}
 
 ROOT_URLCONF = 'blog_backend.urls'
 
@@ -92,6 +98,77 @@ DATABASES = {
         'PASSWORD': 'gresql',
         'HOST': '47.101.11.149',
         'PORT': '5432',
+    }
+}
+
+# 配置 django-redis 的存储位置信息
+CACHES = {
+    # 配置缓存中第一个存储区域:
+    "default": {
+        # 缓存使用redis进行存储
+        "BACKEND": "django_redis.cache.RedisCache",
+        # 缓存的位置: 0 号库
+        "LOCATION": "redis://47.101.11.149:6379/0",
+        "OPTIONS": {
+            "CLIENT_CLASS": "django_redis.client.DefaultClient",
+        }
+    },
+    # 配置缓存中第二个存储区域:
+    "session": {
+        # 缓存使用redis进行存储
+        "BACKEND": "django_redis.cache.RedisCache",
+        # 缓存的位置: 1 号库
+        "LOCATION": "redis://47.101.11.149:6379/1",
+        "OPTIONS": {
+            "CLIENT_CLASS": "django_redis.client.DefaultClient",
+        }
+    }
+}
+# 设置缓存引擎
+SESSION_ENGINE = "django.contrib.sessions.backends.cache"
+# 设置保存在缓存中的位置
+SESSION_CACHE_ALIAS = "session"
+
+# 配置日志打印信息
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,  # 是否禁用已经存在的日志器
+    'formatters': {  # 日志信息显示的格式
+        'verbose': {
+            'format': '%(levelname)s %(asctime)s %(module)s %(lineno)d %(message)s'
+        },
+        'simple': {
+            'format': '%(levelname)s %(module)s %(lineno)d %(message)s'
+        },
+    },
+    'filters': {  # 对日志进行过滤
+        'require_debug_true': {  # django在debug模式下才输出日志
+            '()': 'django.utils.log.RequireDebugTrue',
+        },
+    },
+    'handlers': {  # 日志处理方法
+        'console': {  # 向终端中输出日志
+            'level': 'INFO',
+            'filters': ['require_debug_true'],
+            'class': 'logging.StreamHandler',
+            'formatter': 'simple'
+        },
+        'file': {  # 向文件中输出日志
+            'level': 'INFO',
+            'class': 'logging.handlers.RotatingFileHandler',
+            'filename': os.path.join(os.path.dirname(BASE_DIR),
+                                     "logs/enlighten.log"),  # 日志文件的位置
+            'maxBytes': 300 * 1024 * 1024,
+            'backupCount': 10,
+            'formatter': 'verbose'
+        },
+    },
+    'loggers': {  # 日志器
+        'django': {  # 定义了一个名为django的日志器
+            'handlers': ['console', 'file'],  # 可以同时向终端与文件中输出日志
+            'propagate': True,  # 是否继续传递日志信息
+            'level': 'INFO',  # 日志器接收的最低日志级别
+        },
     }
 }
 
@@ -139,8 +216,7 @@ STATICFILES_DIRS = [os.path.join(BASE_DIR, 'static_files'),
                     ]
 # 访问静态文件的url前缀
 STATIC_URL = '/static/'
-# 图片保存的位置:
-# 我们保存在static_files下面的media文件夹下:
+# 图片保存在static_files下面的media文件夹下:
 MEDIA_ROOT = os.path.join(BASE_DIR, "static_files/media")
 # 上传文件的URL
 MEDIA_URL = "/static_files/media/"
@@ -152,7 +228,7 @@ AUTH_USER_MODEL = 'users.UserProfile'
 # 允许跨域
 # 添加 django-cors-headers 的白名单, 使白名单中的 host 可以进行跨域请求
 CORS_ORIGIN_WHITELIST = (
-    ['http://localhost:8080']
+    ['http://localhost:8080', 'http://47.101.11.149:80']
 )
 # 跨域允许证书
 CORS_ALLOW_CREDENTIALS = True
