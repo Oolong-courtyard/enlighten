@@ -4,6 +4,10 @@ import VueRouter from 'vue-router'
 import Home from '../components/Home'
 import Hot from '../components/Hot'
 import Cart from '../components/Cart'
+import Index from "../components/Index";
+import Login from "../components/Login";
+import Register from "../components/Register";
+import ArticleDetail from "../components/ArticleDetail";
 
 //1.安装插件
 Vue.use(VueRouter)
@@ -12,19 +16,24 @@ Vue.use(VueRouter)
 const routes  = [
   {
     path:'',
-    redirect:'/home'
+    redirect:'/Index'
   },
   {
-    path:'/home',
-    component:Home
+    path:'/index',
+    component:Index
   },
   {
-    path:'/hot',
-    component: Hot
+    path:'/login',
+    component: Login
+  },
+  // 每一{}就代表一条route
+  {
+    path: '/register',
+    component: Register
   },
   {
-    path: '/cart',
-    component: Cart
+    path: '/article-detail',
+    component: ArticleDetail
   },
 ]
 

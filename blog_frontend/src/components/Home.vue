@@ -13,7 +13,9 @@
           @select="handleSelect"
           background-color="#545c64"
           text-color="#fff"
-          active-text-color="#ffd04b">
+          active-text-color="#ffd04b"
+          router
+        >
           <el-menu-item index="1">首页
           </el-menu-item>
           <el-menu-item index="2">项目</el-menu-item>
@@ -187,7 +189,7 @@
       },
       load() {
         //加载滚动
-        this.imagePath = res_ite
+        this.imagePath = res_item
       },
 
       handleSelect(key, keyPath) {
