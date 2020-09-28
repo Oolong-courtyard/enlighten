@@ -10,8 +10,7 @@
       <!--第一个div只是为了占位，达到样式上的效果-->
       <div style="height: 50px"></div>
       <div class="contentDiv">
-        <ul v-infinite-scroll="load"
-            infinite-scroll-disabled="disabled"
+        <ul v-infinite-scroll=""
             style="overflow: hidden">
           <li v-for="(res_item,index) in res_list_data"
               style="list-style: none"
@@ -42,8 +41,8 @@
         </ul>
 
         <!--下拉加载-->
-        <p v-if="loading">加载中...</p>
-        <p v-if="noMore">没有更多了</p>
+        <!--        <p v-if="loading">加载中...</p>-->
+        <!--        <p v-if="noMore">没有更多了</p>-->
       </div>
 
     </div>
@@ -60,7 +59,6 @@
     components: {NavBar},
     data() {
       return {
-        current_article_index: 0, //每次下拉加载文章列表值增加10，初始值为0
         loading: false, //下拉加载
         res_list_data_len: 0, //返回文章列表的长度
         res_list_data: [], //请求服务器获取的文章列表
@@ -71,44 +69,32 @@
       //获取文章列表页信息
       this.getArticleList()
     },
-    computed: {
-      noMore() {
-        return this.res_list_data_len >= 20
-      },
-      disabled() {
-        return this.loading || this.noMore
-      }
-    },
+    // computed: {
+    //   noMore() {
+    //     return this.res_list_data_len >= 20
+    //   },
+    //   disabled() {
+    //     return this.loading || this.noMore
+    //   }
+    // },
     methods: {
       load() {
-        // 动态加载列表数据
+        //动态加载列表数据
         console.log("触发了加载方法")
-        this.loading = true
-        // 调用服务端接口获取新数据
-
-        setTimeout(() => {
-          this.res_list_data_len += 2
-          this.loading = false
-        }, 2000)
+        // this.loading = true
+        // setTimeout(() => {
+        //   this.res_list_data_len += 2
+        //   this.loading = false
+        // }, 500)
       },
       getArticleList() {
-        if (this.current_article_index == 0) {
-          //第一次只加载前10条，每次下拉新加载10条
-          //首先将current_article_index加5
-          this.current_article_index += 10
-          //获取文章列表
-          getArticleList(this.current_article_index).then(res => {
-            console.log("来到了getArticleList=====")
-            this.res_list_data = res.data
-          })
-        } else {
-          //获取文章列表
-          getArticleList(this.current_article_index).then(res => {
-            console.log("来到了getArticleList=====")
-            this.res_list_data = res.data
-          })
-        }
-
+        //获取文章列表
+        getArticleList().then(res => {
+          console.log("来到了getArticleList=====")
+          this.res_list_data_len += res.data.length
+          this.res_list_data.push(res.data)
+          console.log("this.res_list_data",this.res_list_data)
+        })
       },
       getArticleDetail(id) {
         //获取文章详情
@@ -133,10 +119,6 @@
     background-color: white;
   }
 
-  .tabBarDiv {
-
-  }
-
   .contentDiv {
     /*cursor 鼠标移动上去变小手*/
     cursor: pointer;
@@ -151,7 +133,6 @@
   }
 
   .item-list:hover {
-
     background-color: #EFEFEF;
   }
 
