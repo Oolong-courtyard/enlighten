@@ -93,10 +93,10 @@ WSGI_APPLICATION = 'blog_backend.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'liuzh_blog',
+        'NAME': 'enlighten_db',
         'USER': 'postgres',
         'PASSWORD': 'gresql',
-        'HOST': '47.101.11.149',
+        'HOST': '106.15.8.3',
         'PORT': '5432',
     }
 }
@@ -108,7 +108,7 @@ CACHES = {
         # 缓存使用redis进行存储
         "BACKEND": "django_redis.cache.RedisCache",
         # 缓存的位置: 0 号库
-        "LOCATION": "redis://47.101.11.149:6379/0",
+        "LOCATION": "redis://106.15.8.3:6379/0",
         "OPTIONS": {
             "CLIENT_CLASS": "django_redis.client.DefaultClient",
         }
@@ -118,7 +118,7 @@ CACHES = {
         # 缓存使用redis进行存储
         "BACKEND": "django_redis.cache.RedisCache",
         # 缓存的位置: 1 号库
-        "LOCATION": "redis://47.101.11.149:6379/1",
+        "LOCATION": "redis://106.15.8.3:6379/1",
         "OPTIONS": {
             "CLIENT_CLASS": "django_redis.client.DefaultClient",
         }
@@ -228,7 +228,7 @@ AUTH_USER_MODEL = 'users.UserProfile'
 # 允许跨域
 # 添加 django-cors-headers 的白名单, 使白名单中的 host 可以进行跨域请求
 CORS_ORIGIN_WHITELIST = (
-    ['http://localhost:8080', 'http://47.101.11.149:80']
+    ['http://localhost:8080', 'http://106.15.8.3:80']
 )
 # 跨域允许证书
 CORS_ALLOW_CREDENTIALS = True
