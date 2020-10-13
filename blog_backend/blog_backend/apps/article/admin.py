@@ -23,7 +23,7 @@ class ArticleDetailAdmin(admin.ModelAdmin):
 class ArticleListAdmin(admin.ModelAdmin):
     """文章列表admin"""
     # 指定允许被修改的字段
-    fields = ['summary', 'category','image']
+    fields = ['summary', 'category', 'image']
     # 每页展示的行数
     list_per_page = 2
     # 决定列表页展示的字段有哪些

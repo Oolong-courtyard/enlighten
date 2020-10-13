@@ -5,3 +5,4 @@ django-cors-headers==3.5.0
 mysqlclient==2.0.1
 django-redis==4.12.1
 psycopg2==2.8.6
+Pillow==4.1.0

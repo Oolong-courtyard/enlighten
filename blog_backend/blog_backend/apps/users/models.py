@@ -19,14 +19,6 @@ class UserProfile(AbstractUser):
                               blank=True,
                               max_length=11,
                               verbose_name="电话")
-    email = models.EmailField(max_length=100,
-                              null=True,
-                              blank=True,
-                              verbose_name="邮箱")
-    is_superuser = models.CharField(max_length=10,
-                                    choices=(("true", "是"), ("false", "否")),
-                                    default="false",
-                                    verbose_name="管理员")
 
     class Meta:
         db_table = "user_profile"
@@ -41,7 +33,7 @@ class VerifyCode(models.Model):
     """短信验证码"""
     code = models.CharField(max_length=10, verbose_name="验证码")
     mobile = models.CharField(max_length=11, verbose_name="电话")
-    add_time = models.DateTimeField(default=timezone.now(),
+    add_time = models.DateTimeField(auto_now=True,
                                     verbose_name="添加时间")
 
     class Meta:

@@ -31,7 +31,7 @@ SECRET_KEY = 'ef-@^(&ol522la&9a&p0ie)!)7r+iw$oj4x-vr_^o7_$kt%*!g'
 """
 DEBUG = True
 
-ALLOWED_HOSTS = ["*", "api.enlighten.site"]
+ALLOWED_HOSTS = ["*"]
 
 # Application definition
 
@@ -46,7 +46,6 @@ INSTALLED_APPS = [
     'rest_framework',
     'users.apps.UsersConfig',
     'article.apps.ArticleConfig',
-
 ]
 
 MIDDLEWARE = [
@@ -54,11 +53,10 @@ MIDDLEWARE = [
     'django.contrib.sessions.middleware.SessionMiddleware',
     'corsheaders.middleware.CorsMiddleware',
     'django.middleware.common.CommonMiddleware',
-    # 'django.middleware.csrf.CsrfViewMiddleware',
+    'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
-
 ]
 
 # 配置文件中增加异常处理的相关配置
@@ -108,7 +106,7 @@ CACHES = {
         # 缓存使用redis进行存储
         "BACKEND": "django_redis.cache.RedisCache",
         # 缓存的位置: 0 号库
-        "LOCATION": "redis://106.15.8.3:6379/0",
+        "LOCATION": "redis://127.0.0.1:6379/0",
         "OPTIONS": {
             "CLIENT_CLASS": "django_redis.client.DefaultClient",
         }
@@ -118,7 +116,7 @@ CACHES = {
         # 缓存使用redis进行存储
         "BACKEND": "django_redis.cache.RedisCache",
         # 缓存的位置: 1 号库
-        "LOCATION": "redis://106.15.8.3:6379/1",
+        "LOCATION": "redis://127.0.0.1:6379/1",
         "OPTIONS": {
             "CLIENT_CLASS": "django_redis.client.DefaultClient",
         }
@@ -211,17 +209,17 @@ Django 仅在调试模式下（DEBUG=True）能对外提供静态文件。
 需要是用collectstatic命令来收集静态文件并交由其他静态文件服务器来提供。
 """
 # 存放查找静态文件的路径
-STATICFILES_DIRS = [os.path.join(BASE_DIR, 'static_files'),
-                    os.path.join(BASE_DIR, 'static_files'),
-                    ]
+STATICFILES_DIRS = (
+    os.path.join(BASE_DIR, 'static_files'),
+)
 # 访问静态文件的url前缀
 STATIC_URL = '/static/'
 # 图片保存在static_files下面的media文件夹下:
 MEDIA_ROOT = os.path.join(BASE_DIR, "static_files/media")
 # 上传文件的URL
 MEDIA_URL = "/static_files/media/"
-
-# 自定义user模型类
+#
+# # 自定义user模型类
 AUTH_USER_MODEL = 'users.UserProfile'
 
 # ================================================================
