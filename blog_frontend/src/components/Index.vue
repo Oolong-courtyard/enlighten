@@ -22,11 +22,11 @@
               <div style="width: 70%">
                 <div style="text-align: left;font-size: 10px">
                   <!--更新/发布时间后续处理为几小时或者几天前-->
-                  {{res_item.author}} · {{res_item.updated_time}} ·
-                  {{res_item.summary}}
+                  {{ res_item.author }} · {{ res_item.updated_time }} ·
+                  {{ res_item.summary }}
                 </div>
                 <div class="article-name">
-                  {{res_item.article_name}}
+                  {{ res_item.article_name }}
                 </div>
               </div>
 
@@ -52,114 +52,114 @@
 
 <script>
 
-  import {getArticleList} from 'network/home'
-  import NavBar from "../common/NavBar";
+import {getArticleList} from 'network/home'
+import NavBar from "../common/NavBar";
 
-  export default {
-    name: "Index",
-    components: {NavBar},
-    data() {
-      return {
-        current_article_index: 0, //每次下拉加载文章列表值增加10，初始值为0
-        loading: false, //下拉加载
-        res_list_data_len: 0, //返回文章列表的长度
-        res_list_data: [], //请求服务器获取的文章列表
-        res_detail_data: {}, //请求服务器获取的文章详情
+export default {
+  name: "Index",
+  components: {NavBar},
+  data() {
+    return {
+      current_article_index: 0, //每次下拉加载文章列表值增加10，初始值为0
+      loading: false, //下拉加载
+      res_list_data_len: 0, //返回文章列表的长度
+      res_list_data: [], //请求服务器获取的文章列表
+      res_detail_data: {}, //请求服务器获取的文章详情
+    }
+  },
+  created() {
+    //获取文章列表页信息
+    this.getArticleList()
+  },
+  computed: {
+    noMore() {
+      return this.res_list_data_len >= 20
+    },
+    disabled() {
+      return this.loading || this.noMore
+    }
+  },
+  methods: {
+    load() {
+      // 动态加载列表数据
+      console.log("触发了加载方法")
+      this.loading = true
+      // 调用服务端接口获取新数据
+
+      setTimeout(() => {
+        this.res_list_data_len += 2
+        this.loading = false
+      }, 2000)
+    },
+    getArticleList() {
+      if (this.current_article_index == 0) {
+        //第一次只加载前10条，每次下拉新加载10条
+        //首先将current_article_index加5
+        this.current_article_index += 10
+        //获取文章列表
+        getArticleList(this.current_article_index).then(res => {
+          console.log("来到了getArticleList=====")
+          this.res_list_data = res.data
+        })
+      } else {
+        //获取文章列表
+        getArticleList(this.current_article_index).then(res => {
+          console.log("来到了getArticleList=====")
+          this.res_list_data = res.data
+        })
       }
-    },
-    created() {
-      //获取文章列表页信息
-      this.getArticleList()
-    },
-    computed: {
-      noMore() {
-        return this.res_list_data_len >= 20
-      },
-      disabled() {
-        return this.loading || this.noMore
-      }
-    },
-    methods: {
-      load() {
-        // 动态加载列表数据
-        console.log("触发了加载方法")
-        this.loading = true
-        // 调用服务端接口获取新数据
 
-        setTimeout(() => {
-          this.res_list_data_len += 2
-          this.loading = false
-        }, 2000)
-      },
-      getArticleList() {
-        if (this.current_article_index == 0) {
-          //第一次只加载前10条，每次下拉新加载10条
-          //首先将current_article_index加5
-          this.current_article_index += 10
-          //获取文章列表
-          getArticleList(this.current_article_index).then(res => {
-            console.log("来到了getArticleList=====")
-            this.res_list_data = res.data
-          })
-        } else {
-          //获取文章列表
-          getArticleList(this.current_article_index).then(res => {
-            console.log("来到了getArticleList=====")
-            this.res_list_data = res.data
-          })
-        }
-
-      },
-      getArticleDetail(id) {
-        //获取文章详情
-        window.open('http://localhost:8080/article-detail?id=' + `${id}`);
-      },
     },
-  }
+    getArticleDetail(id) {
+      //获取文章详情
+      window.open('http://localhost:8080/article-detail?id=' + `${id}`);
+    },
+  },
+}
 </script>
 
 <style scoped>
-  .outermostDiv {
-    background-color: #EFEFEF;
-    width: 100%;
-    height: 100%;
-  }
+.outermostDiv {
+  background-color: #EFEFEF;
+  width: 100%;
+  height: 100%;
+}
 
-  .secondDiv {
-    width: 800px;
-    left: 0;
-    right: 0;
-    margin: 0 auto;
-    background-color: white;
-  }
+.secondDiv {
+  width: 800px;
+  left: 0;
+  right: 0;
+  margin: 0 auto;
+  background-color: white;
+}
 
-  .tabBarDiv {
+.tabBarDiv {
 
-  }
+}
 
-  .contentDiv {
-    /*cursor 鼠标移动上去变小手*/
-    cursor: pointer;
-  }
+.contentDiv {
+  /*cursor 鼠标移动上去变小手*/
+  cursor: pointer;
+}
 
-  .item-list {
-    padding: 20px;
-    margin-top: 10px;
-    width: 100%;
-    height: 100px;
-    display: flex
-  }
+.item-list {
+  padding: 20px;
+  margin-top: 10px;
+  width: 100%;
+  height: 100px;
+  display: flex
+}
 
-  .item-list:hover {
+.item-list:hover {
 
-    background-color: #EFEFEF;
-  }
+  background-color: #EFEFEF;
+}
 
-  .article-name {
-    text-align: center;
-    font-size: 15px;
-    font-weight: bold;
-    margin-top: 10px
-  }
+.article-name {
+  text-align: center;
+  font-size: 15px;
+  font-weight: bold;
+  margin-top: 10px
+}
 
 </style>

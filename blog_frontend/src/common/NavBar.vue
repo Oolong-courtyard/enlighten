@@ -13,8 +13,11 @@
       <div style="display: flex">
         <!--左侧菜单-->
         <div style="display: flex">
-          <img src="../assets/login_head.jpg" alt="" style="height: 60px;width: 60px;border-radius: 15px;">
-          <el-menu-item style="font-size: 20px;transform: rotate(-10deg);border-radius: 15px;" index="">enlighten
+          <img src="../assets/login_head.jpg" alt=""
+               style="height: 60px;width: 60px;border-radius: 15px;">
+          <el-menu-item
+            style="font-size: 20px;transform: rotate(-10deg);border-radius: 15px;"
+            index="">enlighten
           </el-menu-item>
           <el-menu-item index="index">首页</el-menu-item>
           <el-menu-item index="project" disabled>项目</el-menu-item>
@@ -23,7 +26,8 @@
         <!--右侧菜单-->
         <div style="display: flex;margin-left: 260px">
           <el-menu-item @click="loginDialogFormVisible = true">登录</el-menu-item>
-          <el-menu-item @click="registerDialogFormVisible = true">注册</el-menu-item>
+          <el-menu-item @click="registerDialogFormVisible = true">注册
+          </el-menu-item>
         </div>
       </div>
     </el-menu>
@@ -51,25 +55,31 @@
         </el-form-item>
       </el-form>
       <div slot="" class="dialog-footer">
-        <el-button style="margin-left: 125px" type="primary" @click="handleLogin">登录</el-button>
+        <el-button style="margin-left: 125px" type="primary"
+                   @click="handleLogin">登录
+        </el-button>
         <el-button @click="resetForm('loginForm')">重置</el-button>
       </div>
       <!--添加分割线-->
-      <hr style="height:1px;border:none;border-top:1px solid #555555;margin-top: 15px;">
+      <hr
+        style="height:1px;border:none;border-top:1px solid #555555;margin-top: 15px;">
 
       <div @click="otherLogin" class="otherLoginStyle"
            style="margin-top: 10px;margin-bottom: 15px;font-size: 14px;color: #409EFF">
         其他登录方式
       </div>
-      <div class="weChatAndOther" :style="{'display':this.otherLoginVisible?'flex':'none'}">
+      <div class="weChatAndOther"
+           :style="{'display':this.otherLoginVisible?'flex':'none'}">
         <div @click="qqLogin" class="otherLoginDivStyle">
           <img src="../assets/qqLogin.jpg" alt="" class="otherLoginItemStyle">
         </div>
         <div @click="weChatLogin" class="otherLoginDivStyle">
-          <img src="../assets/weChatLogin.jpg" alt="" class="otherLoginItemStyle" style="height: 20px;margin-top:10px">
+          <img src="../assets/weChatLogin.jpg" alt=""
+               class="otherLoginItemStyle" style="height: 20px;margin-top:10px">
         </div>
         <div @click="githubLogin" class="otherLoginDivStyle">
-          <img src="../assets/githubLogin.jpg" alt="" class="otherLoginItemStyle" style="height: 20px;margin-top:10px">
+          <img src="../assets/githubLogin.jpg" alt=""
+               class="otherLoginItemStyle" style="height: 20px;margin-top:10px">
         </div>
       </div>
 
@@ -85,16 +95,19 @@
       :visible.sync="registerDialogFormVisible"
       :close-on-click-modal="false"
     >
-      <el-form :model="registerForm" ref="registerForm" :rules="registerFormRules">
+      <el-form :model="registerForm" ref="registerForm"
+               :rules="registerFormRules">
         <el-form-item prop="username" label="用户名" :label-width="formLabelWidth">
-          <el-input v-model="registerForm.username" autocomplete="off"></el-input>
+          <el-input v-model="registerForm.username"
+                    autocomplete="off"></el-input>
         </el-form-item>
         <el-form-item prop="mobile" label="手机号" :label-width="formLabelWidth">
           <el-input v-model="registerForm.mobile" autocomplete="off"></el-input>
         </el-form-item>
         <div :registerVerifyFormVisible="false" class="registerVerifyForm"
              style="display: flex;height: 40px;width: 225px;margin-bottom: 20px;margin-left: 60px;">
-          <input onblur="verifyMobile" class="verifyInput" type="text" placeholder="1234" ref="verifyCode"
+          <input onblur="verifyMobile" class="verifyInput" type="text"
+                 placeholder="1234" ref="verifyCode"
                  style="outline: none;
                  text-indent:15px;
                  border-width: 1px;
@@ -227,23 +240,27 @@ export default {
       }
       console.log("发起了登录的网络请求", this.loginForm)
       //验证通过后，向服务器发起网络请求
-      const res = await this.$http.post("/login", this.loginForm,{ headers: {'content-type': 'application/x-www-form-urlencoded'} });
-      console.log("res为", res)
-      if (res.status == 200) {
-        console.log("登录成功")
-        //右侧替换为登录成功的用户名
-        //设置loginDialogFormVisible的值为false
-        this.loginDialogFormVisible = false;
-        //将菜单右侧登录注册按钮隐藏,转而显示用户名(可以直接使用v-bind，设置一个visibile，为false显示登录注册按钮，为true显示用户名。
-        // 个人头像鼠标移动上去自动显示下拉菜单，可以进个人主页；个人主页有购物车(订单)，可以更换头像，可以写个性签名，
-        // 主页，增加搜索框，可以直接写文章(支持MarkDown)，
-        // )
-      } else if(res.status==403) {
-        this.$message({
-          message: "用户名或密码错误",
-          type:"warning"
-        })
-      }
+      this.$http.post("/login", this.loginForm, {headers: {'content-type': 'application/x-www-form-urlencoded'}})
+        .then(
+          res => {
+            console.log("登录成功")
+            //右侧替换为登录成功的用户名
+            //设置loginDialogFormVisible的值为false
+            this.loginDialogFormVisible = false;
+            //将菜单右侧登录注册按钮隐藏,转而显示用户名(可以直接使用v-bind，设置一个visibile，为false显示登录注册按钮，为true显示用户名。
+            // 个人头像鼠标移动上去自动显示下拉菜单，可以进个人主页；个人主页有购物车(订单)，可以更换头像，可以写个性签名，
+            // 主页，增加搜索框，可以直接写文章(支持MarkDown)，
+            // )
+          }
+        ).catch(error => {
+        console.log("error是", error)
+        if (error.response.status == 400) {
+          this.$message({
+            message: "用户名或密码错误",
+            type: "warning"
+          })
+        }
+      })
     },
     //注册处理
     async handleRegister() {

@@ -34,6 +34,8 @@ class LoginView(View):
         username = request_data_dict.get('username')
         pwd = request_data_dict.get('password')
         user = authenticate(request, username=username, password=pwd)
-        return http.HttpResponse("登录成功")
         if user is None:
-            return http.HttpResponseForbidden("用户名或密码错误")
+            return http.HttpResponse(status=400, content="用户名或密码错误")
+
+        # 用户存在
+        return http.HttpResponse("登录成功")
