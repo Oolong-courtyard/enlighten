@@ -1,6 +1,10 @@
 # enlighten
 a blog which Web side developed by Django and Vue and the Mobile Terminal developed by react-native.
 
+### 网站已经发布
+目前做了一点交互，可以访问ip地址查看 http://106.15.8.3/ 
+域名还在申请中······
+
 ### 参照项目
 bobby，smart,recommend_system三大案例，各blog website。
 
