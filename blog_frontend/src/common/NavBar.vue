@@ -24,11 +24,25 @@
           <el-menu-item index="3" disabled>历程</el-menu-item>
         </div>
         <!--右侧菜单-->
-        <div style="display: flex;margin-left: 260px">
+        <div class="navLoginRegister"
+             :style="{'display':this.loginSuccess?'none':'flex'}">
           <el-menu-item @click="loginDialogFormVisible = true">登录</el-menu-item>
           <el-menu-item @click="registerDialogFormVisible = true">注册
           </el-menu-item>
         </div>
+        <!--登陆成功后显示当前登陆用户名称-->
+        <div class="loginSuccessUser"
+             :style="{'display':this.loginSuccess?'flex':'none'}">
+          <el-dropdown @command="handleCommand">
+            <el-menu-item>{{ this.loginForm.username }}</el-menu-item>
+            <el-dropdown-menu slot="dropdown">
+              <el-dropdown-item command="a">个人中心</el-dropdown-item>
+              <el-dropdown-item command="b">购物车</el-dropdown-item>
+              <el-dropdown-item command="c">退出登录</el-dropdown-item>
+            </el-dropdown-menu>
+          </el-dropdown>
+        </div>
+
       </div>
     </el-menu>
 
@@ -143,6 +157,7 @@ export default {
   name: "NavBar",
   data() {
     return {
+      loginSuccess: false, //是否登陆成功。用于控制用户登陆成功后个人用户名的显示
       otherLoginVisible: false, //其他登录方式显隐
       registerVerifyFormVisible: false,  //注册时验证码填写form是否显示
       loginDialogFormVisible: false, //登录对话框显隐
@@ -178,7 +193,32 @@ export default {
       formLabelWidth: '60px'
     }
   },
+  created() {
+    //获取localStorage中的用户信息
+    const username = localStorage.getItem('username')
+    console.log('刷新页面之后，从localStorage中获取到的username是', username)
+    console.log('刷新页面之后，此时的data中的loginForm中的username是', this.loginForm.username)
+    if (username) {
+      this.loginSuccess = true;
+      //注意刷新页面之后，data中的数据已经消失了，此时需要将localStorage中的username设置到data中的loginForm中，以便展示
+      this.loginForm.username = username
+    } else {
+      this.loginSuccess = false;
+    }
+  },
   methods: {
+    handleCommand(command) {
+      if (command == 'c') {
+        //  退出登录，清除localStorage中的用户数据
+        this.loginSuccess = false
+        localStorage.removeItem('username')
+      } else if (command == 'a') {
+        //个人中心
+      } else if (command == 'b') {
+        //购物车
+      }
+    },
+
     //qq登录
     qqLogin() {
       console.log("qq登录")
@@ -247,6 +287,10 @@ export default {
             //右侧替换为登录成功的用户名
             //设置loginDialogFormVisible的值为false
             this.loginDialogFormVisible = false;
+            this.loginSuccess = true;
+            //将用户名设置进localStorage中
+            localStorage.setItem('username', this.loginForm.username)
+
             //将菜单右侧登录注册按钮隐藏,转而显示用户名(可以直接使用v-bind，设置一个visibile，为false显示登录注册按钮，为true显示用户名。
             // 个人头像鼠标移动上去自动显示下拉菜单，可以进个人主页；个人主页有购物车(订单)，可以更换头像，可以写个性签名，
             // 主页，增加搜索框，可以直接写文章(支持MarkDown)，
@@ -266,6 +310,11 @@ export default {
     async handleRegister() {
       console.log("来到了handleRegister")
       console.log("发起了登录的网络请求")
+      this.$message({
+        message: "注册功能暂不提供",
+        type: "warning"
+      })
+      return;
       //先将输入的验证码 设置到registerForm中，并传入到服务器对比
       this.registerForm.verification = this.$refs.verifyCode.value
       console.log("注册提交的表单数据为", this.registerForm)
@@ -343,5 +392,13 @@ export default {
 
 .userPolicy:hover {
   cursor: pointer;
+}
+
+.navLoginRegister {
+  margin-left: 260px
+}
+
+.loginSuccessUser {
+  margin-left: 260px;
 }
 </style>
