@@ -26,7 +26,9 @@ class ArticleList(BaseModel):
     author = models.CharField(max_length=50,
                               null=False,
                               verbose_name="作者")
-    image = models.ImageField(upload_to='article_list', verbose_name='文章图片', null=True)
+    # image = models.ImageField(upload_to='article_list', verbose_name='文章图片',
+    #                           null=True, max_length=500)
+    image = models.TextField(verbose_name='文章图片', null=True, max_length=500)
 
     class Meta:
         db_table = 'article_list'
@@ -57,7 +59,7 @@ class ArticleDetail(BaseModel):
                               verbose_name="作者")
     content = models.TextField(verbose_name="文章详情内容")
     # image = models.ImageField(upload_to='article_detail', verbose_name='文章图片', null=True)
-    image_url = models.CharField(max_length=500,
+    image_url = models.TextField(max_length=500,
                                  null=True,
                                  verbose_name="图片链接")
 
