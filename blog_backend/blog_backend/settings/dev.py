@@ -63,6 +63,9 @@ MIDDLEWARE = [
 REST_FRAMEWORK = {
     # 异常处理
     'EXCEPTION_HANDLER': 'blog_backend.utils.exceptions.exception_handler',
+    # 指定分页配置
+    'DEFAULT_PAGINATION_CLASS':  'rest_framework.pagination.PageNumberPagination',
+    'PAGE_SIZE': 20  # 每页数目
 }
 
 ROOT_URLCONF = 'blog_backend.urls'
