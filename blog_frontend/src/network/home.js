@@ -1,8 +1,8 @@
 import {request} from './request'
 
-export function getArticleList(id) {
+export function getArticleList(page) {
   return request({
-    url: '/article-list/'
+    url: '/article-list/?page=' + page.toString()
   })
 }
 

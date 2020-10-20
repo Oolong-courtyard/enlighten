@@ -10,8 +10,10 @@
       <!--第一个div只是为了占位，达到样式上的效果-->
       <div style="height: 50px"></div>
       <div class="contentDiv">
+        <!--        load方法使用，如何下拉请求请数据并渲染，以及详情页的爬虫和详情页支持markdown。-->
         <ul v-infinite-scroll="load"
-            infinite-scroll-disabled="disabled"
+            :infinite-scroll-immediate="false"
+            :infinite-scroll-distance="300"
             style="overflow: hidden">
           <li v-for="(res_item,index) in res_list_data"
               style="list-style: none"
@@ -60,6 +62,7 @@ export default {
   components: {NavBar},
   data() {
     return {
+      page :1, //初始page为1
       current_article_index: 0, //每次下拉加载文章列表值增加10，初始值为0
       loading: false, //下拉加载
       res_list_data_len: 0, //返回文章列表的长度
@@ -68,16 +71,13 @@ export default {
     }
   },
   created() {
-    //获取文章列表页信息
-    this.getArticleList()
+    //获取文章列表页信息,如果开启，
+    // this.getArticleList()
   },
   computed: {
     noMore() {
       return this.res_list_data_len >= 20
     },
-    disabled() {
-      return this.loading || this.noMore
-    }
   },
   methods: {
     load() {
@@ -85,29 +85,39 @@ export default {
       console.log("触发了加载方法")
       this.loading = true
       // 调用服务端接口获取新数据
+      this.getArticleList()
 
-      setTimeout(() => {
-        this.res_list_data_len += 2
-        this.loading = false
-      }, 2000)
     },
     getArticleList() {
-      if (this.current_article_index == 0) {
-        //第一次只加载前10条，每次下拉新加载10条
-        //首先将current_article_index加5
-        this.current_article_index += 10
-        //获取文章列表
-        getArticleList(this.current_article_index).then(res => {
-          console.log("来到了getArticleList=====")
-          this.res_list_data = res.data
-        })
-      } else {
-        //获取文章列表
-        getArticleList(this.current_article_index).then(res => {
-          console.log("来到了getArticleList=====")
-          this.res_list_data = res.data
-        })
-      }
+      //获取文章列表
+      getArticleList(this.page).then(
+        res =>{
+          console.log("来到了getArticleList,获取到的res的数据为",res.data.results)
+          this.res_list_data = this.res_list_data.concat(res.data.results)
+          console.log("此时的res_list_data为",this.res_list_data)
+          // 每调用一次就把page+1
+          this.page += 1
+          console.log("此时的page为",this.page)
+        }
+      )
+
+
+      // if (this.current_article_index == 0) {
+      //   //第一次只加载前10条，每次下拉新加载10条
+      //   //首先将current_article_index加5
+      //   this.current_article_index += 10
+      //   //获取文章列表
+      //   getArticleList(this.current_article_index).then(res => {
+      //     console.log("来到了getArticleList=====")
+      //     this.res_list_data = res.data
+      //   })
+      // } else {
+      //   //获取文章列表
+      //   getArticleList(this.current_article_index).then(res => {
+      //     console.log("来到了getArticleList=====")
+      //     this.res_list_data = res.data
+      //   })
+      // }
 
     },
     getArticleDetail(id) {
