@@ -34,6 +34,7 @@ class ArticleList(BaseModel):
         db_table = 'article_list'
         verbose_name = '文章列表'
         verbose_name_plural = verbose_name
+        ordering = ['article_id']  # 指定默认排序字段
 
 
 class ArticleDetail(BaseModel):
