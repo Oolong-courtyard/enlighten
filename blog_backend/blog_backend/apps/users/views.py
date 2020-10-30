@@ -7,17 +7,42 @@ from django.contrib.auth import authenticate
 from django import http
 from django.views import View
 
+from users.models import UserProfile
+
+
+class UsernameCountView(View):
+    """用户数量"""
+
+    def get(self, request):
+        """获取用户数量"""
+        #这里判断用户数量只是为了给前台用户提示
+        count = UserProfile.objects.filter(username=request.GET.get('username')).count()
+        if count > 0:
+            return http.HttpResponseBadRequest('用户已经存在')
+        else:
+            return http.HttpResponse('用户名不存在,可以注册')
+
 
 class RegisterView(View):
     """用户注册"""
 
     def post(self, request):
         """用户注册"""
-        username = request.body.get('username')
-        password = request.body.get('password')
-        mobile = request.body.get('mobile')
-        verify_code = request.body.get('verify_code')
-        return http.HttpResponseForbidden("注册成功")
+        request_data = json.loads(request.body)
+        if request_data.get('ensure_password'):
+            del request_data['ensure_password']
+
+        # 注册时,仍然需要判断用户是否已经存在,如果已经存在,不执行create
+        count = UserProfile.objects.filter(username=request_data.get('username')).count()
+        if count > 0:
+            return http.HttpResponseBadRequest('用户已经存在')
+        # 如果用户未曾注册过,将该用户存入数据库
+        UserProfile.objects.create_user(**request_data)
+        return http.HttpResponse("注册成功")
+
+        # password = request.body.get('password')
+        # mobile = request.body.get('mobile')
+        # verify_code = request.body.get('verify_code')
 
 
 """
