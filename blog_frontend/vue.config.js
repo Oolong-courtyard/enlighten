@@ -20,6 +20,15 @@ module.exports = {
       maskIcon: 'favicon.ico',
       msTileImage: 'favicon.ico'
     }
-  }
+  },
+  // proxyTable: {     //axios跨域处理
+  //   '/index': {       //此处并非和url一致
+  //     target: 'http://106.15.8.3:8000/',
+  //     changeOrigin: true, //允许跨域
+  //     pathRewrite: {
+  //       '^/index': ''
+  //     }
+  //   }
+  // },
 }
 

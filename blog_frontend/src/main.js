@@ -15,6 +15,8 @@ import axios from 'axios';
 //配置请求的根路径
 axios.defaults.baseURL = 'http://127.0.0.1:8000'
 Vue.prototype.$http = axios
+Vue.prototype.HOME = '/index'    //重要在于这里，Vue.prototype.HOME = '/api'是一个定值，默认指向localhost，所有修改指向路径为'/api'，配置文件index.js定义的可跨域路径
+
 
 //引用
 Vue.use(ElementUI)
