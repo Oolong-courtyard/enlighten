@@ -46,6 +46,7 @@ INSTALLED_APPS = [
     'rest_framework',
     'users.apps.UsersConfig',
     'article.apps.ArticleConfig',
+
 ]
 
 MIDDLEWARE = [
@@ -57,6 +58,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    # 'article.middleware.my_middleware,  # 添加中间件'
 ]
 
 # 配置文件中增加异常处理的相关配置
@@ -228,9 +230,10 @@ AUTH_USER_MODEL = 'users.UserProfile'
 # ================================================================
 # 允许跨域
 # 添加 django-cors-headers 的白名单, 使白名单中的 host 可以进行跨域请求
-CORS_ORIGIN_WHITELIST = (
-    ['http://localhost:8080', 'http://106.15.8.3:80']
-)
+# CORS_ORIGIN_WHITELIST = (
+#     # 'http://localhost:8080',
+#     'http://106.15.8.3:80',
+# )
 # 跨域允许证书
 CORS_ALLOW_CREDENTIALS = True
 
