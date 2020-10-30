@@ -30,11 +30,11 @@
           <el-menu-item @click="registerDialogFormVisible = true">注册
           </el-menu-item>
         </div>
-        <!--登陆成功后显示当前登陆用户名称-->
+        <!--登陆成功(或注册成功后直接)显示当前登陆用户名称-->
         <div class="loginSuccessUser"
              :style="{'display':this.loginSuccess?'flex':'none'}">
           <el-dropdown @command="handleCommand">
-            <el-menu-item>{{ this.loginForm.username }}</el-menu-item>
+            <el-menu-item>{{ this.username }}</el-menu-item>
             <el-dropdown-menu slot="dropdown">
               <el-dropdown-item command="a">个人中心</el-dropdown-item>
               <el-dropdown-item command="b">购物车</el-dropdown-item>
@@ -109,39 +109,46 @@
       :visible.sync="registerDialogFormVisible"
       :close-on-click-modal="false"
     >
+      <!--      TODO 可在el-form添加规则 :rules="registerFormRules"-->
       <el-form :model="registerForm" ref="registerForm"
-               :rules="registerFormRules">
+      >
         <el-form-item prop="username" label="用户名" :label-width="formLabelWidth">
           <el-input v-model="registerForm.username"
-                    autocomplete="off"></el-input>
+                    @blur="CheckUsernameExist"
+                    autocomplete="off">
+          </el-input>
         </el-form-item>
-        <el-form-item prop="mobile" label="手机号" :label-width="formLabelWidth">
-          <el-input v-model="registerForm.mobile" autocomplete="off"></el-input>
-        </el-form-item>
-        <div :registerVerifyFormVisible="false" class="registerVerifyForm"
-             style="display: flex;height: 40px;width: 225px;margin-bottom: 20px;margin-left: 60px;">
-          <input onblur="verifyMobile" class="verifyInput" type="text"
-                 placeholder="1234" ref="verifyCode"
-                 style="outline: none;
-                 text-indent:15px;
-                 border-width: 1px;
-                 border-color:#FBFBFB;
-                 border-radius: 5px;
-                 width: 120px;
-                 margin-right: 30px">
-          <button class="getVerifyCode"
-                  type="button"
-                  style="border-radius: 5px;border-style: none;background-color: #409EFF;color: white"
-                  @click="getVerifyCode"
-          >获取验证码
-          </button>
-        </div>
+        <!--        TODO 手机号注册暂时关闭(数据库中手机号暂时可以为空)-->
+        <!--        <el-form-item prop="mobile" label="手机号" :label-width="formLabelWidth">-->
+        <!--          <el-input v-model="registerForm.mobile" autocomplete="off"></el-input>-->
+        <!--        </el-form-item>-->
+        <!--        <div :registerVerifyFormVisible="false" class="registerVerifyForm"-->
+        <!--             style="display: flex;height: 40px;width: 225px;margin-bottom: 20px;margin-left: 60px;">-->
+        <!--          <input onblur="verifyMobile" class="verifyInput" type="text"-->
+        <!--                 placeholder="1234" ref="verifyCode"-->
+        <!--                 style="outline: none;-->
+        <!--                 text-indent:15px;-->
+        <!--                 border-width: 1px;-->
+        <!--                 border-color:#FBFBFB;-->
+        <!--                 border-radius: 5px;-->
+        <!--                 width: 120px;-->
+        <!--                 margin-right: 30px">-->
+        <!--          <button class="getVerifyCode"-->
+        <!--                  type="button"-->
+        <!--                  style="border-radius: 5px;border-style: none;background-color: #409EFF;color: white"-->
+        <!--                  @click="getVerifyCode"-->
+        <!--          >获取验证码-->
+        <!--          </button>-->
+        <!--        </div>-->
         <!--邮箱目前未实现-->
         <!--        <el-form-item prop="email" label="邮箱" :label-width="formLabelWidth">-->
         <!--          <el-input v-model="registerForm.email" autocomplete="off"></el-input>-->
         <!--        </el-form-item>-->
         <el-form-item prop="password" label="密码" :label-width="formLabelWidth">
           <el-input type="password" v-model="registerForm.password"></el-input>
+        </el-form-item>
+        <el-form-item prop="password" label="确认密码" :label-width="formLabelWidth">
+          <el-input type="password" v-model="registerForm.ensure_password"></el-input>
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
@@ -160,6 +167,8 @@ export default {
   name: "NavBar",
   data() {
     return {
+      username: null, //页面刷新后,created中将localStorage中的username赋值到这里，用于页面右上角显示
+      usernameExist: false, //用户注册时判断用户名是否已经存在
       loginSuccess: false, //是否登陆成功。用于控制用户登陆成功后个人用户名的显示
       otherLoginVisible: false, //其他登录方式显隐
       registerVerifyFormVisible: false,  //注册时验证码填写form是否显示
@@ -172,9 +181,10 @@ export default {
       registerForm: {
         username: '',
         mobile: '',
-        verification: '',
+        // verification: '',
         email: '',
         password: '',
+        ensure_password: '',
       }, //注册表单
 
       // loginFormRules:{
@@ -193,23 +203,54 @@ export default {
       //     {len:11,message: "大陆手机号长度必须为11位",trigger: "blur"},
       //   ],
       // },
-      formLabelWidth: '60px'
+      formLabelWidth: '70px'
     }
   },
   created() {
     //获取localStorage中的用户信息
     const username = localStorage.getItem('username')
-    console.log('刷新页面之后，从localStorage中获取到的username是', username)
-    console.log('刷新页面之后，此时的data中的loginForm中的username是', this.loginForm.username)
+
     if (username) {
-      this.loginSuccess = true;
-      //注意刷新页面之后，data中的数据已经消失了，此时需要将localStorage中的username设置到data中的loginForm中，以便展示
-      this.loginForm.username = username
+      this.loginSuccess = true; //loginSuccess状态决定当前页面右上角显示用户名还是登录/注册按钮
+      // 为了兼容注册成功后，直接显示用户名,直接在localStorage中获取username后设置到data中的username中；因此注册成功的同时将username设置到localStorage中
+      this.username = username;
     } else {
       this.loginSuccess = false;
     }
   },
   methods: {
+    //注册时检查用户名是否已经注册过
+    async CheckUsernameExist() {
+      //验证用户名是否已经注册过
+      //验证通过后，向服务器发起网络请求
+      console.log("失去焦点出发了")
+      this.$http.get('/usernames-count', {params: {username: this.registerForm.username}}).then(
+        res => {
+          console.log('用户名不存在，可以注册')
+          //将data中的用户名已经存在修改为false
+          this.usernameExist = false;
+        }
+      ).catch(err => {
+        if (err.response.status == 400) {
+          this.$message({
+            message: "用户名已经存在",
+            type: "warning"
+          })
+          //将data中的用户名已经存在修改为True
+          this.usernameExist = true;
+        }
+      })
+      //  根据res的返回结果判断用户是否已经注册过
+      // if (res.status != 200) {
+      //   //  用户已经存在
+      //   this.$message({
+      //     message: '用户已经存在',
+      //     type: 'warning'
+      //   })
+      //   return;
+      // }
+    },
+
     handleCommand(command) {
       if (command == 'c') {
         //  退出登录，清除localStorage中的用户数据
@@ -276,9 +317,9 @@ export default {
     //登录处理
     async handleLogin() {
       console.log("来到了handlogin")
-      const reg = new RegExp(
-        "^[a-z0-9]+([._\\-]*[a-z0-9])*@([a-z0-9]+[-a-z0-9]*[a-z0-9]+.){1,63}[a-z0-9]+$"
-      );
+      // const reg = new RegExp(
+      //   "^[a-z0-9]+([._\\-]*[a-z0-9])*@([a-z0-9]+[-a-z0-9]*[a-z0-9]+.){1,63}[a-z0-9]+$"
+      // );
       if (!this.loginForm.username) {
         this.$message({
           message: "用户名不能为空！ ",
@@ -302,7 +343,8 @@ export default {
             //设置loginDialogFormVisible的值为false
             this.loginDialogFormVisible = false;
             this.loginSuccess = true;
-            //将用户名设置进localStorage中
+            //响应式渲染;将登录填写的username设置到data中的username;将用户名设置进localStorage中
+            this.username = this.loginForm.username
             localStorage.setItem('username', this.loginForm.username)
 
             //将菜单右侧登录注册按钮隐藏,转而显示用户名(可以直接使用v-bind，设置一个visibile，为false显示登录注册按钮，为true显示用户名。
@@ -324,16 +366,56 @@ export default {
     async handleRegister() {
       console.log("来到了handleRegister")
       console.log("发起了登录的网络请求")
-      this.$message({
-        message: "注册功能暂不提供",
-        type: "warning"
-      })
-      return;
+
+      // 用户点击注册按钮的时候，再一次校验用户名是否已经存在
+      if (this.usernameExist == true) {
+        this.$message({
+          message: '用户名已经存在',
+          type: 'warning',
+        });
+        return;
+      }
+
+      //判断两次密码是否一致
+      if (this.registerForm.password != this.registerForm.ensure_password) {
+        this.$message({
+          message: "两次密码不一致,请重新输入",
+          type: "warning",
+        });
+        return;
+      }
+      //是否开启注册功能
+      // this.$message({
+      //   message: "注册功能暂不提供",
+      //   type: "warning"
+      // })
+
       //先将输入的验证码 设置到registerForm中，并传入到服务器对比
-      this.registerForm.verification = this.$refs.verifyCode.value
-      console.log("注册提交的表单数据为", this.registerForm)
+      // this.registerForm.verification = this.$refs.verifyCode.value
+
+
       //验证通过后，向服务器发起网络请求
-      const res = await this.$http.post("/register", this.registerForm);
+      this.$http.post("/register", this.registerForm).then(
+        res => {
+          console.log("注册成功的res为", res)
+          this.$message({
+            message: "注册成功",
+            type: "warning",
+          });
+          this.registerDialogFormVisible = false;
+          this.loginSuccess = true;
+          //直接将用户名设置到data中(因为注册成功对话框消失后，页面没有刷新，created函数没有执行);
+          //同时将用户名设置进localStorage中(这一步是为了刷新页面后用户名仍然显示)
+          this.username = this.registerForm.username
+          localStorage.setItem('username', this.registerForm.username)
+        }
+      ).catch(err => {
+        console.log("注册失败的err为", err)
+        this.$message({
+          message: "注册失败,请重新注册",
+          type: "warning",
+        });
+      })
       //处理相应的请求
     },
   },
