@@ -60,9 +60,9 @@
         <div style="font-weight: bold;font-size: 18px">账密登录</div>
       </template>
 
-      <el-form :model="loginForm" ref="loginForm">
+      <el-form :model="loginForm" ref="loginFormF" :rules="loginFormRules">
         <el-form-item prop="username" label="用户名" :label-width="formLabelWidth">
-          <el-input v-model="loginForm.username" autocomplete="off"></el-input>
+          <el-input v-model="loginForm.username"></el-input>
         </el-form-item>
         <el-form-item prop="password" label="密码" :label-width="formLabelWidth">
           <el-input type="password" v-model="loginForm.password"></el-input>
@@ -72,7 +72,7 @@
         <el-button style="margin-left: 125px" type="primary"
                    @click="handleLogin">登录
         </el-button>
-        <el-button @click="resetForm('loginForm')">重置</el-button>
+        <el-button @click="resetForm('loginFormF')">重置</el-button>
       </div>
       <!--添加分割线-->
       <hr
@@ -170,7 +170,22 @@ import axios from 'axios';
 export default {
   name: "NavBar",
   data() {
-    //添加正则校验,用户名只能输入字母或数字
+    //登录表单username校验
+    let checkLoginUsername = (rule, value, callback) => {
+      let D = /^[a-z0-9]*$/
+      if (!D.test(this.loginForm.username)) {
+        callback(new Error('用户名不存在'))
+      } else callback()
+    }
+    //登录表单password校验
+    let checkLoginPassword = (rule, value, callback) => {
+      let D = /^[a-z0-9]*$/
+      if (!D.test(this.loginForm.password)) {
+        callback(new Error('密码错误'))
+      } else callback()
+    }
+
+    //注册表单校验,添加正则校验,用户名只能输入字母或数字
     let checkRegisterUsername = (rule, value, callback) => {
       let D = /^[a-z0-9]*$/
       if (!D.test(this.registerForm.username)) {
@@ -179,25 +194,23 @@ export default {
       //校验用户名是否存在
       if (this.usernameExist === true) {
         callback(new Error('用户名已存在'))
-      }
-      else callback()
+      } else callback()
     }
-    //添加正则校验,密码只能输入字母和数字
+    //注册表单校验,添加正则校验,密码只能输入字母和数字
     let checkRegisterPassword = (rule, value, callback) => {
       let D = /^[a-z0-9]*$/
       if (!D.test(this.registerForm.password)) {
         callback(new Error('密码只能包含数字或字母'))
-      }
-      else callback()
+      } else callback()
     }
-    //只需要确认与输入的密码一致即可。
+    //注册表单校验,只需要确认与输入的密码一致即可。
     let checkRegisterEnsurePassword = (rule, value, callback) => {
       if (this.registerForm.password !== this.registerForm.ensurePassword) {
         callback(new Error('密码不一致'))
-      }
-      else callback()
+      } else callback()
     }
     return {
+      canLogin: true, //登录数据通过校验的依据
       canRegister: true, //注册数据通过校验的依据
       username: null, //页面刷新后,created中将localStorage中的username赋值到这里，用于页面右上角显示
       usernameExist: false, //用户注册时判断用户名是否已经存在
@@ -219,16 +232,22 @@ export default {
         ensurePassword: '',
       }, //注册表单
 
-      // loginFormRules:{
-      //   email:[
-      //     { required:true,message:"请输入邮箱地址",trigger:"blur" },
-      //     { min:5,max:15,message: "长度必须在5到15个字符之间",trigger: "blur" },
-      //   ],
-      //   password: [
-      //     { required:true,message:"请输入密码",trigger:"blur" },
-      //     { min:5,max:15,message: "长度必须在5到15个字符之间",trigger: "blur" },
-      //   ],
-      // },
+      loginFormRules: {
+        // email:[
+        //   { required:true,message:"请输入邮箱地址",trigger:"blur" },
+        //   { min:5,max:15,message: "长度必须在5到15个字符之间",trigger: "blur" },
+        // ],
+        username: [
+          {required: true, message: "请输入用户名", trigger: "blur"},
+          {min: 5, max: 10, message: '用户名不存在', trigger: 'blur'},
+          {validator: checkLoginUsername, trigger: 'blur'},
+        ],
+        password: [
+          {required: true, message: "请输入密码", trigger: "blur"},
+          {min: 5, max: 10, message: "密码错误", trigger: "blur"},
+          {validator: checkLoginPassword, trigger: 'blur'},
+        ],
+      },
       registerFormRules: {
         // mobile:[
         //   {message:"请输入手机号码",trigger:"blur"},
@@ -236,12 +255,12 @@ export default {
         // ],
         username: [
           {required: true, message: '请输入用户名', trigger: 'blur'},
-          {min: 5, max: 10, message: '长度在 5 到 10 个字符', trigger: 'blur'},
+          {min: 5, max: 10, message: '长度必须在5到15个字符之间', trigger: 'blur'},
           {validator: checkRegisterUsername, trigger: 'blur'},
         ],
         password: [
           {required: true, message: '请输入密码', trigger: 'blur'},
-          {min: 5, max: 10, message: '长度在 5 到 10 个字符', trigger: 'blur'},
+          {min: 5, max: 10, message: '长度必须在5到15个字符之间', trigger: 'blur'},
           {validator: checkRegisterPassword, trigger: 'blur'},
         ],
         ensurePassword: [
@@ -249,7 +268,7 @@ export default {
           {validator: checkRegisterEnsurePassword, trigger: 'blur'},
         ],
       },
-      formLabelWidth: '70px'
+      formLabelWidth: '80px'
     }
   },
   created() {
@@ -363,21 +382,12 @@ export default {
     //登录处理
     async handleLogin() {
       console.log("来到了handlogin")
-      // const reg = new RegExp(
-      //   "^[a-z0-9]+([._\\-]*[a-z0-9])*@([a-z0-9]+[-a-z0-9]*[a-z0-9]+.){1,63}[a-z0-9]+$"
-      // );
-      if (!this.loginForm.username) {
-        this.$message({
-          message: "用户名不能为空！ ",
-          type: "warning"
-        });
+      //校验登录表单数据
+      this.$refs.loginFormF.validate(valid => {
+        this.canLogin = valid
+      })
+      if (this.canLogin === false) {
         return;
-      } else if (!this.loginForm.password) {
-        this.$message({
-          message: "请输入密码",
-          type: "warning"
-        });
-        return; //如果验证没有通过，就直接返回，此时对话框还在
       }
       console.log("发起了登录的网络请求", this.loginForm)
       //验证通过后，向服务器发起网络请求
@@ -476,7 +486,7 @@ export default {
 
 .registerElDialog {
   width: 650px;
-  height: 620px;
+  height: 580px;
   display: flex;
   /*align-self: center;*/
   top: 10%;
