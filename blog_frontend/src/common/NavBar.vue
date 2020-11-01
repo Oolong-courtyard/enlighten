@@ -110,12 +110,12 @@
       :close-on-click-modal="false"
     >
       <!--      TODO 可在el-form添加规则 :rules="registerFormRules"-->
-      <el-form :model="registerForm" ref="registerForm"
+      <el-form :model="registerForm" ref="registerFormF" :rules="registerFormRules"
       >
         <el-form-item prop="username" label="用户名" :label-width="formLabelWidth">
           <el-input v-model="registerForm.username"
                     @blur="CheckUsernameExist"
-                    autocomplete="off">
+                    >
           </el-input>
         </el-form-item>
         <!--        TODO 手机号注册暂时关闭(数据库中手机号暂时可以为空)-->
@@ -147,13 +147,14 @@
         <el-form-item prop="password" label="密码" :label-width="formLabelWidth">
           <el-input type="password" v-model="registerForm.password"></el-input>
         </el-form-item>
-        <el-form-item prop="password" label="确认密码" :label-width="formLabelWidth">
-          <el-input type="password" v-model="registerForm.ensure_password"></el-input>
+        <el-form-item prop="ensurePassword" label="确认密码" :label-width="formLabelWidth">
+          <el-input type="password" v-model="registerForm.ensurePassword"></el-input>
         </el-form-item>
       </el-form>
+
       <div slot="footer" class="dialog-footer">
         <el-button type="primary" @click="handleRegister">注册</el-button>
-        <el-button @click="resetForm('registerForm')">重置</el-button>
+        <el-button @click="resetForm('registerFormF')">重置</el-button>
       </div>
     </el-dialog>
   </div>
@@ -166,7 +167,32 @@ import axios from 'axios';
 export default {
   name: "NavBar",
   data() {
+    const checkRegisterUsername = (rule, value, callback) => {
+      //添加正则校验,用户名只能输入字母或数字
+      let D = /^[a-z0-9]*$/
+      if (!D.test(this.registerForm.username)) {
+        callback(new Error('用户名只能包含数字或字母'))
+      }
+      //校验用户名是否存在
+      if (this.usernameExist === true) {
+        callback(new Error('用户名已存在'))
+      }
+    }
+    const checkRegisterPassword = (rule, value, callback) => {
+      //添加正则校验,密码只能输入字母和数字
+      let D = /^[a-z0-9]*$/
+      if (!D.test(this.registerForm.password)) {
+        callback(new Error('密码只能包含数字或字母'))
+      }
+    }
+    const checkRegisterEnsurePassword = (rule, value, callback) => {
+    //只需要确认与输入的密码一致即可。
+    if (this.registerForm.password !== this.registerForm.ensurePassword) {
+      callback(new Error('密码不一致'))
+    }
+  }
     return {
+      canRegister: true, //注册数据通过校验的依据
       username: null, //页面刷新后,created中将localStorage中的username赋值到这里，用于页面右上角显示
       usernameExist: false, //用户注册时判断用户名是否已经存在
       loginSuccess: false, //是否登陆成功。用于控制用户登陆成功后个人用户名的显示
@@ -184,7 +210,7 @@ export default {
         // verification: '',
         email: '',
         password: '',
-        ensure_password: '',
+        ensurePassword: '',
       }, //注册表单
 
       // loginFormRules:{
@@ -197,12 +223,29 @@ export default {
       //     { min:5,max:15,message: "长度必须在5到15个字符之间",trigger: "blur" },
       //   ],
       // },
-      // registerFormRules:{
-      //   mobile:[
-      //     {message:"请输入手机号码",trigger:"blur"},
-      //     {len:11,message: "大陆手机号长度必须为11位",trigger: "blur"},
-      //   ],
-      // },
+      registerFormRules: {
+        // mobile:[
+        //   {message:"请输入手机号码",trigger:"blur"},
+        //   {len:11,message: "大陆手机号长度必须为11位",trigger: "blur"},
+        // ],
+        username: [
+          {required: true, message: '请输入用户名', trigger: 'blur'},
+          {min: 5, max: 10, message: '长度在 5 到 10 个字符', trigger: 'blur'},
+          {validator: checkRegisterUsername, trigger: 'blur'},
+        ],
+        password: [
+          {required: true, message: '请输入密码', trigger: 'blur'},
+          {min: 5, max: 10, message: '长度在 5 到 10 个字符', trigger: 'blur'},
+          {validator: checkRegisterPassword, trigger: 'blur'},
+        ],
+        ensurePassword: [
+          {required: true, message: '请输入密码确认', trigger: 'blur'},
+          {validator: checkRegisterEnsurePassword, trigger: 'blur'},
+          // {validator: checkRegisterPassword, trigger: 'blur'},
+        ],
+
+
+      },
       formLabelWidth: '70px'
     }
   },
@@ -219,6 +262,11 @@ export default {
     }
   },
   methods: {
+    //注册用户名格式校验
+    checkRegisterUsername() {
+
+    },
+
     //注册时检查用户名是否已经注册过
     async CheckUsernameExist() {
       //验证用户名是否已经注册过
@@ -231,11 +279,7 @@ export default {
           this.usernameExist = false;
         }
       ).catch(err => {
-        if (err.response.status == 400) {
-          this.$message({
-            message: "用户名已经存在",
-            type: "warning"
-          })
+        if (err.response.status === 400) {
           //将data中的用户名已经存在修改为True
           this.usernameExist = true;
         }
@@ -252,13 +296,13 @@ export default {
     },
 
     handleCommand(command) {
-      if (command == 'c') {
+      if (command === 'c') {
         //  退出登录，清除localStorage中的用户数据
         this.loginSuccess = false
         localStorage.removeItem('username')
-      } else if (command == 'a') {
+      } else if (command === 'a') {
         //个人中心
-      } else if (command == 'b') {
+      } else if (command === 'b') {
         //购物车
       }
     },
@@ -292,7 +336,7 @@ export default {
     },
     //验证手机号
     verifyMobile() {
-      if (this.registerForm.mobile.len == 11) {
+      if (this.registerForm.mobile.len === 11) {
         this.registerVerifyFormVisible = true
       } else {
         this.$message({
@@ -354,7 +398,7 @@ export default {
           }
         ).catch(error => {
         console.log("error是", error)
-        if (error.response.status == 400) {
+        if (error.response.status === 400) {
           this.$message({
             message: "用户名或密码错误",
             type: "warning"
@@ -365,23 +409,18 @@ export default {
     //注册处理
     async handleRegister() {
       console.log("来到了handleRegister")
-      console.log("发起了登录的网络请求")
 
-      // 用户点击注册按钮的时候，再一次校验用户名是否已经存在
-      if (this.usernameExist == true) {
-        this.$message({
-          message: '用户名已经存在',
-          type: 'warning',
-        });
-        return;
-      }
-
-      //判断两次密码是否一致
-      if (this.registerForm.password != this.registerForm.ensure_password) {
-        this.$message({
-          message: "两次密码不一致,请重新输入",
-          type: "warning",
-        });
+      //TODO 核心原因，这里有时候不运行 ???
+      console.log('this.$refs.registerFormF',this.$refs.registerFormF)
+      this.$refs.registerFormF.validate(valid => {
+        console.log('this.canRegister被赋值了',this.canRegister)
+        this.canRegister = valid
+        console.log('this.canRegister被赋值了',this.canRegister)
+      })
+      //所有校验通过后，才能发起注册的网络请求(注册过程中维护一个共同变量,只要任一校验没有通过,该变量都为false)
+      if (this.canRegister === false) {
+        console.log('表单校验', this.canRegister)
+        //TODO 特别注意 ! 和  ！= 的区别 (!是相对而言的,你是true ！就是false  你是fals ！就是true)
         return;
       }
       //是否开启注册功能
@@ -393,7 +432,7 @@ export default {
       //先将输入的验证码 设置到registerForm中，并传入到服务器对比
       // this.registerForm.verification = this.$refs.verifyCode.value
 
-
+      console.log('即将发起网络请求,此时的this.canRegister',this.canRegister)
       //验证通过后，向服务器发起网络请求
       this.$http.post("/register", this.registerForm).then(
         res => {
