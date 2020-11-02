@@ -4,17 +4,40 @@
 
     <!--第二层容器,在该层容器中展示所有效果-->
     <div class="secondDiv">
-      <!--菜单栏-->
-      <nav-bar></nav-bar>
-      <!--标题-->
-      <div style="height: 70px"></div>
-      <div>
-        {{ res_detail_data.article_name }}
-      </div>
-      <!--内容div-->
-      <div class="contentDiv">
-        {{ res_detail_data.content }}
-      </div>
+
+
+      <ul v-infinite-scroll="load"
+          :infinite-scroll-immediate="false"
+          :infinite-scroll-distance="300"
+          style="overflow: hidden">
+
+        <!--菜单栏-->
+        <nav-bar></nav-bar>
+        <!--第一个div只是为了占位，达到样式上的效果-->
+        <div style="height: 100px"></div>
+        <!--    作者相关-->
+        <div class="authorRelated" style="height: 100px;background-color:darkgrey">
+          <div class="author">
+            {{res_detail_data.author}}
+          </div>
+          <button class="followAuthor" >
+            +关注
+          </button>
+
+        </div>
+        <!--标题-->
+        <div style="height: 70px;background-color: brown;line-height:70px;">
+          <h1>{{ res_detail_data.article_name }}</h1>
+        </div>
+        <!--内容div-->
+        <div class="contentDiv">
+          {{ res_detail_data.content }}
+        </div>
+
+        <!--相关文章-->
+        <div></div>
+      </ul>
+
 
     </div>
 
@@ -50,6 +73,14 @@ export default {
     this.getArticleDetail(this.$route.query.id)
   },
   methods: {
+
+    load() {
+      // 动态加载列表数据
+      console.log("触发了加载方法")
+      this.loading = true
+
+    },
+
     getArticleDetail(id) {
       //获取文章详情
       getArticleDetail(id).then(res => {
@@ -62,6 +93,15 @@ export default {
 </script>
 
 <style scoped>
+.followAuthor:hover{
+  /*cursor: pointer;*/
+}
+.author:hover{
+  /*cursor: pointer;*/
+}
+.authorRelated:hover{
+  display: flex;
+}
 .outermostDiv {
   background-color: #EFEFEF;
   width: 100%;
