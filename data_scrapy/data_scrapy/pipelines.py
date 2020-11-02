@@ -7,7 +7,17 @@
 # useful for handling different item types with a single interface
 from itemadapter import ItemAdapter
 
+import scrapy
+
 
 class DataScrapyPipeline:
+    name = 'juejin_spider'
+
+    article_id = scrapy.Field()
+    article_name = scrapy.Field()
+    author = scrapy.Field()
+    category = scrapy.Field()
+
     def process_item(self, item, spider):
+        #TODO 改写处理爬虫item的方法
         return item
