@@ -470,7 +470,7 @@ export default {
 
 <style>
 .tabBarDiv {
-  position: absolute;
+  position: fixed;
   width: 800px;
 }
 
