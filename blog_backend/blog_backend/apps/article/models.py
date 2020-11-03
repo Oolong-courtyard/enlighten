@@ -1,8 +1,9 @@
 """
 文章模型类
 """
-
+from django.contrib.postgres.fields import ArrayField
 from django.db import models
+
 from blog_backend.utils.models import BaseModel
 
 
@@ -29,6 +30,8 @@ class ArticleList(BaseModel):
     # image = models.ImageField(upload_to='article_list', verbose_name='文章图片',
     #                           null=True, max_length=500)
     image = models.TextField(verbose_name='文章图片', null=True, max_length=500)
+    origin = models.CharField(null=True, max_length=100, verbose_name="爬取于")
+    scraped_date_time = models.DateTimeField(auto_now=True, verbose_name="爬取时间")
 
     class Meta:
         db_table = 'article_list'
@@ -58,6 +61,7 @@ class ArticleDetail(BaseModel):
     author = models.CharField(max_length=50,
                               null=False,
                               verbose_name="作者")
+    tags = ArrayField(base_field=models.CharField(max_length=50), null=True, blank=True, verbose_name="标签")
     content = models.TextField(verbose_name="文章详情内容")
     # image = models.ImageField(upload_to='article_detail', verbose_name='文章图片', null=True)
     image_url = models.TextField(max_length=500,
