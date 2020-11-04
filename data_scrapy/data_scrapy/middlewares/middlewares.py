@@ -31,7 +31,7 @@ class DataScrapySpiderMiddleware:
     def process_spider_output(self, response, result, spider):
         # Called with the results returned from the Spider, after
         # it has processed the response.
-
+        # print('先来到了process_spider_output,此时的result为', result)
         # Must return an iterable of Request, or item objects.
         for i in result:
             yield i
