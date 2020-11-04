@@ -4,6 +4,8 @@
 
     <!--第二层容器,在该层容器中展示所有效果-->
     <div class="secondDiv">
+      <!--一键置顶-->
+      <el-backtop></el-backtop>
       <!--导航栏-->
       <nav-bar></nav-bar>
       <!--内容div-->
@@ -33,7 +35,9 @@
               </div>
 
               <div style="width: 30%">
-                <img :src="res_item.image" alt="" width="40" height="40">
+<!--                var num = Math.floor(Math.random() * 10 + 1);-->
+<!--                <img :src="res_item.images" alt="" width="40" height="40">-->
+                <img src="../images/1.jpg" alt="" width="50" height="50">
               </div>
             </div>
 
