@@ -53,6 +53,7 @@ class ArticleDetail(BaseModel):
                                     verbose_name="文章标题")
     summary = models.CharField(max_length=200,
                                null=True,
+                               blank=True,
                                verbose_name="文章摘要")
     category = models.CharField(max_length=100,
                                 null=False,
@@ -62,7 +63,7 @@ class ArticleDetail(BaseModel):
                               null=False,
                               verbose_name="作者")
     tags = ArrayField(base_field=models.CharField(max_length=50), null=True, blank=True, verbose_name="标签")
-    content = models.TextField(verbose_name="文章详情内容")
+    content = models.TextField(verbose_name="文章详情内容", null=True,blank=True)
     # image = models.ImageField(upload_to='article_detail', verbose_name='文章图片', null=True)
     image_url = models.TextField(max_length=500,
                                  null=True,
