@@ -4,7 +4,8 @@
 
     <!--第二层容器,在该层容器中展示所有效果-->
     <div class="secondDiv">
-
+      <!--一键置顶-->
+      <el-backtop></el-backtop>
 
       <ul v-infinite-scroll="load"
           :infinite-scroll-immediate="false"
@@ -16,31 +17,29 @@
         <!--第一个div只是为了占位，达到样式上的效果-->
         <div style="height: 100px"></div>
         <!--    作者相关-->
-        <div class="authorRelated" style="height: 100px;background-color:darkgrey">
-          <div class="author">
-            {{res_detail_data.author}}
+        <div class="authorRelated" style="height: 50px;background-color:white">
+          <div class="author" style="font-weight: bold;margin-left: 10px">
+            {{ res_detail_data.author }}
           </div>
-          <button class="followAuthor" >
-            +关注
-          </button>
-
+          <div style="font-size: 8px;margin-left: 10px">
+            {{ res_detail_data.updated_time }}
+          </div>
         </div>
         <!--标题-->
-        <div style="height: 70px;background-color: brown;line-height:70px;">
+        <div style="height: 70px;line-height:70px;">
           <h1>{{ res_detail_data.article_name }}</h1>
         </div>
         <!--内容div-->
-        <div class="contentDiv">
-          {{ res_detail_data.content }}
+        <div class="contentDiv" v-html="res_detail_data.content">
+          <!--          TODO 内容中 复制代码格式不正确,后续通过正则表达式去除-->
+          <!--          {{ res_detail_data.content }}-->
         </div>
 
         <!--相关文章-->
         <div></div>
       </ul>
 
-
     </div>
-
 
   </div>
 
@@ -93,15 +92,17 @@ export default {
 </script>
 
 <style scoped>
-.followAuthor:hover{
+.followAuthor:hover {
   /*cursor: pointer;*/
 }
-.author:hover{
-  /*cursor: pointer;*/
+
+.author:hover {
+  cursor: pointer;
 }
-.authorRelated:hover{
-  display: flex;
+
+.authorRelated {
 }
+
 .outermostDiv {
   background-color: #EFEFEF;
   width: 100%;
@@ -117,8 +118,7 @@ export default {
 }
 
 .contentDiv {
-  /*cursor 鼠标移动上去变小手*/
-  cursor: pointer;
+  margin-top: 20px;
 }
 
 .item-list {
