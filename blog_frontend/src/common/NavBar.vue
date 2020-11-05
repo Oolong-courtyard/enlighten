@@ -19,7 +19,8 @@
             style="font-size: 20px;transform: rotate(-10deg);border-radius: 15px;"
             index="">enlighten
           </el-menu-item>
-          <el-menu-item index="index">首页</el-menu-item>
+          <el-menu-item index="index" style="font-size: 15px">首页</el-menu-item>
+          <!--          TODO tab首页下加入子标题进行分类(后端，前端，ios，android...)-->
           <el-menu-item index="project" disabled>项目</el-menu-item>
           <el-menu-item index="3" disabled>历程</el-menu-item>
         </div>
@@ -54,6 +55,7 @@
       title="账密登录"
       :visible.sync="loginDialogFormVisible"
       :close-on-click-modal="false"
+      :modal-append-to-body="false"
     >
       <!--自定义title属性-->
       <template slot="title">
@@ -108,6 +110,7 @@
       title="注册"
       :visible.sync="registerDialogFormVisible"
       :close-on-click-modal="false"
+      :modal-append-to-body="false"
     >
       <!--      TODO 可在el-form添加规则 :rules="registerFormRules"-->
       <el-form :model="registerForm" ref="registerFormF"

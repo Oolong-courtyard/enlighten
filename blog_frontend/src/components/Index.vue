@@ -35,9 +35,8 @@
               </div>
 
               <div style="width: 30%">
-<!--                var num = Math.floor(Math.random() * 10 + 1);-->
-<!--                <img :src="res_item.images" alt="" width="40" height="40">-->
-                <img src="../images/1.jpg" alt="" width="50" height="50">
+                <!--                <img :src="res_item.images" alt="" width="40" height="40">-->
+                <img src="../images/2.jpg" alt="" width="50" height="50">
               </div>
             </div>
 
@@ -66,7 +65,7 @@ export default {
   components: {NavBar},
   data() {
     return {
-      page :1, //初始page为1
+      page: 1, //初始page为1
       current_article_index: 0, //每次下拉加载文章列表值增加10，初始值为0
       loading: false, //下拉加载
       res_list_data_len: 0, //返回文章列表的长度
@@ -85,6 +84,7 @@ export default {
   },
   methods: {
     load() {
+      //TODO 需要nav-bar组件将分类选项传递过来，作为url参数请求服务器获取不同分类的文章
       // 动态加载列表数据
       console.log("触发了加载方法")
       this.loading = true
@@ -95,13 +95,13 @@ export default {
     getArticleList() {
       //获取文章列表
       getArticleList(this.page).then(
-        res =>{
-          console.log("来到了getArticleList,获取到的res的数据为",res.data.results)
+        res => {
+          console.log("来到了getArticleList,获取到的res的数据为", res.data.results)
           this.res_list_data = this.res_list_data.concat(res.data.results)
-          console.log("此时的res_list_data为",this.res_list_data)
+          console.log("此时的res_list_data为", this.res_list_data)
           // 每调用一次就把page+1
           this.page += 1
-          console.log("此时的page为",this.page)
+          console.log("此时的page为", this.page)
         }
       )
 
