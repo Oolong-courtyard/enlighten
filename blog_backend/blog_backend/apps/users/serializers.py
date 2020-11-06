@@ -50,16 +50,16 @@ class CreateUserSerializer(serializers.ModelSerializer):
             raise serializers.ValidationError("用户名已存在")
         return value
 
-    def validate_mobile(self, value):
-        """验证手机号"""
-        # 验证手机号格式
-        if not re.match(r'^1[3-9]\d{9}$', value):
-            raise serializers.ValidationError("手机号格式错误")
-
-        # 验证手机号是否已经存在
-        count = UserProfile.objects.filter(mobile=value).count()
-        if count > 0:
-            raise serializers.ValidationError("手机号已存在")
+    # def validate_mobile(self, value):
+    #     """验证手机号"""
+    #     # 验证手机号格式
+    #     if not re.match(r'^1[3-9]\d{9}$', value):
+    #         raise serializers.ValidationError("手机号格式错误")
+    #
+    #     # 验证手机号是否已经存在
+    #     count = UserProfile.objects.filter(mobile=value).count()
+    #     if count > 0:
+    #         raise serializers.ValidationError("手机号已存在")
 
     def validate(self, attrs):
         """判断两次密码是否一致"""
