@@ -1,58 +1,174 @@
 <template>
   <!--  根div-->
-  <div class="outermostDiv">
+  <div class="outOutermostDiv">
+    <!--导航栏-->
+    <div style="position: fixed;
+                height:60px;width: 100%;
+                background-color: white"
+    >
+      <div style="margin-left: 450px">
+        <nav-bar></nav-bar>
+      </div>
+    </div>
 
-    <!--第二层容器,在该层容器中展示所有效果-->
-    <div class="secondDiv">
-      <!--一键置顶-->
-      <el-backtop></el-backtop>
-      <!--导航栏-->
-      <nav-bar></nav-bar>
-      <!--内容div-->
-      <!--第一个div只是为了占位，达到样式上的效果-->
-      <div style="height: 50px"></div>
-      <div class="contentDiv">
-        <!--        load方法使用，如何下拉请求请数据并渲染，以及详情页的爬虫和详情页支持markdown。-->
-        <ul v-infinite-scroll="load"
-            :infinite-scroll-immediate="false"
-            :infinite-scroll-distance="300"
-            style="overflow: hidden">
-          <li v-for="(res_item,index) in res_list_data"
-              style="list-style: none"
-              @click="getArticleDetail(res_item.article_id)"
-          >
-            <!--display:flex 让div内子元素水平排列,而不是默认的垂直排列-->
-            <div class="item-list">
-              <div style="width: 70%">
-                <div style="text-align: left;font-size: 10px">
-                  <!--更新/发布时间后续处理为几小时或者几天前-->
-                  {{ res_item.author }} · {{ res_item.updated_time }} ·
-                  {{ res_item.summary }}
+    <!--为首页子菜单，内容为(推荐，后端，前端，等等)仅当首页被选中时显示-->
+    <div class="submenuMainDiv">
+      <div class="indexSubmenu indexSubmenuSelected"
+           style="margin-left: 20px">推荐
+      </div>
+      <div class="indexSubmenu indexSubmenuSelected">前端</div>
+      <div class="indexSubmenu indexSubmenuSelected">后端</div>
+      <div class="indexSubmenu indexSubmenuSelected">android</div>
+      <div class="indexSubmenu indexSubmenuSelected">ios</div>
+    </div>
+
+    <div class="outermostDiv">
+      <!--第3层容器,在该层容器中展示所有效果-->
+      <div class="secondDiv">
+        <!--一键置顶-->
+        <el-backtop></el-backtop>
+
+        <!--内容div-->
+        <!--第一个div只是为了占位，达到样式上的效果-->
+        <div style="height: 50px"></div>
+        <div style="height: 55px;background-color: #EFEFEF"></div>
+
+        <!--只是为了占位，达到样式上的效果-->
+        <!--      <div style="height: 50px"></div>-->
+
+        <div class="contentDiv">
+          <!--        load方法使用，如何下拉请求请数据并渲染，以及详情页的爬虫和详情页支持markdown。-->
+          <ul v-infinite-scroll=""
+              :infinite-scroll-immediate="false"
+              :infinite-scroll-distance="300"
+              style="overflow: hidden;">
+            <li v-for="(res_item,index) in res_list_data"
+                style="list-style: none"
+            >
+              <!--display:flex 让div内子元素水平排列,而不是默认的垂直排列-->
+              <div class="item-list">
+                <div style="width: 70%">
+                  <div style="text-align: left;font-size: 10px">
+                    <!--更新/发布时间后续处理为几小时或者几天前-->
+                    {{ res_item.author }} · {{ res_item.updated_time }} ·
+                    {{ res_item.summary }}
+                  </div>
+                  <div class="article-name article-name2"
+                       @click="getArticleDetail(res_item.article_id)"
+                  >
+                    {{ res_item.article_name }}
+                  </div>
                 </div>
-                <div class="article-name">
-                  {{ res_item.article_name }}
+
+                <div style="width: 30%">
+                  <!--                <img :src="res_item.images" alt="" width="40" height="40">-->
+                  <img src="../images/2.jpg" alt="" width="50" height="50">
                 </div>
               </div>
+              <!--添加分割线-->
+              <hr style="height:1px;
+            border:none;
+            border-top:1px solid #C8C8C8;
+">
+            </li>
+            <div @click="this.getArticleList"
+                 class="readMore"
+                 style="
+               height: 40px;
+               line-height:40px;
+               text-align: center;
+               border-radius: 20px;
+               color: white;
+               margin-top: 30px;
+               margin-left: 50px;
+               background-color: #A5A5A5 ;
 
-              <div style="width: 30%">
-                <!--                <img :src="res_item.images" alt="" width="40" height="40">-->
-                <img src="../images/2.jpg" alt="" width="50" height="50">
+               width: 600px;
+">
+              阅读更多
+            </div>
+            <div style="margin-top: 50px;
+              text-align: center;
+              line-height: 20px;
+">
+              <div
+                style="color: #969696;height: 20px;display: flex;text-align: center;line-height: 20px">
+                <div style="margin-left: 250px" class="bottomContact">关于启发</div>
+                <div style="width: 10px">·</div>
+                <div class="bottomContact">联系我们</div>
+                <div style="width: 10px">·</div>
+                <div class="bottomContact">加入我们</div>
+              </div>
+              <div
+                style="margin-top: 5px;margin-bottom: 30px;height:20px;color: #C8C8C8;font-size: 15px">
+                ©2020
+                启发科技/enlighten/豫ICP备2020030059号-1
               </div>
             </div>
+          </ul>
 
-            <!--添加分割线-->
-            <hr style="height:1px;border:none;border-top:1px solid #555555;">
-          </li>
+          <!--下拉加载-->
+          <p v-if="loading">加载中...</p>
+          <p v-if="noMore">没有更多了</p>
+        </div>
 
-        </ul>
+      </div>
 
-        <!--下拉加载-->
-        <p v-if="loading">加载中...</p>
-        <p v-if="noMore">没有更多了</p>
+      <!--列表页右侧展示内容-->
+      <div>
+        <!--第一个div只是为了占位，达到样式上的效果-->
+        <div style="height: 50px"></div>
+        <div style="height: 55px;background-color: #EFEFEF"></div>
+        <!--下载启发 手机app-->
+        <div class="downloadApp"
+             style="width: 280px;height: 300px;background-color: white;margin-left: 20px">
+          <img style="height: 230px;width:280px" src="../images/wujie.png"
+               alt="">
+          <div style="display: flex">
+            <img style="height: 70px;width: 70px"
+                 src="../images/downloadApp.png" alt="">
+            <div style="padding: 10px">
+              <div style="color: #333333">下载启发手机app</div>
+              <div style="margin-top: 5px;font-size: 13px;color: #909090">
+                这里有你想要的所有技术知识
+              </div>
+            </div>
+          </div>
+
+        </div>
+        <div class="justForPlaceholder"
+             style="height: 15px;background-color: #EFEFEF"></div>
+        <!--作者推荐-->
+        <div class="recommendAuthor"
+             style="width: 280px;height: 300px;background-color: white;margin-left: 20px">
+          <div style="display: flex;justify-content: space-between">
+            <div style="color: #969696;padding: 10px;cursor: pointer">推荐作者</div>
+            <div
+              style="color: #969696;padding: 10px;cursor:pointer;transform: rotate(360deg)">
+              换一批
+            </div>
+          </div>
+          <div>
+            <ul>
+              <li style="text-align: center;height:50px;list-style: none">作者1
+              </li>
+              <li style="text-align: center;height:50px;list-style: none">作者2
+              </li>
+              <li style="text-align: center;height:50px;list-style: none">作者3
+              </li>
+              <li style="text-align: center;height:50px;list-style: none">作者4
+              </li>
+            </ul>
+          </div>
+          <div style="cursor: pointer;margin-top: 30px;text-align: center">查看全部
+            >
+          </div>
+        </div>
       </div>
 
     </div>
   </div>
+
 </template>
 
 <script>
@@ -73,14 +189,20 @@ export default {
       res_detail_data: {}, //请求服务器获取的文章详情
     }
   },
+
   created() {
     //获取文章列表页信息,如果开启，
-    // this.getArticleList()
+    this.getArticleList()
   },
   computed: {
     noMore() {
       return this.res_list_data_len >= 20
     },
+    windowWidth() {
+      //获取当前屏幕的宽度
+      console.log('屏幕的宽度啊', document.documentElement.scrollWidth)
+      return (document.documentElement.scrollWidth) + 'px';
+    }
   },
   methods: {
     load() {
@@ -133,17 +255,46 @@ export default {
 </script>
 
 <style scoped>
-.outermostDiv {
-  background-color: #EFEFEF;
+.submenuMainDiv {
+  box-shadow: 1px 1px 1px #C8C8C8;
+  line-height: 30px;
+  text-align: center;
+  height: 30px;
+  position: fixed;
+  width: 100%;
+  margin-top: 60px;
+  margin-left: 450px;
+  display: flex;
+  background-color: white;
+}
+
+.indexSubmenu {
+  /*  首页子菜单style*/
+  width: 100px;
+  color: black;
+  cursor: pointer;
+}
+
+.indexSubmenuSelected:hover {
+  /* 首页子菜单被选中时的style */
+  color: #46698C;
+
+}
+
+.outOutermostDiv {
+  background-color: white;
   width: 100%;
   height: 100%;
 }
 
+.outermostDiv {
+  background-color: #EFEFEF;
+  display: flex;
+}
+
 .secondDiv {
-  width: 800px;
-  left: 0;
-  right: 0;
-  margin: 0 auto;
+  width: 700px;
+  margin-left: 450px;
   background-color: white;
 }
 
@@ -153,7 +304,8 @@ export default {
 
 .contentDiv {
   /*cursor 鼠标移动上去变小手*/
-  cursor: pointer;
+  /*cursor: pointer;*/
+  margin-top: 50px;
 }
 
 .item-list {
@@ -165,15 +317,32 @@ export default {
 }
 
 .item-list:hover {
-
-  background-color: #EFEFEF;
+  /*background-color: #EFEFEF;*/
 }
 
 .article-name {
+  cursor: pointer;
   text-align: center;
-  font-size: 15px;
+  font-size: 18px;
   font-weight: bold;
-  margin-top: 10px
+  margin-top: 10px;
+  color: #333333;
 }
 
+.article-name2:hover {
+  text-decoration: underline;
+}
+
+.readMore {
+  cursor: pointer;
+}
+
+.bottomContact:hover {
+  cursor: pointer;
+  text-decoration: underline;
+  color: #333333;
+}
+
+
 </style>
+
