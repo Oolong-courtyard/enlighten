@@ -24,9 +24,25 @@
           <el-menu-item index="project" disabled>项目</el-menu-item>
           <el-menu-item index="3" disabled>历程</el-menu-item>
         </div>
+        <!--搜索框-->
+        <div style="margin-left: 100px;line-height: 50px;text-align: center">
+          <el-input style="font-size: 15px;
+                          padding: 5px;
+                          height: 30px;
+                          outline: none;
+                          "
+                    placeholder="搜你所想"
+                    v-model="searchInput"
+                    suffix-icon="el-icon-search"
+                    @keyup.enter.native="searchFocus"
+          >
+          </el-input>
+        </div>
         <!--右侧菜单-->
         <div class="navLoginRegister"
              :style="{'display':this.loginSuccess?'none':'flex'}">
+
+
           <el-menu-item @click="loginDialogFormVisible = true">登录</el-menu-item>
           <el-menu-item @click="registerDialogFormVisible = true">注册
           </el-menu-item>
@@ -213,6 +229,7 @@ export default {
       } else callback()
     }
     return {
+      searchInput: '', //搜索输入
       canLogin: true, //登录数据通过校验的依据
       canRegister: true, //注册数据通过校验的依据
       username: null, //页面刷新后,created中将localStorage中的username赋值到这里，用于页面右上角显示
@@ -286,6 +303,11 @@ export default {
     }
   },
   methods: {
+    searchFocus() {
+      //搜索框样式改变
+      console.log("点击了输入框")
+    },
+
     //注册用户名格式校验
     checkRegisterUsername() {
 
@@ -335,7 +357,7 @@ export default {
     qqLogin() {
       console.log("qq登录")
       //向QQ服务器发起网络请求
-      window.open("https://graph.qq.com/oauth2.0/authorize?response_type=code&client_id=101907981&redirect_uri=http://www.enlighten.top/index&state=enlighten&scope=get_user_info,list_album,upload_pic,do_like",
+      window.open("https://graph.qq.com/oauth2.0/authorize?response_type=code&client_id=101911861&redirect_uri=http://www.enlighten.top/index&state=enlighten&scope=get_user_info,list_album,upload_pic,do_like",
         "width=450,height=320,menubar=0,scrollbars=1,resizable=1,status=1,titlebar=0,toolbar=0,location=1"
       );
       this.$message(
@@ -474,7 +496,7 @@ export default {
 <style>
 .tabBarDiv {
   position: fixed;
-  width: 800px;
+  width: 1000px;
 }
 
 .loginElDialog {
@@ -496,6 +518,7 @@ export default {
   left: 0;
   right: 0;
   margin: 0 auto;
+  font-weight: bold;
 }
 
 .getVerifyCode:hover {
@@ -540,10 +563,10 @@ export default {
 }
 
 .navLoginRegister {
-  margin-left: 260px
+  margin-left: 80px
 }
 
 .loginSuccessUser {
-  margin-left: 260px;
+  margin-left: 110px;
 }
 </style>
