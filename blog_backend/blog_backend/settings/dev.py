@@ -43,6 +43,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'corsheaders',
+    'django_filters',
     'rest_framework',
     'users.apps.UsersConfig',
     'article.apps.ArticleConfig',
@@ -66,8 +67,10 @@ REST_FRAMEWORK = {
     # 异常处理
     'EXCEPTION_HANDLER': 'blog_backend.utils.exceptions.exception_handler',
     # 指定分页配置
-    'DEFAULT_PAGINATION_CLASS':  'rest_framework.pagination.PageNumberPagination',
-    'PAGE_SIZE': 20  # 每页数目
+    'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
+    'PAGE_SIZE': 20,  # 每页数目
+    # 添加过滤配置选项,增加过滤功能
+    'DEFAULT_FILTER_BACKENDS': ('django_filters.rest_framework.DjangoFilterBackend',)
 }
 
 ROOT_URLCONF = 'blog_backend.urls'
@@ -271,3 +274,5 @@ CORS_ALLOW_HEADERS = (
     'x-requested-with',
 )
 # ================================================================
+APP_ID = '101912333'
+APP_SECRET ='2d33b582c3b37cee6f8e704bd0834ce9'

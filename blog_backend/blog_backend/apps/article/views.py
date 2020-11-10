@@ -3,10 +3,13 @@
 """
 
 from django_redis import get_redis_connection
+from rest_framework.filters import SearchFilter
 
 from rest_framework.viewsets import ModelViewSet
 from rest_framework.decorators import action
 from rest_framework.response import Response
+from rest_framework import status
+from rest_framework.generics import GenericAPIView, ListAPIView
 
 from .models import ArticleDetail, ArticleList
 from .serializers import (
@@ -14,6 +17,7 @@ from .serializers import (
     ArticleListSerializer,
     JueJinArticleListSerializer,
     JueJinArticleDetailSerializer,
+    ArticleCategorySerializer,
 )
 
 """
@@ -36,6 +40,28 @@ class ArticleDetailViewSets(ModelViewSet):
 
     queryset = ArticleDetail.objects.all()
     serializer_class = ArticleDetailSerializer
+
+
+class ArticleSearch(GenericAPIView):
+    """文章搜索"""
+
+    def get(self, request):
+        """文章搜索"""
+        request_data = request.query_params
+        # TODO 以下需要修改，新增搜索的序列化器
+        serializer = self.get_serializer(data=request.data, many=True)
+        serializer.is_valid(raise_exception=True)
+        # 反序列化-数据保存(create)
+        serializer.save()
+        # 返回响应: status 201,新建文章列表信息成功
+        return Response(serializer.data, status=status.HTTP_201_CREATED)
+
+
+class ArticleCategory(ListAPIView):
+    """文章分类"""
+    queryset = ArticleList.objects.all()
+    serializer_class = ArticleCategorySerializer
+    filter_fields = ('category', 'author')
 
 
 # =======================================================

@@ -24,6 +24,14 @@ class ArticleDetailSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 
+class ArticleCategorySerializer(serializers.ModelSerializer):
+    """文章分类序列化"""
+
+    class Meta:
+        model = ArticleList
+        fields = '__all__'
+
+
 # =======================================================
 # crawler专用
 # =======================================================
@@ -36,6 +44,7 @@ class JueJinArticleListSerializer(serializers.ModelSerializer):
     class Meta:
         model = ArticleList
         fields = '__all__'
+
 
 class JueJinArticleDetailSerializer(serializers.Serializer):
     """掘金文章详情序列化器"""

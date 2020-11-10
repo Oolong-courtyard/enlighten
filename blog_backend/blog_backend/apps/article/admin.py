@@ -25,13 +25,15 @@ class ArticleListAdmin(admin.ModelAdmin):
     # 指定允许被修改的字段
     fields = ['summary', 'category', 'image']
     # 每页展示的行数
-    list_per_page = 2
+    list_per_page = 10
     # 决定列表页展示的字段有哪些
     list_display = ['article_id', 'article_name', 'pub_date']
     # 依照以下字段进行过滤
-    list_filter = ['category', 'author']
+    # list_filter = ['category', 'author']
+    list_filter = ['category']
     # 在admin站点当前页面最上面添加一个搜索按钮，可以按照指定model字段进行搜索，支持模糊查询
-    search_fields = ['article_name', 'author']
+    # search_fields = ['article_name', 'author']
+    search_fields = ['article_name']
 
 # 使用管理类方式一：注册参数
 # admin.site.register(ArticleDetail, ArticleDetailAdmin)

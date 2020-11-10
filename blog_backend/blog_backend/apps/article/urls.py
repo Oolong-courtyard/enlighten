@@ -14,6 +14,8 @@ from django.conf.urls import url
 urlpatterns = [
     url(r'juejin-article-list', views.JueJinArticleList.as_view()),
     url(r'juejin-article-detail', views.JueJinArticleDetail.as_view()),
+    url(r'^search$', views.ArticleSearch.as_view()),  # 搜索
+    url(r'^category$', views.ArticleCategory.as_view()),  # 分类
 ]
 
 router = DefaultRouter()
