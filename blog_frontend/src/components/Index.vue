@@ -13,13 +13,16 @@
 
     <!--为首页子菜单，内容为(推荐，后端，前端，等等)仅当首页被选中时显示-->
     <div class="submenuMainDiv">
-      <div class="indexSubmenu indexSubmenuSelected"
-           style="margin-left: 20px">推荐
-      </div>
-      <div class="indexSubmenu indexSubmenuSelected">前端</div>
-      <div class="indexSubmenu indexSubmenuSelected">后端</div>
-      <div class="indexSubmenu indexSubmenuSelected">android</div>
-      <div class="indexSubmenu indexSubmenuSelected">ios</div>
+      <ul style="display: flex">
+        <li v-for="(classification,index) in this.class1"
+            style="list-style: none"
+            ref="class1"
+        >
+          <div @click="getClassData(classification)"
+               class="indexSubmenu indexSubmenuSelected">{{ classification }}
+          </div>
+        </li>
+      </ul>
     </div>
 
     <div class="outermostDiv">
@@ -51,7 +54,7 @@
                   <div style="text-align: left;font-size: 10px">
                     <!--更新/发布时间后续处理为几小时或者几天前-->
                     {{ res_item.author }} · {{ res_item.updated_time }} ·
-                    {{ res_item.summary }}
+                    {{ res_item.category }}
                   </div>
                   <div class="article-name article-name2"
                        @click="getArticleDetail(res_item.article_id)"
@@ -142,21 +145,18 @@
         <div class="recommendAuthor"
              style="width: 280px;height: 300px;background-color: white;margin-left: 20px">
           <div style="display: flex;justify-content: space-between">
-            <div style="color: #969696;padding: 10px;cursor: pointer">推荐作者</div>
-            <div
-              style="color: #969696;padding: 10px;cursor:pointer;transform: rotate(360deg)">
+            <div style="color: #969696;padding: 10px;">推荐作者</div>
+            <div @click="changeRecommendAuthor"
+                 style="color: #969696;padding: 10px;cursor:pointer;transform: rotate(360deg)">
               换一批
             </div>
           </div>
           <div>
             <ul>
-              <li style="text-align: center;height:50px;list-style: none">作者1
-              </li>
-              <li style="text-align: center;height:50px;list-style: none">作者2
-              </li>
-              <li style="text-align: center;height:50px;list-style: none">作者3
-              </li>
-              <li style="text-align: center;height:50px;list-style: none">作者4
+              <li v-for="(recommendAuthor,index) in this.recommendAuthor"
+                  style="list-style: none;text-align: center;height: 50px"
+              >
+                {{ recommendAuthor }}
               </li>
             </ul>
           </div>
@@ -164,6 +164,7 @@
             >
           </div>
         </div>
+
       </div>
 
     </div>
@@ -173,7 +174,7 @@
 
 <script>
 
-import {getArticleList} from 'network/home'
+import {getArticleList, getClassArticleList} from 'network/home'
 import NavBar from "../common/NavBar";
 
 export default {
@@ -181,6 +182,8 @@ export default {
   components: {NavBar},
   data() {
     return {
+      recommendAuthor: ['作者1', '作者2', '作者3', '作者4'],//推荐作者
+      class1: ['推荐', '后端', '前端', 'ios', 'android'], //首页文章列表一级分类
       page: 1, //初始page为1
       current_article_index: 0, //每次下拉加载文章列表值增加10，初始值为0
       loading: false, //下拉加载
@@ -205,6 +208,26 @@ export default {
     }
   },
   methods: {
+    changeRecommendAuthor() {
+      //换一批推荐作者
+
+    },
+    getClassData(classification) {
+      //获取分类数据
+      this.$http.get('category', {
+        params: {
+          category: classification,
+          page: this.page
+        }
+      }).then(
+        res => {
+          console.log("请求的分类数据为", res.data)
+          this.res_list_data = res.data.results
+          //切换分类，调用一键置顶
+          //TODO 如何主动调用一键置顶
+        }
+      )
+    },
     load() {
       //TODO 需要nav-bar组件将分类选项传递过来，作为url参数请求服务器获取不同分类的文章
       // 动态加载列表数据
@@ -299,7 +322,7 @@ export default {
 }
 
 .tabBarDiv {
-
+  border: none;
 }
 
 .contentDiv {
@@ -342,7 +365,6 @@ export default {
   text-decoration: underline;
   color: #333333;
 }
-
 
 </style>
 
