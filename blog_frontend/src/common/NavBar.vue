@@ -25,7 +25,8 @@
           <el-menu-item index="3" disabled>历程</el-menu-item>
         </div>
         <!--搜索框-->
-        <div style="display: flex;margin-left: 100px;line-height: 50px;text-align: center">
+        <div
+          style="display: flex;margin-left: 100px;line-height: 50px;text-align: center">
           <!--          <el-input style="font-size: 15px;-->
           <!--                          padding: 5px;-->
           <!--                          height: 30px;-->
@@ -389,10 +390,17 @@ export default {
     //qq登录
     qqLogin() {
       console.log("qq登录")
+      this.$http.get('authorization').then(
+        res => {
+          console.log("请求获取到的qq登录的url为", res);
+          console.log("res.data.login_url为", res.data.login_url)
+          window.open(res.data.login_url)
+        }
+      )
       //向QQ服务器发起网络请求
-      window.open("https://graph.qq.com/oauth2.0/authorize?response_type=code&client_id=101911861&redirect_uri=http://www.enlighten.top/index&state=enlighten&scope=get_user_info,list_album,upload_pic,do_like",
-        "width=450,height=320,menubar=0,scrollbars=1,resizable=1,status=1,titlebar=0,toolbar=0,location=1"
-      );
+      // window.open("https://graph.qq.com/oauth2.0/authorize?response_type=code&client_id=101911861&redirect_uri=http://www.enlighten.top/index&state=enlighten&scope=get_user_info,list_album,upload_pic,do_like",
+      //   "width=450,height=320,menubar=0,scrollbars=1,resizable=1,status=1,titlebar=0,toolbar=0,location=1"
+      // );
       this.$message(
         {
           message: "后续功能还在开发中",

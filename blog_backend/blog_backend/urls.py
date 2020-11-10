@@ -22,6 +22,7 @@ urlpatterns = [
     url('admin/', admin.site.urls),
     url(r'', include('users.urls')),
     url(r'', include('article.urls')),
+    url(r'', include('oauth.urls')),
 ]
 
 urlpatterns += static.static(dev.MEDIA_URL, document_root=dev.MEDIA_ROOT)
