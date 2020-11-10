@@ -9,8 +9,8 @@
       active-text-color="#ffd04b"
       router
     >
-      <!--将导航菜单分为左右两侧-->
-      <div style="display: flex">
+      <!--将导航菜单分为左右两侧;outline:none去除div的黑边框-->
+      <div style="display: flex;border: none;outline: none">
         <!--左侧菜单-->
         <div style="display: flex">
           <img src="../assets/login_head.jpg" alt=""
@@ -25,18 +25,38 @@
           <el-menu-item index="3" disabled>历程</el-menu-item>
         </div>
         <!--搜索框-->
-        <div style="margin-left: 100px;line-height: 50px;text-align: center">
-          <el-input style="font-size: 15px;
+        <div style="display: flex;margin-left: 100px;line-height: 50px;text-align: center">
+          <!--          <el-input style="font-size: 15px;-->
+          <!--                          padding: 5px;-->
+          <!--                          height: 30px;-->
+          <!--                          outline: none;-->
+          <!--                          "-->
+          <!--                    placeholder="搜你所想"-->
+          <!--                    v-model="searchInput"-->
+          <!--                    suffix-icon="el-icon-search"-->
+          <!--                    @keyup.enter.native="searchFocus"-->
+          <!--          >-->
+          <!--          </el-input>-->
+          <el-input
+            style="font-size: 15px;
                           padding: 5px;
                           height: 30px;
                           outline: none;
                           "
-                    placeholder="搜你所想"
-                    v-model="searchInput"
-                    suffix-icon="el-icon-search"
-                    @keyup.enter.native="searchFocus"
+            placeholder="搜你所想"
+            v-model="searchInput"
+            @focus="searchFocus"
+            @blur="searchBlur"
           >
+            <i slot="suffix"
+               :style="{'color':this.selectSearch?'#4096EF':'grey'}"
+               class="el-input__icon el-icon-search"
+               @click="startSearch"
+            ></i>
           </el-input>
+          <!--          <div style="margin-left: -20px;height: 30px">-->
+          <!--            <el-button icon="el-icon-search" circle></el-button>-->
+          <!--          </div>-->
         </div>
         <!--右侧菜单-->
         <div class="navLoginRegister"
@@ -72,6 +92,7 @@
       :visible.sync="loginDialogFormVisible"
       :close-on-click-modal="false"
       :modal-append-to-body="false"
+      :append-to-body="true"
     >
       <!--自定义title属性-->
       <template slot="title">
@@ -127,6 +148,7 @@
       :visible.sync="registerDialogFormVisible"
       :close-on-click-modal="false"
       :modal-append-to-body="false"
+      :append-to-body="true"
     >
       <!--      TODO 可在el-form添加规则 :rules="registerFormRules"-->
       <el-form :model="registerForm" ref="registerFormF"
@@ -229,13 +251,14 @@ export default {
       } else callback()
     }
     return {
+      selectSearch: false,//是否选中了输入框
       searchInput: '', //搜索输入
       canLogin: true, //登录数据通过校验的依据
       canRegister: true, //注册数据通过校验的依据
       username: null, //页面刷新后,created中将localStorage中的username赋值到这里，用于页面右上角显示
       usernameExist: false, //用户注册时判断用户名是否已经存在
       loginSuccess: false, //是否登陆成功。用于控制用户登陆成功后个人用户名的显示
-      otherLoginVisible: false, //其他登录方式显隐
+      otherLoginVisible: true, //其他登录方式显隐
       registerVerifyFormVisible: false,  //注册时验证码填写form是否显示
       loginDialogFormVisible: false, //登录对话框显隐
       registerDialogFormVisible: false, //注册对话框显隐
@@ -303,9 +326,19 @@ export default {
     }
   },
   methods: {
+    startSearch() {
+      //搜索内容
+      this.selectSearch = true;
+      //根据输入的内容发起网络请求
+
+    },
+    searchBlur() {
+      this.selectSearch = false;
+    },
     searchFocus() {
       //搜索框样式改变
       console.log("点击了输入框")
+      this.selectSearch = true;
     },
 
     //注册用户名格式校验
@@ -378,7 +411,7 @@ export default {
     },
     //控制其他登录方式显隐
     otherLogin() {
-      this.otherLoginVisible = !this.otherLoginVisible;
+      // this.otherLoginVisible = !this.otherLoginVisible;
     },
     //验证手机号
     verifyMobile() {
@@ -494,6 +527,18 @@ export default {
 </script>
 
 <style>
+.el-input__icon {
+
+}
+
+.el-icon-search {
+  padding: 10px;
+  color: #409EFF;
+  cursor: pointer;
+  font-weight: bold;
+  font-size: 20px;
+}
+
 .tabBarDiv {
   position: fixed;
   width: 1000px;
@@ -530,7 +575,7 @@ export default {
 }
 
 .otherLoginStyle:hover {
-  cursor: pointer;
+  /*cursor: pointer;*/
 }
 
 .otherLoginDivStyle {
