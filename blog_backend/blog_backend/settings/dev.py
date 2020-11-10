@@ -47,6 +47,7 @@ INSTALLED_APPS = [
     'rest_framework',
     'users.apps.UsersConfig',
     'article.apps.ArticleConfig',
+    'oauth.apps.OauthConfig',
 
 ]
 
@@ -274,5 +275,11 @@ CORS_ALLOW_HEADERS = (
     'x-requested-with',
 )
 # ================================================================
-APP_ID = '101912333'
-APP_SECRET ='2d33b582c3b37cee6f8e704bd0834ce9'
+# QQ登录参数
+# 我们申请的 客户端id
+QQ_CLIENT_ID = '101912333'
+# 我们申请的 客户端秘钥
+QQ_CLIENT_SECRET = '2d33b582c3b37cee6f8e704bd0834ce9'
+# 我们申请时添加的: 登录成功后回调的路径
+QQ_REDIRECT_URI = 'http://www.enlighten.top/index'
+QQ_STATE = '/'
