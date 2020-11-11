@@ -9,7 +9,7 @@ https://docs.djangoproject.com/en/2.2/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/2.2/ref/settings/
 """
-
+import datetime
 import os
 import sys
 
@@ -48,7 +48,6 @@ INSTALLED_APPS = [
     'users.apps.UsersConfig',
     'article.apps.ArticleConfig',
     'oauth.apps.OauthConfig',
-
 ]
 
 MIDDLEWARE = [
@@ -71,7 +70,18 @@ REST_FRAMEWORK = {
     'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
     'PAGE_SIZE': 20,  # 每页数目
     # 添加过滤配置选项,增加过滤功能
-    'DEFAULT_FILTER_BACKENDS': ('django_filters.rest_framework.DjangoFilterBackend',)
+    'DEFAULT_FILTER_BACKENDS': ('django_filters.rest_framework.DjangoFilterBackend',),
+    # 指定认证类
+    'DEFAULT_AUTHENTICATION_CLASSES': (
+        'rest_framework_jwt.authentication.JSONWebTokenAuthentication',
+        'rest_framework.authentication.SessionAuthentication',
+        'rest_framework.authentication.BasicAuthentication',
+    ),
+}
+
+JWT_AUTH = {
+    # 指明token的有效期
+    'JWT_EXPIRATION_DELTA': datetime.timedelta(days=1),
 }
 
 ROOT_URLCONF = 'blog_backend.urls'
@@ -281,5 +291,6 @@ QQ_CLIENT_ID = '101912333'
 # 我们申请的 客户端秘钥
 QQ_CLIENT_SECRET = '2d33b582c3b37cee6f8e704bd0834ce9'
 # 我们申请时添加的: 登录成功后回调的路径
-QQ_REDIRECT_URI = 'http://www.enlighten.top/index'
+# QQ_REDIRECT_URI = 'http://www.enlighten.top/index'
+QQ_REDIRECT_URI = 'http://localhost:8080/index'
 QQ_STATE = '/'

@@ -1,12 +1,19 @@
 """
 QQ登录辅助工具类
+
+`its dangerous` 模块的使用场景:
+当你需要将数据发送到一些不信任的环境,如何保证安全取回且数据不被修改呢？
+使用its dangerous,你只需要一个密钥对数据加密签名之后，将数据转交给他人。
+当你取回数据时候，就可以轻松确保该数据是否被篡改过。
+
 """
 
 import json
-from urllib.parse import urlencode, parse_qs
-from urllib.request import urlopen
+import random
+
+from urllib.parse import urlencode
 from itsdangerous import TimedJSONWebSignatureSerializer as TJWSSerializer
-from itsdangerous import BadData
+import requests
 
 from django.conf import settings
 
@@ -38,39 +45,74 @@ class OAuthQQ(object):
         }
         # 用于获取 Authorization Code
         url = 'https://graph.qq.com/oauth2.0/authorize?' + urlencode(params)
+        return url
+
+    def get_access_token(self, code):
+        """
+        根据code获取access_token
+        """
+        # 组织请求参数
+        params = {
+            'grant_type': 'authorization_code',
+            'client_id': self.client_id,
+            'client_secret': self.client_secret,
+            'code': code,
+            'redirect_uri': self.redirect_url,
+            'fmt': 'json',
+        }
+        url = 'https://graph.qq.com/oauth2.0/token?' + urlencode(params)
         try:
-            # 访问url所对应的qq服务器
-            # 获取用户对应的access_token
-            response = urlopen(url)
-        except Exception as e:
-            raise str("QQApi错误".format(e))
-        # 获取相应数据并解码
-        res_data = response.read().decode()
-        res_dict = parse_qs(res_data)
-        access_token = res_dict.get('access_token')
+            # 发送请求获取access_token
+            res = requests.get(url)
+            data = json.loads(res.text)
+        except Exception:
+            raise Exception("qq请求失败")
+        # 提取access_token
+        access_token = data.get('access_token')
         if not access_token:
-            raise ValueError("获取access_token失败")
-        return access_token[0]
+            raise Exception('access_token获取失败')
+        return access_token
 
     def get_openid(self, access_token):
         """
         获取openid
         openid(QQ授权用户的openid)代表:目标网站或应用中某个用户的唯一标识
         """
-        url = 'https://graph.qq.com/oauth2.0/me?access_token=' + access_token
+        url = 'https://graph.qq.com/oauth2.0/me?access_token={}&fmt={}'.format(access_token, 'json')
         try:
-            response = urlopen(url)
-        except Exception as e:
-            raise ValueError(e)
-        res_data = response.read().decode()
-        try:
-            res_dict = json.loads(res_data[10:-4])
-        except Exception as e:
-            res_dict = parse_qs(res_data)
-            raise ValueError(e)
-        # 获取openid
-        openid = res_dict.get('openid')
+            res = requests.get(url)
+            data = json.loads(res.text)
+        except Exception:
+            raise Exception("qq请求失败")
+        # 提取openid
+        openid = data.get('openid')
+        if not openid:
+            raise Exception('openid获取失败')
         return openid
+
+    def get_user_info(self, access_token, openid):
+        """获取qq用户信息"""
+        url = 'https://graph.qq.com/user/get_user_info?access_token={}&oauth_consumer_key={}&openid={}'.format(
+            access_token,
+            self.client_id,
+            openid
+        )
+        try:
+            res = requests.get(url)
+            data = json.loads(res.text)
+        except Exception:
+            raise Exception("qq获取用户信息失败")
+        # 提取用户信息
+        user_info = dict()
+        user_info['username'] = data.get('nickname') + random.randint(100, 999)
+        user_info['gender'] = data.get('gender')
+        user_info['come_from'] = data.get('city')
+        user_info['birthday'] = data.get('year')
+        profile_photo = data.get('figureurl_qq_2')
+        if not profile_photo:
+            profile_photo = data.get('figureurl_qq_1')
+        user_info['profile_photo'] = profile_photo
+        return user_info
 
     # 类方法使用场景，当一个方法中只涉及到静态属性的时候可以使用类方法
     @classmethod

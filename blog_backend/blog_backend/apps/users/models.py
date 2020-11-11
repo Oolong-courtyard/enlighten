@@ -19,6 +19,13 @@ class UserProfile(AbstractUser):
                               blank=True,
                               max_length=11,
                               verbose_name="电话")
+    come_from = models.CharField(null=True,
+                                 blank=True,
+                                 max_length=50,
+                                 verbose_name="籍贯")
+    profile_photo = models.TextField(max_length=500,
+                                     null=True,
+                                     verbose_name="用户头像链接")
 
     class Meta:
         db_table = "user_profile"
