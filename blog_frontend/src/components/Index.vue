@@ -173,9 +173,9 @@
 </template>
 
 <script>
+import {getArticleList, getClassArticleList} from 'network/home';
 
-import {getArticleList, getClassArticleList} from 'network/home'
-import NavBar from "../common/NavBar";
+const NavBar = () => import("../common/NavBar");
 
 export default {
   name: "Index",
@@ -183,7 +183,7 @@ export default {
   data() {
     return {
       recommendAuthor: ['作者1', '作者2', '作者3', '作者4'],//推荐作者
-      class1: ['推荐', '后端', '前端', 'ios', 'android'], //首页文章列表一级分类
+      class1: ['推荐', '后端', '前端', 'iOS', 'Android'], //首页文章列表一级分类
       page: 1, //初始page为1
       current_article_index: 0, //每次下拉加载文章列表值增加10，初始值为0
       loading: false, //下拉加载
@@ -193,9 +193,27 @@ export default {
     }
   },
 
+
   created() {
     //获取文章列表页信息,如果开启，
     this.getArticleList()
+  },
+  mounted() {
+    //根据地址栏中是否有code参数请求server获取用户的openid
+    var code = this.get_query_string('code');
+    if (code !=null) {
+      console.log("从地址栏中获取到的code为",code)
+      this.$http.get('qq/user?code=' + code, {responseType: 'json'}).then(
+        res => {
+          //成功处理
+          console.log("成功处理,获取到的response是")
+        }
+      ).catch(
+        err => {
+          //失败处理
+        }
+      )
+    }
   },
   computed: {
     noMore() {
@@ -208,6 +226,15 @@ export default {
     }
   },
   methods: {
+    // 获取url路径参数
+    get_query_string: function (name) {
+      var reg = new RegExp('(^|&)' + name + '=([^&]*)(&|$)', 'i');
+      var r = window.location.search.substr(1).match(reg);
+      if (r != null) {
+        return decodeURI(r[2]);
+      }
+      return null;
+    },
     changeRecommendAuthor() {
       //换一批推荐作者
 
@@ -241,12 +268,12 @@ export default {
       //获取文章列表
       getArticleList(this.page).then(
         res => {
-          console.log("来到了getArticleList,获取到的res的数据为", res.data.results)
+          // console.log("来到了getArticleList,获取到的res的数据为", res.data.results)
           this.res_list_data = this.res_list_data.concat(res.data.results)
-          console.log("此时的res_list_data为", this.res_list_data)
+          // console.log("此时的res_list_data为", this.res_list_data)
           // 每调用一次就把page+1
           this.page += 1
-          console.log("此时的page为", this.page)
+          // console.log("此时的page为", this.page)
         }
       )
 

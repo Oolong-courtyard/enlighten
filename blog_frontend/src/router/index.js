@@ -1,36 +1,25 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
 
-import Home from '../components/Home'
-import Hot from '../components/Hot'
-import Cart from '../components/Cart'
 import Index from "../components/Index";
-import Login from "../components/Login";
-import Register from "../components/Register";
-import ArticleDetail from "../components/ArticleDetail";
+
+//配置路由的懒加载(按需加载),即:除了首页之外,其他页面只有点击之后才请求加载
+const ArticleDetail = () => import("@/components/ArticleDetail")
 
 //1.安装插件
 Vue.use(VueRouter)
 
 //2.创建router
-const routes  = [
+const routes = [
   {
-    path:'',
-    redirect:'/index'
+    path: '',
+    redirect: '/index'
   },
   {
-    path:'/index',
-    component:Index
-  },
-  {
-    path:'/login',
-    component: Login
+    path: '/index',
+    component: Index
   },
   // 每一{}就代表一条route
-  {
-    path: '/register',
-    component: Register
-  },
   {
     path: '/article-detail',
     component: ArticleDetail
@@ -40,7 +29,7 @@ const routes  = [
 const router = new VueRouter(
   {
     routes,
-    mode:'history'
+    mode: 'history'
   }
 )
 

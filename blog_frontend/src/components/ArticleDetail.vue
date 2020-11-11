@@ -57,7 +57,7 @@
 
 <script>
 import {getArticleDetail} from 'network/home';
-import NavBar from "../common/NavBar";
+const NavBar =()=>import("../common/NavBar")
 
 export default {
   name: "ArticleDetail",

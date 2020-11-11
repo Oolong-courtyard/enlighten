@@ -2,14 +2,14 @@
 
 import axios from 'axios'
 
+
 export function request(config) {
   //1.创建axios的实例
   const instance = axios.create({
-    baseURL: 'http://106.15.8.3:8000',
-    // baseURL: 'http://127.0.0.1:8000',
+    // baseURL: 'http://106.15.8.3:8000',
+    baseURL: 'http://127.0.0.1:8000',
     timeout: 5000,
     withCredentials: true,
-
   })
 
   //2.axios的拦截器
@@ -30,3 +30,5 @@ export function request(config) {
   //3.发送真正的网络请求
   return instance(config)
 }
+
+export {baseURL};
