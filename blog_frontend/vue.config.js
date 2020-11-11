@@ -1,9 +1,9 @@
-const UglifyJsPlugin = require('uglifyjs-webpack-plugin');
+// const UglifyJsPlugin = require('uglifyjs-webpack-plugin');
 
 //TODO 如何做配置文件的隔离？
 
 // if (isProduction) {
-//   //打包后去掉代码中的console.log
+//   打包后去掉代码中的console.log
 //   config.plugins.push(
 //     new UglifyJsPlugin({
 //       uglifyOptions: {

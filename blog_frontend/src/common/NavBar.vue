@@ -315,7 +315,7 @@ export default {
       formLabelWidth: '80px'
     }
   },
-  created() {
+  mounted() {
     //获取localStorage中的用户信息
     const username = localStorage.getItem('username')
     if (username) {
@@ -401,12 +401,13 @@ export default {
       // window.open("https://graph.qq.com/oauth2.0/authorize?response_type=code&client_id=101911861&redirect_uri=http://www.enlighten.top/index&state=enlighten&scope=get_user_info,list_album,upload_pic,do_like",
       //   "width=450,height=320,menubar=0,scrollbars=1,resizable=1,status=1,titlebar=0,toolbar=0,location=1"
       // );
-      this.$message(
-        {
-          message: "后续功能还在开发中",
-          type: "warning"
-        }
-      )
+
+      // this.$message(
+      //   {
+      //     message: "后续功能还在开发中",
+      //     type: "warning"
+      //   }
+      // )
 
     },
     //微信登录

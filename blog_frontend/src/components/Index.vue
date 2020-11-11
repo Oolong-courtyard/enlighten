@@ -164,7 +164,6 @@
             >
           </div>
         </div>
-
       </div>
 
     </div>
@@ -201,16 +200,24 @@ export default {
   mounted() {
     //根据地址栏中是否有code参数请求server获取用户的openid
     var code = this.get_query_string('code');
-    if (code !=null) {
-      console.log("从地址栏中获取到的code为",code)
+    if (code != null) {
+      console.log("从地址栏中获取到的code为", code)
       this.$http.get('qq/user?code=' + code, {responseType: 'json'}).then(
         res => {
           //成功处理
-          console.log("成功处理,获取到的response是")
+          console.log("成功处理,获取到的response是", res)
+          localStorage.setItem('username', res.data.username)
+          // this.$router.go(0) //刷新当前页面
+          var state = 'index';
+          location.href = state; //重新跳转
         }
       ).catch(
         err => {
           //失败处理
+          this.$message({
+            message: '第三方登录失败',
+            type: 'warning'
+          })
         }
       )
     }
