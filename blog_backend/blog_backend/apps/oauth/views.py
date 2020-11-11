@@ -44,38 +44,41 @@ class OAuthQQUserView(APIView):
             # 首先从QQ获取用户信息
             user_info = oauth.get_user_info(access_token, open_id)
             # 将用户信息存入数据库并生成token返回
-            print(user_info)
             """
             1.此时信息保存到UserProfile中(第三方登录没有手机号和邮箱,而该应用只能使用手机号或邮箱才能登陆),
             因此，第三方登陆成功后，虽然系统将其保存为该应用的用户，但是却无法通过账密的方式登陆，除非绑定手机号
             或者邮箱；在绑定手机号或邮箱的时候验证手机号或邮箱是否已经被注册过即可兼容第三方登陆和账密注册登陆的冲突。
             """
-            OAuthQQUser.objects.create()
-            UserProfile.objects.create_user(**user_info)
-            # TODO 将用户信息保存到 UserProfile
-
-            # 拿到qq授权用户的信息之后，保存到 UserProfile中，此时该用户无手机号和邮箱，因此无法通过账密方式登陆。除非在个人主页绑定手机号或邮箱。
-            # 在绑定手机号或邮箱的时候就可以验证手机号或邮箱是否已经被注册过。
-            # 如果通过三方的方式登陆并且未绑定手机号或邮箱，那么该用户下次依然只能通过三方的方式登陆本应用。
-
-            # TODO 将qq授权用户的openid存入OAuthQQUser
-
-
+            user = UserProfile.objects.create(**user_info)
+            # 保存用户后返回id作为OAuthQQUser的user_id,再将openid与该user_id存入OAuthQQUser
+            OAuthQQUser.objects.create(user_id=user.id, openid=open_id)
+            """
+            1.拿到qq授权用户的信息之后，保存到 UserProfile中，此时该用户无手机号和邮箱，因此无法通过账密方式登陆。除非在个人主页绑定手机号或邮箱。
+            2.在绑定手机号或邮箱的时候就可以验证手机号或邮箱是否已经被注册过。
+            3.如果通过三方的方式登陆并且未绑定手机号或邮箱，那么该用户下次依然只能通过三方的方式登陆本应用。
+            """
+            # 将用户信息保存后,声称
+            oauth_user = OAuthQQUser.objects.get(openid=open_id)
+            return self.generate_jwt_token(oauth_user.user)
         else:
             # 用户已经绑定过,生成 JWT token信息
             user = oauth_user.user
-            from rest_framework_jwt.settings import api_settings
-            # 生成token
-            jwt_payload_handler = api_settings.JWT_PAYLOAD_HANDLER
-            jwt_encode_handler = api_settings.JWT_ENCODE_HANDLER
-            # 生成载荷信息(payload)
-            payload = jwt_payload_handler(user)
-            # 生成jwt token
-            token = jwt_encode_handler(payload)
-            response = Response({
-                'token': token,
-                'user_id': user.id,
-                'username': user.username,
-                # 可以返回更多的用户信息
-            })
-            return response
+            return self.generate_jwt_token(user)
+
+    def generate_jwt_token(self, user):
+        """生成 jwt token"""
+        from rest_framework_jwt.settings import api_settings
+        # 生成token
+        jwt_payload_handler = api_settings.JWT_PAYLOAD_HANDLER
+        jwt_encode_handler = api_settings.JWT_ENCODE_HANDLER
+        # 生成载荷信息(payload)
+        payload = jwt_payload_handler(user)
+        # 生成jwt token
+        token = jwt_encode_handler(payload)
+        response = Response({
+            'token': token,
+            'user_id': user.id,
+            'username': user.username,
+            # 可以返回更多的用户信息(比如用户的头像)
+        })
+        return response

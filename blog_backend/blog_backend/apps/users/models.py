@@ -10,7 +10,7 @@ from django.utils import timezone
 
 class UserProfile(AbstractUser):
     """用户模型类"""
-    birthday = models.DateField(null=True, blank=True, verbose_name="出生年月")
+    birthday = models.CharField(max_length=8, null=True, blank=True, verbose_name="出生年月")
     gender = models.CharField(max_length=6,
                               choices=(("male", u"男"), ("female", "女")),
                               default="female",

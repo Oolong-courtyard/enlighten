@@ -63,10 +63,11 @@ class OAuthQQ(object):
         url = 'https://graph.qq.com/oauth2.0/token?' + urlencode(params)
         try:
             # 发送请求获取access_token
-            res = requests.get(url)
+            res = requests.get(url, verify=False)
             data = json.loads(res.text)
-        except Exception:
-            raise Exception("qq请求失败")
+        except Exception as e:
+            raise e
+            # raise Exception("qq请求失败")
         # 提取access_token
         access_token = data.get('access_token')
         if not access_token:
@@ -80,7 +81,7 @@ class OAuthQQ(object):
         """
         url = 'https://graph.qq.com/oauth2.0/me?access_token={}&fmt={}'.format(access_token, 'json')
         try:
-            res = requests.get(url)
+            res = requests.get(url, verify=False)
             data = json.loads(res.text)
         except Exception:
             raise Exception("qq请求失败")
@@ -98,13 +99,13 @@ class OAuthQQ(object):
             openid
         )
         try:
-            res = requests.get(url)
+            res = requests.get(url, verify=False)
             data = json.loads(res.text)
         except Exception:
             raise Exception("qq获取用户信息失败")
         # 提取用户信息
         user_info = dict()
-        user_info['username'] = data.get('nickname') + random.randint(100, 999)
+        user_info['username'] = data.get('nickname') + '_' + str(random.randint(100, 999))
         user_info['gender'] = data.get('gender')
         user_info['come_from'] = data.get('city')
         user_info['birthday'] = data.get('year')
