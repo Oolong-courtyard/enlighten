@@ -1,6 +1,7 @@
 import Vue from 'vue'
 import App from './App.vue'
 import router from './router/index'
+import baseIp from '../baseConfig.js' // FAP地址管理器
 
 Vue.config.productionTip = false
 
@@ -18,6 +19,7 @@ import axios from 'axios';
 
 //配置请求的根路径
 axios.defaults.baseURL = 'http://106.15.8.3:8000'
+axios.defaults.baseURL = baseIp.ip1
 // axios.defaults.baseURL = 'http://127.0.0.1:8000'
 Vue.prototype.$http = axios
 Vue.prototype.HOME = '/'    //重要在于这里，Vue.prototype.HOME = '/api'是一个定值，默认指向localhost，所有修改指向路径为'/api'，配置文件index.js定义的可跨域路径
