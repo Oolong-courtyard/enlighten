@@ -29,7 +29,7 @@ SECRET_KEY = 'ef-@^(&ol522la&9a&p0ie)!)7r+iw$oj4x-vr_^o7_$kt%*!g'
 """
 当 DEBUG=False时，django不再对外提供静态文件
 """
-DEBUG = True
+DEBUG = False
 
 ALLOWED_HOSTS = ["*"]
 
@@ -291,5 +291,6 @@ QQ_CLIENT_ID = '101912333'
 # 我们申请的 客户端秘钥
 QQ_CLIENT_SECRET = '2d33b582c3b37cee6f8e704bd0834ce9'
 # 我们申请时添加的: 登录成功后回调的路径
-QQ_REDIRECT_URI = 'http://localhost:8080/index'
+QQ_REDIRECT_URI = 'http://www.enlighten.top/index'
+
 QQ_STATE = '/'

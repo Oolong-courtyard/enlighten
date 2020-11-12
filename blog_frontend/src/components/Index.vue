@@ -173,6 +173,7 @@
 
 <script>
 import {getArticleList, getClassArticleList} from 'network/home';
+import axios from "axios";
 
 const NavBar = () => import("../common/NavBar");
 
@@ -208,8 +209,8 @@ export default {
           console.log("成功处理,获取到的response是", res)
           localStorage.setItem('username', res.data.username)
           // this.$router.go(0) //刷新当前页面
-          var state = 'index';
-          location.href = state; //重新跳转
+          console.log("跳转后的url地址是", this.$http.defaults.baseURL)
+          location.href = '/'; //重新跳转到首页
         }
       ).catch(
         err => {

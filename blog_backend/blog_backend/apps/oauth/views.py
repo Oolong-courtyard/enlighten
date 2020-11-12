@@ -1,6 +1,6 @@
-from django.shortcuts import render
-
-# Create your views here.
+"""
+第三方登陆视图
+"""
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
