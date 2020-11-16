@@ -15,14 +15,41 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.conf.urls import include, url, static
+from drf_yasg.views import get_schema_view
+from drf_yasg import openapi
+from rest_framework import permissions
 
 from .settings import dev
 
+schema_view = get_schema_view(
+    openapi.Info(
+        title="Enlighten Backend API",
+        default_version='v1',
+        description="enlighten backend api",
+        terms_of_service="",
+        contact=openapi.Contact(email='zhenghuanluck@163.com'),
+        license=openapi.License(name="BSD License"),
+    ),
+    public=True,
+    permission_classes=(permissions.AllowAny,),
+)
+
 urlpatterns = [
     url('admin/', admin.site.urls),
-    url(r'', include('users.urls')),
-    url(r'', include('article.urls')),
-    url(r'', include('oauth.urls')),
+    url(r'users/', include('users.urls')),
+    url(r'article/', include('article.urls')),
+    url(r'oauth/', include('oauth.urls')),
+
+    # openapi文档可视化
+    url(r'^swagger(?P<format>\.json|\.yaml)$',
+        schema_view.without_ui(cache_timeout=0),
+        name='schema-json'),
+    url(r'^swagger/$',
+        schema_view.with_ui('swagger', cache_timeout=0),
+        name='schema-swagger-ui'),
+    url(r'^redoc/$',
+        schema_view.with_ui('redoc', cache_timeout=0),
+        name='schema-redoc'),
 ]
 
 urlpatterns += static.static(dev.MEDIA_URL, document_root=dev.MEDIA_ROOT)

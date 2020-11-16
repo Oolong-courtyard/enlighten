@@ -45,7 +45,7 @@ class RegisterView(CreateAPIView):
 class LoginView(CreateAPIView):
     """用户登录"""
 
-    def post(self, request):
+    def post(self, request, *args, **kwargs):
         """用户登录"""
         request_data_dict = json.loads(request.body)
         username = request_data_dict.get('username')
@@ -56,3 +56,8 @@ class LoginView(CreateAPIView):
 
         # 用户存在
         return http.HttpResponse("登录成功")
+
+
+class EmailActiveView(View):
+    """邮箱激活"""
+    pass
