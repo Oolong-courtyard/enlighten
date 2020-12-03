@@ -1,3 +1,7 @@
+"""
+项目总配置
+"""
+
 # Scrapy settings for data_scrapy project
 #
 # For simplicity, this file contains only settings considered important or
@@ -53,14 +57,15 @@ ROBOTSTXT_OBEY = True
 # Enable or disable spider middlewares
 # See https://docs.scrapy.org/en/latest/topics/spider-middleware.html
 SPIDER_MIDDLEWARES = {
-    'data_scrapy.middlewares.middlewares.DataScrapySpiderMiddleware': 543,
+    'data_scrapy.middlewares.agent_middleware.RotateUserAgentMiddleware': 400,  # 切换agent
+    # 'data_scrapy.middlewares.auto_proxy_middleware.AutoProxyMiddleware': 543,  # 代理池
 }
 
 # Enable or disable downloader middlewares
 # See https://docs.scrapy.org/en/latest/topics/downloader-middleware.html
-# DOWNLOADER_MIDDLEWARES = {
-#    'data_scrapy.middlewares.DataScrapyDownloaderMiddleware': 543,
-# }
+DOWNLOADER_MIDDLEWARES = {
+    'data_scrapy.middlewares.DataScrapyDownloaderMiddleware': 543,
+}
 
 # Enable or disable extensions
 # See https://docs.scrapy.org/en/latest/topics/extensions.html

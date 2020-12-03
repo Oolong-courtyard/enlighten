@@ -1,18 +1,20 @@
 """
-将值转换为字符串
+将值转换为小数
 """
-def to_string(value, default=''):
-    return_value = default
+def to_decimal(value, default=0):
     if value is None:
         return default
     else:
         if isinstance(value, (list, tuple)) and len(value) == 1:
-            return_value = str(value[0])
+            try:
+                return_value = float(value[0])
+            except ValueError:
+                return_value = default
         elif isinstance(value, (list, tuple)) and len(value) == 0:
             return_value = default
         else:
             try:
-                return_value = str(value)
+                return_value = float(value)
             except ValueError:
                 return_value = default
     return return_value

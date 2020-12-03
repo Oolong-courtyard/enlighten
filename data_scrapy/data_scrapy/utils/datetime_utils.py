@@ -1,3 +1,8 @@
+# coding=utf-8
+"""
+时间格式转换
+"""
+
 import datetime
 from pytz import timezone
 import time
@@ -22,3 +27,20 @@ def current_date():
     now = datetime.datetime.now(cst_tz)
     return now.strftime('%Y%m%d')
     pass
+
+
+def compare_with_current(time1, format_s):
+    return compare_time(time1, format_s, current_date(), '%Y%m%d')
+
+
+def compare_time(time1, format_s, time2, format_e):
+    s_time = time.mktime(time.strptime(time1, format_s))
+    e_time = time.mktime(time.strptime(time2, format_e))
+    return int(s_time) - int(e_time)
+
+
+def compare_two_hours(news_time):
+    before_two_hours = datetime.datetime.now() + datetime.timedelta(hours=-2)
+    if news_time < before_two_hours:
+        return False
+    return True

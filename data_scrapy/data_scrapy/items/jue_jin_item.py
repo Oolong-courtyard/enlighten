@@ -7,7 +7,7 @@ import scrapy
 
 from utils.string_utils import to_string
 
-from settings import SERVE_BASE_URL
+from configs.configs import SERVE_BASE_URL
 
 
 
