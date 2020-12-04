@@ -32,20 +32,3 @@ class ArticleCategorySerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 
-# =======================================================
-# crawler专用
-# =======================================================
-from rest_framework import serializers
-
-
-class JueJinArticleListSerializer(serializers.ModelSerializer):
-    """掘金文章列表序列化器"""
-
-    class Meta:
-        model = ArticleList
-        fields = '__all__'
-
-
-class JueJinArticleDetailSerializer(serializers.Serializer):
-    """掘金文章详情序列化器"""
-    pass

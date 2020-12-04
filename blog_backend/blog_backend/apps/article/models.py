@@ -4,7 +4,7 @@
 from django.contrib.postgres.fields import ArrayField
 from django.db import models
 
-from blog_backend.utils.models import BaseModel
+from utils.models import BaseModel
 
 
 class ArticleList(BaseModel):

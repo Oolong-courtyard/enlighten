@@ -6,7 +6,8 @@ import json
 from django.contrib.auth import authenticate
 from django import http
 from django.views import View
-from rest_framework.generics import CreateAPIView
+from rest_framework.generics import CreateAPIView, GenericAPIView
+from rest_framework.views import APIView
 
 from users.models import UserProfile
 from users.serializers import CreateUserSerializer
@@ -42,10 +43,10 @@ class RegisterView(CreateAPIView):
 """
 
 
-class LoginView(CreateAPIView):
+class LoginView(APIView):
     """用户登录"""
 
-    def post(self, request, *args, **kwargs):
+    def post(self, request):
         """用户登录"""
         request_data_dict = json.loads(request.body)
         username = request_data_dict.get('username')

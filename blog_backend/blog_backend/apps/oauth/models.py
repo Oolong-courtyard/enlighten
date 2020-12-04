@@ -3,7 +3,7 @@
 """
 from django.db import models
 
-from blog_backend.utils.models import BaseModel
+from utils.models import BaseModel
 
 
 class OAuthQQUser(BaseModel):
