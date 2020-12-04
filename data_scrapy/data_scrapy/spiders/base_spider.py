@@ -7,7 +7,7 @@ import scrapy
 
 from configs import scrapy_configs
 from items.base_item import MetaItem
-from . import theme_spider
+# from . import theme_spider
 # from text_analysis.text_processing import TextProcessing
 from utils import request_utils
 
@@ -31,9 +31,9 @@ class BaseSpider(scrapy.Spider):
 
         self.allowed_domains = scrapy_configs.configs('allowed_domains', spider_name)
         self.start_urls = scrapy_configs.configs('start_urls', spider_name)
-        self.concepts = theme_spider.read_csv()
-        self.text_processing = TextProcessing(scrapy_configs.configs('stopwords_path'),
-                                              scrapy_configs.configs('dictionary_path'))
+        # self.concepts = theme_spider.read_csv()
+        # self.text_processing = TextProcessing(scrapy_configs.configs('stopwords_path'),
+        #                                       scrapy_configs.configs('dictionary_path'))
         # 所有的股票名称
         self.stocks = self.get_stocks_from_db()
 

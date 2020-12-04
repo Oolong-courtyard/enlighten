@@ -13,7 +13,7 @@
 
 DEBUG = True
 if DEBUG:
-    SERVE_BASE_URL = 'http://127.0.0.1:8001'
+    SERVE_BASE_URL = 'http://127.0.0.1:8000'
 else:
     SERVE_BASE_URL = 'http://106.15.8.3:8000'
 
@@ -56,15 +56,15 @@ ROBOTSTXT_OBEY = True
 
 # Enable or disable spider middlewares
 # See https://docs.scrapy.org/en/latest/topics/spider-middleware.html
-SPIDER_MIDDLEWARES = {
-    'data_scrapy.middlewares.agent_middleware.RotateUserAgentMiddleware': 400,  # 切换agent
-    # 'data_scrapy.middlewares.auto_proxy_middleware.AutoProxyMiddleware': 543,  # 代理池
-}
+# SPIDER_MIDDLEWARES = {
+# }
 
 # Enable or disable downloader middlewares
 # See https://docs.scrapy.org/en/latest/topics/downloader-middleware.html
 DOWNLOADER_MIDDLEWARES = {
-    'data_scrapy.middlewares.DataScrapyDownloaderMiddleware': 543,
+    # 'data_scrapy.middlewares.DataScrapyDownloaderMiddleware': 543,
+    # 'data_scrapy.middlewares.agent_middleware.RotateUserAgentMiddleware': 400,  # 切换agent
+    # 'data_scrapy.middlewares.auto_proxy_middleware.AutoProxyMiddleware': 543,  # 代理池
 }
 
 # Enable or disable extensions
@@ -76,7 +76,7 @@ DOWNLOADER_MIDDLEWARES = {
 # Configure item pipelines
 # See https://docs.scrapy.org/en/latest/topics/item-pipeline.html
 ITEM_PIPELINES = {
-    'data_scrapy.pipelines.DataScrapyRequestPipeline': 800,
+    'data_scrapy.pipelines.pipeline_requests.DataScrapyRequestPipeline': 800,
 }
 
 # Enable and configure the AutoThrottle extension (disabled by default)

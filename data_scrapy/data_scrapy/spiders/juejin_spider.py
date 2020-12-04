@@ -1,3 +1,6 @@
+"""
+掘金
+"""
 import json
 import time
 
@@ -8,7 +11,7 @@ from items.jue_jin_item import JueJinArticleListScrapyItem, JueJinArticleDetailS
 from utils import datetime_utils
 
 
-class JuejinSpiderSpider(scrapy.Spider):
+class JueJinSpiderSpider(scrapy.Spider):
     """爬取掘金文章"""
     name = 'jue_jin'
     allowed_domains = ['juejin.im', 'apinew.juejin.im']
@@ -50,10 +53,10 @@ class JuejinSpiderSpider(scrapy.Spider):
             headers=self.headers,
             body=json.dumps(self.payloadData),
             # meta=self.payloadData,
-            callback=self.parse_article_list,
+            callback=self.parse,
         )
 
-    def parse_article_list(self, response, **kwargs):
+    def parse(self, response, **kwargs):
         """解析文章列表"""
         res = response.json()
         time.sleep(0.1)
@@ -90,7 +93,7 @@ class JuejinSpiderSpider(scrapy.Spider):
                 method='post',
                 headers=self.headers,
                 body=json.dumps(self.payloadData),
-                callback=self.parse_article_list,
+                callback=self.parse,
             )
 
     def parse_article_detail(self, response, **kwargs):

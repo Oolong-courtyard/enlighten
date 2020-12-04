@@ -5,7 +5,7 @@ import json
 
 import grequests
 
-from configs import configs
+from configs import scrapy_configs
 from utils.logger_utils import logger
 
 def err_handler(request, exception):
