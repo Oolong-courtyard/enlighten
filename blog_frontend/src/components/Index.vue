@@ -199,11 +199,12 @@ export default {
     this.getArticleList()
   },
   mounted() {
+    // console.log("此时的环境变量为",process.env);
     //根据地址栏中是否有code参数请求server获取用户的openid
     var code = this.get_query_string('code');
     if (code != null) {
       console.log("从地址栏中获取到的code为", code)
-      this.$http.get('qq/user?code=' + code, {responseType: 'json'}).then(
+      this.$http.get(this.$qqUser + code, {responseType: 'json'}).then(
         res => {
           //成功处理
           console.log("成功处理,获取到的response是", res)
@@ -276,8 +277,8 @@ export default {
       //获取文章列表
       getArticleList(this.page).then(
         res => {
-          // console.log("来到了getArticleList,获取到的res的数据为", res.data.results)
-          this.res_list_data = this.res_list_data.concat(res.data.results)
+          // console.log("来到了getArticleList,获取到的res的数据为", res.data)
+          this.res_list_data = this.res_list_data.concat(res.data)
           // console.log("此时的res_list_data为", this.res_list_data)
           // 每调用一次就把page+1
           this.page += 1
@@ -306,7 +307,7 @@ export default {
     },
     getArticleDetail(id) {
       //获取文章详情
-      window.open('http://localhost:8080/article-detail?id=' + `${id}`);
+      window.open('http://localhost:8080/article/article-detail?id=' + `${id}`);
     },
   },
 }

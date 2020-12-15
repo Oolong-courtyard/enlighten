@@ -2,7 +2,7 @@ import {request} from './request'
 
 export function getArticleList(page) {
   return request({
-    url: '/article-list/?page=' + page.toString()
+    url: 'article/article-list/?page=' + page.toString()
   })
 }
 

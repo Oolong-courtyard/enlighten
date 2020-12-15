@@ -390,7 +390,7 @@ export default {
     //qq登录
     qqLogin() {
       console.log("qq登录")
-      this.$http.get('authorization').then(
+      this.$http.get('oauth/authorization').then(
         res => {
           console.log("请求获取到的qq登录的url为", res);
           console.log("res.data.login_url为", res.data.login_url)
