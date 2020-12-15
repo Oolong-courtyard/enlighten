@@ -10,7 +10,7 @@ from urllib.error import HTTPError
 import urllib.request
 
 from bs4 import BeautifulSoup
-from func_timeout import func_set_timeout
+from func_timeout import func_set_timeout, FunctionTimedOut, func_timeout
 from twisted.internet import defer
 from twisted.internet.error import (
     TimeoutError,
@@ -25,9 +25,7 @@ from utils.logger_utils import logger
 
 
 class AutoProxyMiddleware(object):
-    """
-    自动代理中间件
-    """
+    """自动代理"""
     EXCEPTIONS_TO_CHANGE = (defer.TimeoutError, TimeoutError, ConnectionRefusedError,
                             ConnectError, ConnectionLost, TCPTimedOutError, ConnectionDone)
 
@@ -120,12 +118,22 @@ class AutoProxyMiddleware(object):
         return response
 
     def process_exception(self, request, exception):
-        if isinstance(exception, self.EXCEPTIONS_TO_CHANGE) and request.meta.get('proxy', False):
+
+        from twisted.internet.error import TimeoutError
+        if isinstance(exception, self.EXCEPTIONS_TO_CHANGE) \
+                and request.meta.get('proxy', False):
             self.invalid_proxy(request.meta['proxy'])
             logger.debug("Proxy[%s] connect exception[%s].", request.meta['proxy'], exception)
             new_request = request.copy()
             new_request.dont_filter = True
             return new_request
+
+        elif isinstance(exception, TimeoutError):
+            print('TimeoutError了,此时返回request')
+            # return request
+        elif isinstance(exception, TypeError):
+            print('TypeError,此时返回request')
+            # return request
 
     def invalid_proxy(self, proxy):
         """
@@ -234,6 +242,15 @@ class AutoProxyMiddleware(object):
             threads.append(t)
             t.start()
 
+        try:
+            soup = func_timeout(60, self.ensure_has_valid_proxy, args=(wait, threads))
+        except FunctionTimedOut:
+            logger.info("func:there is no valid proxy,go next step")
+        except Exception as e:
+            logger.info(e)
+
+    @func_set_timeout(60)
+    def ensure_has_valid_proxy(self, wait, threads):
         # 初始化该中间件时，等待有可用的代理
         if wait:
             while True:
@@ -266,11 +283,21 @@ class ProxyValidate(threading.Thread):
         self.test_proxies(self.part)
 
     def test_proxies(self, proxies):
+        from func_timeout import func_timeout, FunctionTimedOut
         for proxy, valid in proxies.items():
-            if self.check_proxy(proxy):
+            check_proxy_res = False
+            try:
+                check_proxy_res = func_timeout(6, self.check_proxy, args=(proxy,))
+            except FunctionTimedOut:
+                logger.info("func:check_proxy can't finished within 6 second,try next check")
+            except Exception as e:
+                logger.info(e)
+            # if self.check_proxy(proxy):
+            if check_proxy_res:
                 self.auto_proxy.proxies[proxy] = True
                 self.auto_proxy.append_proxy(proxy)
 
+    @func_set_timeout(6)
     def check_proxy(self, proxy):
         proxy_handler = urllib.request.ProxyHandler({'http': proxy})
         opener = urllib.request.build_opener(proxy_handler, urllib.request.HTTPHandler)
@@ -287,7 +314,7 @@ class ProxyValidate(threading.Thread):
             return False
 
 
-@func_set_timeout(1)
+@func_set_timeout(5)
 def get_soup(url):
     req = urllib.request.Request(url)
     req.add_header("User-Agent",
@@ -346,13 +373,12 @@ class ProxyFetch(threading.Thread):
         try:
             from func_timeout import func_timeout, FunctionTimedOut
             for i in range(1, 11):
-
                 soup = None
                 try:
                     # soup = get_soup(url % i)
-                    soup = func_timeout(1, get_soup, args=(url % i,))
+                    soup = func_timeout(5, get_soup, args=(url % i,))
                 except FunctionTimedOut:
-                    logger.info("func:get_soup can't get proxy within 1 second,exit")
+                    logger.info("func:get_soup can't get proxy within 5 second,try next")
                 except Exception as e:
                     logger.info(e)
                 if soup is None:
