@@ -13,6 +13,7 @@ from rest_framework.response import Response
 from rest_framework import status
 from rest_framework.generics import GenericAPIView, ListAPIView, CreateAPIView
 
+from settings.dev import NUM_OF_PER_PAGE
 from .models import ArticleDetail, ArticleList
 from .serializers import (
     ArticleDetailSerializer,
@@ -20,13 +21,13 @@ from .serializers import (
     ArticleCategorySerializer,
 )
 
+
 """
 django-redis基本使用:
 
 cache = get_redis_connection('default')
 msg = cache.get('msg')
 """
-
 
 # 搜索
 # class ArticleSearch(GenericAPIView):
@@ -53,19 +54,27 @@ msg = cache.get('msg')
 
 
 # 列表
-class ArticleListView(ListAPIView, CreateAPIView):
+from django.core.paginator import Paginator
+
+
+class ArticleListView(APIView):
     """文章列表"""
 
-    queryset = ArticleList.objects.all()
-    serializer_class = ArticleListSerializer
+    # queryset = ArticleList.objects.all()
+    # serializer_class = ArticleListSerializer
+    from drf_yasg.utils import swagger_auto_schema
 
-    # def get(self, request):
-    #     """
-    #     获取文章列表信息
-    #     """
-    #     queryset = ArticleList.objects.all()
-    #     serializer = ArticleListSerializer(queryset, many=True)
-    #     return Response(serializer.data, status=status.HTTP_200_OK)
+    def get(self, request):
+        """
+        获取文章列表信息
+        """
+        target_page = request.query_params.dict().get('page')
+        queryset = ArticleList.objects.all()
+        num_of_per_page = NUM_OF_PER_PAGE
+        paginator = Paginator(queryset, num_of_per_page)
+        page = paginator.page(target_page)
+        serializer = ArticleListSerializer(page, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)
     #
     # def post(self, request):
     #     """

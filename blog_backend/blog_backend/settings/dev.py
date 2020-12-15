@@ -65,6 +65,9 @@ MIDDLEWARE = [
     # 'article.middleware.my_middleware,  # 添加中间件'
 ]
 
+#每页数量
+NUM_OF_PER_PAGE = 15
+
 # 配置文件中增加异常处理的相关配置
 REST_FRAMEWORK = {
     # 异常处理
