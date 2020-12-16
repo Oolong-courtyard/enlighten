@@ -14,6 +14,7 @@ from rest_framework import status
 from rest_framework.generics import GenericAPIView, ListAPIView, CreateAPIView
 
 from settings.dev import NUM_OF_PER_PAGE
+from utils.base_response import BaseResponse
 from .models import ArticleDetail, ArticleList
 from .serializers import (
     ArticleDetailSerializer,
@@ -21,13 +22,13 @@ from .serializers import (
     ArticleCategorySerializer,
 )
 
-
 """
 django-redis基本使用:
 
 cache = get_redis_connection('default')
 msg = cache.get('msg')
 """
+
 
 # 搜索
 # class ArticleSearch(GenericAPIView):
@@ -46,11 +47,12 @@ msg = cache.get('msg')
 
 
 # 分类
-# class ArticleCategory(ListAPIView):
-#     """文章分类"""
-#     queryset = ArticleList.objects.all()
-#     serializer_class = ArticleCategorySerializer
-#     filter_fields = ('category', 'author')
+class ArticleCategory(ListAPIView):
+    """文章分类"""
+    queryset = ArticleList.objects.all()
+    serializer_class = ArticleCategorySerializer
+    # filter_fields = ('category', 'author')
+    filter_fields = ('category',)
 
 
 # 列表
@@ -74,7 +76,7 @@ class ArticleListView(APIView):
         paginator = Paginator(queryset, num_of_per_page)
         page = paginator.page(target_page)
         serializer = ArticleListSerializer(page, many=True)
-        return Response(serializer.data, status=status.HTTP_200_OK)
+        return BaseResponse(data=serializer.data)
     #
     # def post(self, request):
     #     """
