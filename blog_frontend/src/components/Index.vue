@@ -18,8 +18,12 @@
             style="list-style: none"
             ref="class1"
         >
+          <!-- classification 当前选中的分类的颜色应该不一样 -->
+          <!-- :style="{'color':this.categoryTag==classification?'#4096EF':'black'}"-->
+          <!--TODO 选中tab分类,改变文字颜色未完成-->
           <div @click="getClassData(classification)"
-               class="indexSubmenu indexSubmenuSelected">{{ classification }}
+               class="indexSubmenu indexSubmenuSelected"
+          >{{ classification }}
           </div>
         </li>
       </ul>
@@ -29,7 +33,7 @@
       <!--第3层容器,在该层容器中展示所有效果-->
       <div class="secondDiv">
         <!--一键置顶-->
-        <el-backtop></el-backtop>
+        <el-backtop ref="ElBacktop"></el-backtop>
 
         <!--内容div-->
         <!--第一个div只是为了占位，达到样式上的效果-->
@@ -74,7 +78,7 @@
             border-top:1px solid #C8C8C8;
 ">
             </li>
-            <div @click="this.getArticleList"
+            <div @click="this.getMoreArticle"
                  class="readMore"
                  style="
                height: 40px;
@@ -190,9 +194,9 @@ export default {
       res_list_data_len: 0, //返回文章列表的长度
       res_list_data: [], //请求服务器获取的文章列表
       res_detail_data: {}, //请求服务器获取的文章详情
+      categoryTag: "推荐", //首页文章分类的标签
     }
   },
-
 
   created() {
     //获取文章列表页信息,如果开启，
@@ -204,7 +208,7 @@ export default {
     var code = this.get_query_string('code');
     if (code != null) {
       console.log("从地址栏中获取到的code为", code)
-      this.$http.get(this.$qqUser + code, {responseType: 'json'}).then(
+      this.$http.get(this.$qqUserUrl + code, {responseType: 'json'}).then(
         res => {
           //成功处理
           console.log("成功处理,获取到的response是", res)
@@ -235,8 +239,8 @@ export default {
     }
   },
   methods: {
-    // 获取url路径参数
     get_query_string: function (name) {
+      // 获取url路径参数
       var reg = new RegExp('(^|&)' + name + '=([^&]*)(&|$)', 'i');
       var r = window.location.search.substr(1).match(reg);
       if (r != null) {
@@ -246,23 +250,61 @@ export default {
     },
     changeRecommendAuthor() {
       //换一批推荐作者
-
     },
-    getClassData(classification) {
-      //获取分类数据
-      this.$http.get('category', {
+    getMoreArticle() {
+      //获取更多文章
+      let category = (this.categoryTag == "推荐" ? "" : this.categoryTag)
+      console.log("此时的分类是===========", category)
+      this.$http.get(this.$articleCategoryUrl, {
         params: {
-          category: classification,
+          category: category,
           page: this.page
         }
       }).then(
         res => {
-          console.log("请求的分类数据为", res.data)
-          this.res_list_data = res.data.results
-          //切换分类，调用一键置顶
-          //TODO 如何主动调用一键置顶
+          this.res_list_data = this.res_list_data.concat(res.data.results)
+          this.page += 1
         }
       )
+    },
+    getClassData(classification) {
+      console.log("此时的this.categoryTag: ", this.categoryTag)
+      console.log("此时的classification:", classification)
+      //获取相应分类的文章
+      //如果当前要请求的分类标签与 this.categoryTag的值相同,该函数无需做任何操作,直接结束。
+      if (this.categoryTag == classification) {
+        return;
+      }
+      //每次将列表数据清空,以便添加新的分类数据
+      this.res_list_data = []
+      //每一次切换分类page应当重置为1,列表页面回到顶部
+      this.page = 1;
+      //此时的分类存入data中,后续在阅读更多的时候分类直接取data中的值即可
+      this.categoryTag = classification;
+      //如果此时
+      //获取分类数据
+      if (classification == "推荐") {
+        //如果分类标签是推荐的话,目前是直接请求未分类数据库数据
+        //TODO 后续推荐API接口出现的话再更换
+        this.getArticleList()
+      } else {
+        //其他分类标签,调用分类接口,返回分类数据
+        this.$http.get(this.$articleCategoryUrl, {
+          params: {
+            category: classification,
+            page: this.page
+          }
+        }).then(
+          res => {
+            console.log("请求的分类数据为", res.data)
+            console.log("this.res_list_data是", this.res_list_data)
+            //TODO 后台API返回数据格式统一化在进行中...
+            this.res_list_data = this.res_list_data.concat(res.data.results)
+          }
+        )
+      }
+      //无论是哪个分类,更换分类,列表页面回到顶部
+      this.$refs.ElBacktop.handleClick()
     },
     load() {
       //TODO 需要nav-bar组件将分类选项传递过来，作为url参数请求服务器获取不同分类的文章
@@ -275,10 +317,11 @@ export default {
     },
     getArticleList() {
       //获取文章列表
+      console.log('文章列表的url为', this.$articleListUrl);
       getArticleList(this.page).then(
         res => {
-          // console.log("来到了getArticleList,获取到的res的数据为", res.data)
-          this.res_list_data = this.res_list_data.concat(res.data)
+          console.log("来到了getArticleList,获取到的res的数据为", res.data)
+          this.res_list_data = this.res_list_data.concat(res.data.data)
           // console.log("此时的res_list_data为", this.res_list_data)
           // 每调用一次就把page+1
           this.page += 1
@@ -307,7 +350,7 @@ export default {
     },
     getArticleDetail(id) {
       //获取文章详情
-      window.open('http://localhost:8080/article/article-detail?id=' + `${id}`);
+      window.open(this.$articleDetailWholeUrl + `${id}`);
     },
   },
 }
@@ -336,7 +379,7 @@ export default {
 
 .indexSubmenuSelected:hover {
   /* 首页子菜单被选中时的style */
-  color: #46698C;
+  color: #409EFF;
 
 }
 

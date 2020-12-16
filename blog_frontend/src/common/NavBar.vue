@@ -352,7 +352,7 @@ export default {
       //验证用户名是否已经注册过
       //验证通过后，向服务器发起网络请求
       console.log("失去焦点出发了")
-      this.$http.get('/usernames-count', {params: {username: this.registerForm.username}}).then(
+      this.$http.get(this.$usernameCountUrl, {params: {username: this.registerForm.username}}).then(
         res => {
           console.log('用户名不存在，可以注册')
           //将data中的用户名已经存在修改为false
@@ -390,7 +390,7 @@ export default {
     //qq登录
     qqLogin() {
       console.log("qq登录")
-      this.$http.get('oauth/authorization').then(
+      this.$http.get(this.$qqAuthorizationUrl).then(
         res => {
           console.log("请求获取到的qq登录的url为", res);
           console.log("res.data.login_url为", res.data.login_url)
@@ -458,7 +458,7 @@ export default {
       }
       console.log("发起了登录的网络请求", this.loginForm)
       //验证通过后，向服务器发起网络请求
-      this.$http.post("/login", this.loginForm, {headers: {'content-type': 'application/x-www-form-urlencoded'}})
+      this.$http.post(this.$userLoginUrl, this.loginForm, {headers: {'content-type': 'application/x-www-form-urlencoded'}})
         .then(
           res => {
             console.log("登录成功")
@@ -508,7 +508,7 @@ export default {
 
       console.log('即将发起网络请求,此时的this.canRegister', this.canRegister)
       //验证通过后，向服务器发起网络请求
-      this.$http.post("/register", this.registerForm).then(
+      this.$http.post(this.$userRegisterUrl, this.registerForm).then(
         res => {
           console.log("注册成功的res为", res)
           this.$message({
