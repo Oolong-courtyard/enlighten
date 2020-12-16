@@ -98,6 +98,13 @@ class ArticleDetailView(GenericAPIView):
     queryset = ArticleList.objects.all()
     serializer_class = ArticleDetailSerializer
 
+    def get(self, request):
+        """获取文章详情信息"""
+        # print(request.query_params)
+        queryset = ArticleDetail.objects.get(article_id=request.query_params.dict().get('id'))
+        serializer = ArticleDetailSerializer(queryset)
+        return BaseResponse(data=serializer.data)
+
     def post(self, request):
         """新增文章详情信息"""
         # client传递过来json数据
