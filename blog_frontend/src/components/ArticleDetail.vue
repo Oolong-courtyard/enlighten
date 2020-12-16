@@ -84,7 +84,8 @@ export default {
       //获取文章详情
       getArticleDetail(id).then(res => {
         console.log("来到了getArticleDetail=====")
-        this.res_detail_data = res.data
+        console.log("获取到的res的data是",res.data.data)
+        this.res_detail_data = res.data.data
       })
     }
   }

@@ -350,7 +350,9 @@ export default {
     },
     getArticleDetail(id) {
       //获取文章详情
-      window.open(this.$articleDetailWholeUrl + `${id}`);
+      console.log("this.$articleDetailWholeUrl是", this.$articleDetailWholeUrl)
+      console.log("请求的url地址是", this.$articleDetailWholeUrl +'?id='+ `${id}`)
+      window.open(this.$articleDetailWholeUrl +'?id='+ `${id}`);
     },
   },
 }
