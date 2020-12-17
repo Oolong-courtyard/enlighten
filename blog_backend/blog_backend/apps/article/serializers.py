@@ -15,6 +15,11 @@ class ArticleListSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 
+class ArticleListQuerySerializer(serializers.Serializer):
+    """文章列表查询条件"""
+    page = serializers.CharField(required=False)
+
+
 class ArticleDetailSerializer(serializers.ModelSerializer):
     """文章详情序列化"""
 
@@ -24,11 +29,14 @@ class ArticleDetailSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 
+class ArticleDetailQuerySerializer(serializers.Serializer):
+    """文章详情查询条件"""
+    article_id = serializers.CharField(required=True)
+
+
 class ArticleCategorySerializer(serializers.ModelSerializer):
     """文章分类序列化"""
 
     class Meta:
         model = ArticleList
         fields = '__all__'
-
-

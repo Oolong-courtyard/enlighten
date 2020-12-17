@@ -65,7 +65,7 @@ MIDDLEWARE = [
     # 'article.middleware.my_middleware,  # 添加中间件'
 ]
 
-#每页数量
+# 每页数量
 NUM_OF_PER_PAGE = 15
 
 # 配置文件中增加异常处理的相关配置
@@ -74,7 +74,7 @@ REST_FRAMEWORK = {
     'EXCEPTION_HANDLER': 'blog_backend.utils.exceptions.exception_handler',
     # 指定分页配置
     'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
-    'PAGE_SIZE': 20,  # 每页数目
+    'PAGE_SIZE': 15,  # 每页数目
     # 添加过滤配置选项,增加过滤功能
     'DEFAULT_FILTER_BACKENDS': ('django_filters.rest_framework.DjangoFilterBackend',),
     # 指定认证类
