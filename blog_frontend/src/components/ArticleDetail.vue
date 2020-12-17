@@ -1,9 +1,11 @@
+<!--文章详情页-->
 <template>
   <!--  根div-->
+  <!--  :style="{'display':this.pageNotFound?'none':'flex'}"-->
   <div class="outermostDiv">
 
     <!--第二层容器,在该层容器中展示所有效果-->
-    <div class="secondDiv">
+    <div class="secondDiv" v-if="this.pageNotFound==false">
       <!--一键置顶-->
       <el-backtop></el-backtop>
 
@@ -41,7 +43,25 @@
 
     </div>
 
+    <div
+      style="
+      width: 800px;
+      font-size: 50px;
+      left: 0;
+      right: 0;
+      margin: 0 auto;
+      background-color: white;
+"
+      v-else
+    >
+      404
+      页面找不到
+    </div>
+
   </div>
+
+  <!--  :style="{'display':this.pageNotFound?'flex':'none'}"-->
+
 
   <!--  <div style="background-color: white">-->
 
@@ -57,14 +77,16 @@
 
 <script>
 import {getArticleDetail} from 'network/home';
-const NavBar =()=>import("../common/NavBar")
+
+const NavBar = () => import("../common/NavBar")
 
 export default {
   name: "ArticleDetail",
   components: {NavBar},
   data() {
     return {
-      res_detail_data: {} //文章详情
+      res_detail_data: {}, //文章详情
+      pageNotFound: false,//详情页是否存在(true为不存在,false为存在)
     }
   },
   created() {
@@ -84,9 +106,15 @@ export default {
       //获取文章详情
       getArticleDetail(id).then(res => {
         console.log("来到了getArticleDetail=====")
-        console.log("获取到的res的data是",res.data.data)
+        console.log("获取到的res的data是", res.data.data)
+        console.log("获取到的res的状态码是", res.status)
         this.res_detail_data = res.data.data
-      })
+      }).catch(
+        err => {
+          //响应非200,显示页面找不到
+          this.pageNotFound = true;
+        }
+      )
     }
   }
 }

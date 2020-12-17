@@ -10,6 +10,6 @@ export function getArticleList(page) {
 export function getArticleDetail(id) {
   return request({
     // url: this.$articleDetailUrl + id
-    url: 'article/article-detail/' + id
+    url: 'article/article-detail/?article_id=' + id.toString()
   })
 }

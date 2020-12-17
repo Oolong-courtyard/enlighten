@@ -1,12 +1,16 @@
+<!--文章列表-->
 <template>
   <!--  根div-->
   <div class="outOutermostDiv">
     <!--导航栏-->
     <div style="position: fixed;
-                height:60px;width: 100%;
-                background-color: white"
+                height:60px;
+                width: 100%;
+                background-color: white;
+                z-index: 999;
+"
     >
-      <div style="margin-left: 450px">
+      <div style="margin-left: 450px;">
         <nav-bar></nav-bar>
       </div>
     </div>
@@ -21,7 +25,7 @@
           <!-- classification 当前选中的分类的颜色应该不一样 -->
           <!-- :style="{'color':this.categoryTag==classification?'#4096EF':'black'}"-->
           <!--TODO 选中tab分类,改变文字颜色未完成-->
-          <div @click="getClassData(classification)"
+          <div @click="getClassDataBefore(classification)"
                class="indexSubmenu indexSubmenuSelected"
           >{{ classification }}
           </div>
@@ -46,6 +50,7 @@
         <div class="contentDiv">
           <!--        load方法使用，如何下拉请求请数据并渲染，以及详情页的爬虫和详情页支持markdown。-->
           <ul v-infinite-scroll=""
+              v-loading="loading"
               :infinite-scroll-immediate="false"
               :infinite-scroll-distance="300"
               style="overflow: hidden;">
@@ -64,6 +69,14 @@
                        @click="getArticleDetail(res_item.article_id)"
                   >
                     {{ res_item.article_name }}
+                  </div>
+                  <div style="margin-top: 20px;">
+                    <el-badge :value="12" class="starAndComment">
+                      <el-button size="small">点赞</el-button>
+                    </el-badge>
+                    <el-badge :value="23" class="starAndComment">
+                      <el-button size="small">评论</el-button>
+                    </el-badge>
                   </div>
                 </div>
 
@@ -115,7 +128,7 @@
           </ul>
 
           <!--下拉加载-->
-          <p v-if="loading">加载中...</p>
+          <!--          <p v-if="loading">加载中...</p>-->
           <p v-if="noMore">没有更多了</p>
         </div>
 
@@ -190,7 +203,7 @@ export default {
       class1: ['推荐', '后端', '前端', 'iOS', 'Android'], //首页文章列表一级分类
       page: 1, //初始page为1
       current_article_index: 0, //每次下拉加载文章列表值增加10，初始值为0
-      loading: false, //下拉加载
+      loading: false, //请求数据加载中
       res_list_data_len: 0, //返回文章列表的长度
       res_list_data: [], //请求服务器获取的文章列表
       res_detail_data: {}, //请求服务器获取的文章详情
@@ -241,8 +254,8 @@ export default {
   methods: {
     get_query_string: function (name) {
       // 获取url路径参数
-      var reg = new RegExp('(^|&)' + name + '=([^&]*)(&|$)', 'i');
-      var r = window.location.search.substr(1).match(reg);
+      let reg = new RegExp('(^|&)' + name + '=([^&]*)(&|$)', 'i');
+      let r = window.location.search.substr(1).match(reg);
       if (r != null) {
         return decodeURI(r[2]);
       }
@@ -262,21 +275,31 @@ export default {
         }
       }).then(
         res => {
-          this.res_list_data = this.res_list_data.concat(res.data.results)
+          this.res_list_data = this.res_list_data.concat(res.data.data)
           this.page += 1
         }
       )
     },
-    getClassData(classification) {
-      console.log("此时的this.categoryTag: ", this.categoryTag)
-      console.log("此时的classification:", classification)
-      //获取相应分类的文章
+    getClassDataBefore(classification) {
+      //调用分类函数之前稍做延时加载
       //如果当前要请求的分类标签与 this.categoryTag的值相同,该函数无需做任何操作,直接结束。
       if (this.categoryTag == classification) {
         return;
       }
       //每次将列表数据清空,以便添加新的分类数据
       this.res_list_data = []
+      //设置加载中为true
+      this.loading = true
+      setTimeout(() => {
+        this.getClassData(classification)
+      }, 300)
+    },
+    getClassData(classification) {
+      console.log("此时的this.categoryTag: ", this.categoryTag)
+      console.log("此时的classification:", classification)
+      //获取相应分类的文章
+      //设置加载中为false
+      this.loading = false
       //每一次切换分类page应当重置为1,列表页面回到顶部
       this.page = 1;
       //此时的分类存入data中,后续在阅读更多的时候分类直接取data中的值即可
@@ -299,7 +322,7 @@ export default {
             console.log("请求的分类数据为", res.data)
             console.log("this.res_list_data是", this.res_list_data)
             //TODO 后台API返回数据格式统一化在进行中...
-            this.res_list_data = this.res_list_data.concat(res.data.results)
+            this.res_list_data = this.res_list_data.concat(res.data.data)
           }
         )
       }
@@ -313,7 +336,9 @@ export default {
       this.loading = true
       // 调用服务端接口获取新数据
       this.getArticleList()
-
+    },
+    loading() {
+      console.log("数据加载中")
     },
     getArticleList() {
       //获取文章列表
@@ -351,20 +376,26 @@ export default {
     getArticleDetail(id) {
       //获取文章详情
       console.log("this.$articleDetailWholeUrl是", this.$articleDetailWholeUrl)
-      console.log("请求的url地址是", this.$articleDetailWholeUrl +'?id='+ `${id}`)
-      window.open(this.$articleDetailWholeUrl +'?id='+ `${id}`);
+      console.log("请求的url地址是", this.$articleDetailWholeUrl + '?id=' + `${id}`)
+      window.open(this.$articleDetailWholeUrl + '?id=' + `${id}`);
     },
   },
 }
 </script>
 
 <style scoped>
+.starAndComment {
+  /*列表页点赞和评论*/
+  margin-left: 20px;
+}
+
 .submenuMainDiv {
   box-shadow: 1px 1px 1px #C8C8C8;
   line-height: 30px;
   text-align: center;
   height: 30px;
   position: fixed;
+  z-index: 999;
   width: 100%;
   margin-top: 60px;
   margin-left: 450px;
@@ -394,6 +425,8 @@ export default {
 .outermostDiv {
   background-color: #EFEFEF;
   display: flex;
+  position: relative;
+  z-index: 998;
 }
 
 .secondDiv {
