@@ -71,10 +71,10 @@
                     {{ res_item.article_name }}
                   </div>
                   <div style="margin-top: 20px;">
-                    <el-badge :value="12" class="starAndComment">
+                    <el-badge :value=res_item.star_count class="starAndComment">
                       <el-button size="small">点赞</el-button>
                     </el-badge>
-                    <el-badge :value="23" class="starAndComment">
+                    <el-badge :value=res_item.star_count class="starAndComment">
                       <el-button size="small">评论</el-button>
                     </el-badge>
                   </div>
