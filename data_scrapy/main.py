@@ -23,7 +23,6 @@ def main(name='jue_jin'):
     # 所有爬虫
     spiders = {
         'jue_jin': JueJinSpiderSpider,
-
     }
     spider_name = name
     for k, v in spiders.items():

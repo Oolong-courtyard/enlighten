@@ -70,6 +70,7 @@ class JueJinSpiderSpider(scrapy.Spider):
             item = JueJinArticleListScrapyItem()
             item['article_id'] = jsonpath.jsonpath(data_item, '$..article_id')[0]
             item['article_name'] = jsonpath.jsonpath(data_item, '$..title')[0]
+            item['publish_time'] = jsonpath.jsonpath(data_item, '$..ctime')[0]
             item['author'] = jsonpath.jsonpath(data_item, '$..user_name')[0]
             item['category'] = jsonpath.jsonpath(data_item, '$..category_name')[0]
             item['scraped_date_time'] = datetime_utils.current_datetime()
@@ -105,6 +106,7 @@ class JueJinSpiderSpider(scrapy.Spider):
         item = JueJinArticleDetailScrapyItem()
         item['article_id'] = list_item['article_id']
         item['article_name'] = list_item['article_name']
+        item['publish_time'] = list_item['publish_time']
         item['author'] = list_item['author']
         item['category'] = list_item['category']
         item['content'] = detail_content

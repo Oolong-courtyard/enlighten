@@ -5,19 +5,20 @@
 
 import scrapy
 
+from utils.datetime_utils import timestamp_to_datetime
 from utils.string_utils import to_string
 
 from configs.scrapy_configs import SERVE_BASE_URL
 
 
-
 class JueJinArticleListScrapyItem(scrapy.Item):
     """掘金文章列表item"""
     name = 'jue_jin_list'
-    request_url = SERVE_BASE_URL + '/article-list/'
+    request_url = SERVE_BASE_URL + '/article/article-list/'
 
     article_id = scrapy.Field()
     article_name = scrapy.Field()
+    publish_time = scrapy.Field()
     summary = scrapy.Field()
     category = scrapy.Field()
     author = scrapy.Field()
@@ -30,6 +31,7 @@ class JueJinArticleListScrapyItem(scrapy.Item):
         trans_data = {
             'article_id': to_string(self.get('article_id')),
             'article_name': to_string(self.get('article_name')),
+            'publish_time': to_string(self.get('publish_time')),
             'author': to_string(self.get('author')),
             'category': to_string(self.get('category')),
             'origin': '掘金',
@@ -41,12 +43,13 @@ class JueJinArticleListScrapyItem(scrapy.Item):
 class JueJinArticleDetailScrapyItem(scrapy.Item):
     """掘金文章详情item"""
     name = 'jue_jin_detail'
-    request_url = SERVE_BASE_URL + '/article-detail/'
+    request_url = SERVE_BASE_URL + '/article/article-detail/'
 
     article_id = scrapy.Field()
     article_name = scrapy.Field()
     summary = scrapy.Field()
     category = scrapy.Field()
+    publish_time = scrapy.Field()
     author = scrapy.Field()
     content = scrapy.Field()
     tags = scrapy.Field()
@@ -56,6 +59,7 @@ class JueJinArticleDetailScrapyItem(scrapy.Item):
         trans_data = {
             'article_id': to_string(self.get('article_id')),
             'article_name': to_string(self.get('article_name')),
+            'publish_time': to_string(self.get('publish_time')),
             'summary': to_string(self.get('summary')),
             'category': to_string(self.get('category')),
             'author': to_string(self.get('author')),

@@ -44,3 +44,9 @@ def compare_two_hours(news_time):
     if news_time < before_two_hours:
         return False
     return True
+
+def timestamp_to_datetime(timestamp):
+    """时间戳转换为datetime字符串"""
+    time_stamp = int(timestamp)
+    time_array = time.localtime(time_stamp)
+    return time.strftime("%Y-%m-%d %H:%M:%S", time_array)

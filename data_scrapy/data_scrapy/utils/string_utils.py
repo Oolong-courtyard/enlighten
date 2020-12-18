@@ -1,6 +1,9 @@
 """
 将值转换为字符串
 """
+import time
+
+
 def to_string(value, default=''):
     return_value = default
     if value is None:
@@ -16,4 +19,5 @@ def to_string(value, default=''):
             except ValueError:
                 return_value = default
     return return_value
-    pass
+
+
