@@ -91,19 +91,26 @@ class ArticleListView(APIView):
         page = paginator.page(target_page)
         serializer = ArticleListSerializer(page, many=True)
         return BaseResponse(data=serializer.data)
-    #
-    # def post(self, request):
-    #     """
-    #     新增/修改 文章列表信息
-    #     """
-    #     # client传递过来json数据
-    #     # 反序列化-数据校验
-    #     serializer = ArticleListSerializer(data=request.data, many=True)
-    #     serializer.is_valid(raise_exception=True)
-    #     # 反序列化-数据保存(create)
-    #     serializer.save()
-    #     # 返回响应: status 201,新建文章列表信息成功
-    #     return Response(serializer.data, status=status.HTTP_201_CREATED)
+
+    @swagger_auto_schema(
+        operation_summary="新增文章列表",
+        request_body=ArticleListSerializer,
+    )
+    def post(self, request):
+        """
+        新增/修改 文章列表信息
+        """
+        # client传递过来json数据
+        # 反序列化-数据校验
+        if isinstance(request.data, list):
+            serializer = ArticleListSerializer(data=request.data, many=True)
+        else:
+            serializer = ArticleListSerializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        # 反序列化-数据保存(create)
+        serializer.save()
+        # 返回响应: status 201,新建文章列表信息成功
+        return Response(serializer.data, status=status.HTTP_201_CREATED)
 
 
 # 详情
@@ -131,7 +138,7 @@ class ArticleDetailView(GenericAPIView):
         """新增文章详情信息"""
         # client传递过来json数据
         # 反序列化-数据校验
-        serializer = ArticleDetailSerializer(data=request.data, many=True)
+        serializer = ArticleDetailSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
         # 反序列化-数据保存(create)
         serializer.save()
