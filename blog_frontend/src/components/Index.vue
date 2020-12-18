@@ -32,7 +32,7 @@
         </li>
       </ul>
     </div>
-
+    <!--TODO 关键点在下面这里,背景颜色灰色。。。-->
     <div class="outermostDiv">
       <!--第3层容器,在该层容器中展示所有效果-->
       <div class="secondDiv">
@@ -51,18 +51,20 @@
           <!--        load方法使用，如何下拉请求请数据并渲染，以及详情页的爬虫和详情页支持markdown。-->
           <ul v-infinite-scroll=""
               v-loading="loading"
+              element-loading-text="拼命加载中"
+              element-loading-spinner="el-icon-loading"
               :infinite-scroll-immediate="false"
               :infinite-scroll-distance="300"
-              style="overflow: hidden;">
+              style="overflow: hidden;font-size: 30px">
             <li v-for="(res_item,index) in res_list_data"
                 style="list-style: none"
             >
               <!--display:flex 让div内子元素水平排列,而不是默认的垂直排列-->
               <div class="item-list">
-                <div style="width: 70%">
-                  <div style="text-align: left;font-size: 10px">
+                <div style="width: 80%">
+                  <div style="text-align: left;font-size: 10px;color: #B2BAC2">
                     <!--更新/发布时间后续处理为几小时或者几天前-->
-                    {{ res_item.author }} · {{ res_item.updated_time }} ·
+                    {{ res_item.author }} · {{ res_item.publish_time |transPublishTime(res_item.publish_time) }} ·
                     {{ res_item.category }}
                   </div>
                   <div class="article-name article-name2"
@@ -80,10 +82,10 @@
                   </div>
                 </div>
 
-                <div style="width: 30%">
-                  <!--                <img :src="res_item.images" alt="" width="40" height="40">-->
-                  <img src="../images/2.jpg" alt="" width="50" height="50">
-                </div>
+<!--                <div style="width: 20%">-->
+<!--                                  <img :src="res_item.images" alt="" width="40" height="40">-->
+<!--                  <img src="../images/2.jpg" alt="" width="50" height="50">-->
+<!--                </div>-->
               </div>
               <!--添加分割线-->
               <hr style="height:1px;
@@ -93,24 +95,12 @@
             </li>
             <div @click="this.getMoreArticle"
                  class="readMore"
-                 style="
-               height: 40px;
-               line-height:40px;
-               text-align: center;
-               border-radius: 20px;
-               color: white;
-               margin-top: 30px;
-               margin-left: 50px;
-               background-color: #A5A5A5 ;
-
-               width: 600px;
-">
+            >
               阅读更多
             </div>
-            <div style="margin-top: 50px;
-              text-align: center;
-              line-height: 20px;
-">
+            <div
+              style="margin-top: 50px;text-align: center;line-height: 20px;font-size: 18px"
+            >
               <div
                 style="color: #969696;height: 20px;display: flex;text-align: center;line-height: 20px">
                 <div style="margin-left: 250px" class="bottomContact">关于启发</div>
@@ -141,10 +131,12 @@
         <div style="height: 55px;background-color: #EFEFEF"></div>
         <!--下载启发 手机app-->
         <div class="downloadApp"
-             style="width: 280px;height: 300px;background-color: white;margin-left: 20px">
+             style="width: 280px;height: 560px;background-color: white;margin-left: 20px">
           <img style="height: 230px;width:280px" src="../images/wujie.png"
                alt="">
-          <div style="display: flex">
+          <img style="height: 230px;width:280px" src="../images/golang.png"
+               alt="">
+          <div style="display: flex;">
             <img style="height: 70px;width: 70px"
                  src="../images/downloadApp.png" alt="">
             <div style="padding: 10px">
@@ -189,8 +181,8 @@
 </template>
 
 <script>
-import {getArticleList, getClassArticleList} from 'network/home';
-import axios from "axios";
+import {getArticleList} from 'network/home';
+import {timeago} from "@/common/time";
 
 const NavBar = () => import("../common/NavBar");
 
@@ -218,7 +210,7 @@ export default {
   mounted() {
     // console.log("此时的环境变量为",process.env);
     //根据地址栏中是否有code参数请求server获取用户的openid
-    var code = this.get_query_string('code');
+    let code = this.get_query_string('code');
     if (code != null) {
       console.log("从地址栏中获取到的code为", code)
       this.$http.get(this.$qqUserUrl + code, {responseType: 'json'}).then(
@@ -249,7 +241,7 @@ export default {
       //获取当前屏幕的宽度
       console.log('屏幕的宽度啊', document.documentElement.scrollWidth)
       return (document.documentElement.scrollWidth) + 'px';
-    }
+    },
   },
   methods: {
     get_query_string: function (name) {
@@ -292,7 +284,7 @@ export default {
       this.loading = true
       setTimeout(() => {
         this.getClassData(classification)
-      }, 300)
+      }, 1000)
     },
     getClassData(classification) {
       console.log("此时的this.categoryTag: ", this.categoryTag)
@@ -380,13 +372,24 @@ export default {
       window.open(this.$articleDetailWholeUrl + '?id=' + `${id}`);
     },
   },
+  filters: {
+    transPublishTime(publishTime) {
+      //将发布时间转换为数天前的格式
+      return timeago(publishTime)
+    },
+  },
 }
 </script>
 
 <style scoped>
+.el-icon-loading {
+  font-size: 50px;
+}
+
 .starAndComment {
   /*列表页点赞和评论*/
   margin-left: 20px;
+  font-size: 10px;
 }
 
 .submenuMainDiv {
@@ -423,6 +426,7 @@ export default {
 }
 
 .outermostDiv {
+  height: 100%;
   background-color: #EFEFEF;
   display: flex;
   position: relative;
@@ -459,8 +463,8 @@ export default {
 
 .article-name {
   cursor: pointer;
-  text-align: center;
-  font-size: 18px;
+  /*text-align: center;*/
+  font-size: 16px;
   font-weight: bold;
   margin-top: 10px;
   color: #333333;
@@ -471,7 +475,17 @@ export default {
 }
 
 .readMore {
+  font-size: 20px;
   cursor: pointer;
+  height: 40px;
+  line-height: 40px;
+  text-align: center;
+  border-radius: 20px;
+  color: white;
+  margin-top: 30px;
+  margin-left: 50px;
+  background-color: #A5A5A5;
+  width: 600px;
 }
 
 .bottomContact:hover {
