@@ -11,7 +11,7 @@
 "
     >
       <div style="margin-left: 450px;">
-        <nav-bar></nav-bar>
+        <nav-bar @child-event="getSearchData"></nav-bar>
       </div>
     </div>
 
@@ -74,7 +74,7 @@
                   </div>
                   <div style="margin-top: 20px;">
                     <el-badge :value=res_item.star_count class="starAndComment">
-                      <el-button size="small">点赞</el-button>
+                      <el-button size="small" @click="clickStar">点赞</el-button>
                     </el-badge>
                     <el-badge :value=res_item.star_count class="starAndComment">
                       <el-button size="small">评论</el-button>
@@ -82,10 +82,10 @@
                   </div>
                 </div>
 
-<!--                <div style="width: 20%">-->
-<!--                                  <img :src="res_item.images" alt="" width="40" height="40">-->
-<!--                  <img src="../images/2.jpg" alt="" width="50" height="50">-->
-<!--                </div>-->
+                <!--                <div style="width: 20%">-->
+                <!--                                  <img :src="res_item.images" alt="" width="40" height="40">-->
+                <!--                  <img src="../images/2.jpg" alt="" width="50" height="50">-->
+                <!--                </div>-->
               </div>
               <!--添加分割线-->
               <hr style="height:1px;
@@ -93,8 +93,14 @@
             border-top:1px solid #C8C8C8;
 ">
             </li>
-            <div @click="this.getMoreArticle"
+            <div class="noMoreList"
+                 v-if="noMore"
+            >
+              已经到底啦!
+            </div>
+            <div @click="this.getMoreArticleBefore"
                  class="readMore"
+                 v-else
             >
               阅读更多
             </div>
@@ -119,7 +125,6 @@
 
           <!--下拉加载-->
           <!--          <p v-if="loading">加载中...</p>-->
-          <p v-if="noMore">没有更多了</p>
         </div>
 
       </div>
@@ -200,6 +205,9 @@ export default {
       res_list_data: [], //请求服务器获取的文章列表
       res_detail_data: {}, //请求服务器获取的文章详情
       categoryTag: "推荐", //首页文章分类的标签
+      noMore: false,//是否有更多的数据
+      lastClick: "isCategory",//用于点击阅读更多判断当前是`tab分类`还是`检索`(只能是`isCategory`,`isSearch`)
+      searchInputValue:"" //存储子组件NavBar中输入框中的值
     }
   },
 
@@ -209,6 +217,8 @@ export default {
   },
   mounted() {
     // console.log("此时的环境变量为",process.env);
+    //设置首页显示默认分类
+    this.categoryTag = "推荐"
     //根据地址栏中是否有code参数请求server获取用户的openid
     let code = this.get_query_string('code');
     if (code != null) {
@@ -216,7 +226,6 @@ export default {
       this.$http.get(this.$qqUserUrl + code, {responseType: 'json'}).then(
         res => {
           //成功处理
-          console.log("成功处理,获取到的response是", res)
           localStorage.setItem('username', res.data.username)
           // this.$router.go(0) //刷新当前页面
           console.log("跳转后的url地址是", this.$http.defaults.baseURL)
@@ -234,9 +243,9 @@ export default {
     }
   },
   computed: {
-    noMore() {
-      return this.res_list_data_len >= 20
-    },
+    // noMore() {
+    //   return this.res_list_data_len >= 20
+    // },
     windowWidth() {
       //获取当前屏幕的宽度
       console.log('屏幕的宽度啊', document.documentElement.scrollWidth)
@@ -244,6 +253,45 @@ export default {
     },
   },
   methods: {
+    clickStar(){
+      //改变文章的点赞数(某篇文章的点赞数;某个用户点赞过的文章)
+      //已经登陆的用户才可以点赞(当前文章的点赞数加一);未登陆用户点赞弹出登陆对话框诱导用户登陆;点赞之后再点一次是取消点赞(当前文章的点赞数减一);
+      //
+    },
+    getMoreSearchData(){
+      //根据检索条件获取更过的数据
+      this.$http.get(this.$articleSearch, {params: {articleName: this.searchInputValue, page: this.page}})
+        .then(
+          res => {
+            //只需要将请求到的数据append进res_list_data
+            this.res_list_data = this.res_list_data.concat(res.data.data)
+          }
+        )
+        .catch(
+          err => {
+            console.log("响应异常了", err)
+            this.noMore = true
+          }
+        )
+    },
+    getSearchData(data) {
+      //子组件NavBar传递给本组件值,将结果设置给res_list_data
+      console.log("data是", data)
+      //将当前操作设置为 `isSearch`
+      this.lastClick = "isSearch"
+      //将搜索输入框中的值设置到data中,用于在阅读更多的时候使用
+      this.searchInputValue = data.searchInput
+      this.noMore = false
+      this.res_list_data = []
+      this.loading = true
+      setTimeout(() => {
+        this.loading = false
+        this.res_list_data = this.res_list_data.concat(data.resData)
+        this.page = data.pageNum
+      }, 1000)
+      //置顶
+      this.$refs.ElBacktop.handleClick()
+    },
     get_query_string: function (name) {
       // 获取url路径参数
       let reg = new RegExp('(^|&)' + name + '=([^&]*)(&|$)', 'i');
@@ -256,10 +304,20 @@ export default {
     changeRecommendAuthor() {
       //换一批推荐作者
     },
-    getMoreArticle() {
+    getMoreArticleBefore() {
+      //点击阅读更多时,判断当前
+      if(this.lastClick == "isCategory"){
+        //上一次操作为分类操作
+        this.getMoreCategoryArticle()
+      } else if(this.lastClick == "isSearch"){
+        //上一次操作为检索操作
+        this.getMoreSearchData()
+      }
+    },
+    getMoreCategoryArticle() {
       //获取更多文章
+      //使用三元,推荐系统还没上,所以检索的条件只能是空,
       let category = (this.categoryTag == "推荐" ? "" : this.categoryTag)
-      console.log("此时的分类是===========", category)
       this.$http.get(this.$articleCategoryUrl, {
         params: {
           category: category,
@@ -270,6 +328,11 @@ export default {
           this.res_list_data = this.res_list_data.concat(res.data.data)
           this.page += 1
         }
+      ).catch(
+        err => {
+          console.log("错误信息是", err)
+          this.noMore = true
+        }
       )
     },
     getClassDataBefore(classification) {
@@ -278,6 +341,10 @@ export default {
       if (this.categoryTag == classification) {
         return;
       }
+      //当前操作是 获取分类数据的操作
+      this.lastClick = "isCategory";
+      //重置noMore
+      this.noMore = false;
       //每次将列表数据清空,以便添加新的分类数据
       this.res_list_data = []
       //设置加载中为true
@@ -287,10 +354,10 @@ export default {
       }, 1000)
     },
     getClassData(classification) {
-      console.log("此时的this.categoryTag: ", this.categoryTag)
-      console.log("此时的classification:", classification)
       //获取相应分类的文章
       //设置加载中为false
+      console.log("此时的this.categoryTag: ", this.categoryTag)
+      console.log("此时的classification:", classification)
       this.loading = false
       //每一次切换分类page应当重置为1,列表页面回到顶部
       this.page = 1;
@@ -474,6 +541,18 @@ export default {
   text-decoration: underline;
 }
 
+.noMoreList {
+  font-size: 20px;
+  height: 40px;
+  line-height: 40px;
+  text-align: center;
+  font-weight: bold;
+  color: #A5A5A5;
+  margin-top: 30px;
+  margin-left: 50px;
+  width: 600px;
+}
+
 .readMore {
   font-size: 20px;
   cursor: pointer;
@@ -484,7 +563,7 @@ export default {
   color: white;
   margin-top: 30px;
   margin-left: 50px;
-  background-color: #A5A5A5;
+  background-color: #B2BAC2;
   width: 600px;
 }
 

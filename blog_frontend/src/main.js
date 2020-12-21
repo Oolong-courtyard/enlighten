@@ -39,6 +39,8 @@ Vue.prototype.$articleListUrl = 'article/article-list/?page='
 Vue.prototype.$articleDetailUrl = 'article/article-detail/'
 //文章分类
 Vue.prototype.$articleCategoryUrl = 'article/category/'
+//文章搜索
+Vue.prototype.$articleSearch = 'article/search'
 
 //引用
 Vue.use(ElementUI)

@@ -48,11 +48,12 @@
             v-model="searchInput"
             @focus="searchFocus"
             @blur="searchBlur"
+            @change="searchInputChange"
           >
             <i slot="suffix"
                :style="{'color':this.selectSearch?'#4096EF':'grey'}"
                class="el-input__icon el-icon-search"
-               @click="startSearch"
+               @click="startSearch(searchInput)"
             ></i>
           </el-input>
           <!--          <div style="margin-left: -20px;height: 30px">-->
@@ -254,6 +255,7 @@ export default {
     return {
       selectSearch: false,//是否选中了输入框
       searchInput: '', //搜索输入
+      searchInputValueChange: false,//搜索输入框中的值是否改变(布尔)
       canLogin: true, //登录数据通过校验的依据
       canRegister: true, //注册数据通过校验的依据
       username: null, //页面刷新后,created中将localStorage中的username赋值到这里，用于页面右上角显示
@@ -329,17 +331,41 @@ export default {
   methods: {
     startSearch() {
       //搜索内容
+      //每一次检索判断输入框是否改变;没有改变不发送任何网络请求
+      if (this.searchInputValueChange == false) {
+        console.log("输入框值未改变,不发送请求")
+        return;
+      }
+      //选中输入框,改变背景颜色
       this.selectSearch = true;
       //根据输入的内容发起网络请求
-
+      this.$http.get(this.$articleSearch, {params: {articleName: this.searchInput, page: 1}})
+        .then(
+          res => {
+            console.log("请求到的数据为", res)
+            //将获取到的数据传递给父组件 Index ,并将值设置给父组件data中res_list_data
+            this.$emit('child-event', {resData: res.data.data, pageNum: 1,searchInput:this.searchInput})
+            //获取到数据之后,如果输入框未改变,不再发送请求
+            //TODO 后续再优化,因为在点击获取分类数据之后,此时虽然输入框内容没有改变,业务上应该还是要发起网络请求的。
+            // this.searchInputValueChange = false
+          }
+        )
+        .catch(
+          err => {
+            console.log("响应异常了", err)
+          }
+        )
     },
     searchBlur() {
       this.selectSearch = false;
     },
     searchFocus() {
       //搜索框样式改变
-      console.log("点击了输入框")
       this.selectSearch = true;
+    },
+    searchInputChange() {
+      //输入框改变的时候触发
+      this.searchInputValueChange = true
     },
 
     //注册用户名格式校验

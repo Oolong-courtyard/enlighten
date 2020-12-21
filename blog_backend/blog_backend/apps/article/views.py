@@ -34,19 +34,21 @@ msg = cache.get('msg')
 
 
 # 搜索
-# class ArticleSearch(GenericAPIView):
-#     """文章搜索"""
-#
-#     def get(self, request):
-#         """文章搜索"""
-#         request_data = request.query_params
-#         # TODO 以下需要修改，新增搜索的序列化器
-#         serializer = self.get_serializer(data=request.data, many=True)
-#         serializer.is_valid(raise_exception=True)
-#         # 反序列化-数据保存(create)
-#         serializer.save()
-#         # 返回响应: status 201,新建文章列表信息成功
-#         return Response(serializer.data, status=status.HTTP_201_CREATED)
+class ArticleSearch(GenericAPIView):
+    """文章搜索"""
+
+    def get(self, request):
+        """文章搜索"""
+        article_name = request.query_params.dict().get('articleName')
+        target_page = request.query_params.dict().get('page')
+        # TODO 以下需要修改，新增搜索的序列化器
+        queryset = ArticleList.objects.filter(article_name__contains=article_name)
+        num_of_per_page = NUM_OF_PER_PAGE
+        paginator = Paginator(queryset, num_of_per_page)
+        page = paginator.page(target_page)
+        serializer = ArticleListSerializer(page, many=True)
+        # 返回响应: status 201,新建文章列表信息成功
+        return BaseResponse(data=serializer.data)
 
 
 # 分类
