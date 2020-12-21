@@ -56,7 +56,7 @@
               :infinite-scroll-immediate="false"
               :infinite-scroll-distance="300"
               style="overflow: hidden;font-size: 30px">
-            <li v-for="(res_item,index) in res_list_data"
+            <li v-for="(res_item,index) in resListData"
                 style="list-style: none"
             >
               <!--display:flex 让div内子元素水平排列,而不是默认的垂直排列-->
@@ -73,11 +73,16 @@
                     {{ res_item.article_name }}
                   </div>
                   <div style="margin-top: 20px;">
+                    <!--                    <el-badge :value=userArticleStars[res_item.article_id]?userArticleStars[res_item.article_id]:res_item.star_count class="starAndComment">-->
                     <el-badge :value=res_item.star_count class="starAndComment">
-                      <el-button size="small" @click="clickStar">点赞</el-button>
+                      <el-button size="small"
+                                 @click="clickStarCount(index,res_item.article_id,res_item.star_count)">点赞
+                      </el-button>
                     </el-badge>
-                    <el-badge :value=res_item.star_count class="starAndComment">
-                      <el-button size="small">评论</el-button>
+                    <el-badge :value=res_item.comment_count class="starAndComment">
+                      <el-button size="small"
+                                 @click="clickCommentCount(index,res_item.article_id,res_item.comment_count)">评论
+                      </el-button>
                     </el-badge>
                   </div>
                 </div>
@@ -202,18 +207,24 @@ export default {
       current_article_index: 0, //每次下拉加载文章列表值增加10，初始值为0
       loading: false, //请求数据加载中
       res_list_data_len: 0, //返回文章列表的长度
-      res_list_data: [], //请求服务器获取的文章列表
+      resListData: [], //请求服务器获取的文章列表
       res_detail_data: {}, //请求服务器获取的文章详情
       categoryTag: "推荐", //首页文章分类的标签
       noMore: false,//是否有更多的数据
       lastClick: "isCategory",//用于点击阅读更多判断当前是`tab分类`还是`检索`(只能是`isCategory`,`isSearch`)
-      searchInputValue:"" //存储子组件NavBar中输入框中的值
+      searchInputValue: "",//存储子组件NavBar中输入框中的值
+      userArticleStars: {
+        2: "2",
+      },//存放用户对某篇文章的点赞数,{article_id:count}
     }
   },
 
   created() {
     //获取文章列表页信息,如果开启，
     this.getArticleList()
+  },
+  updated() {
+    //data改变时触发
   },
   mounted() {
     // console.log("此时的环境变量为",process.env);
@@ -244,7 +255,7 @@ export default {
   },
   computed: {
     // noMore() {
-    //   return this.res_list_data_len >= 20
+    //   return this.resListData_len >= 20
     // },
     windowWidth() {
       //获取当前屏幕的宽度
@@ -253,18 +264,38 @@ export default {
     },
   },
   methods: {
-    clickStar(){
-      //改变文章的点赞数(某篇文章的点赞数;某个用户点赞过的文章)
-      //已经登陆的用户才可以点赞(当前文章的点赞数加一);未登陆用户点赞弹出登陆对话框诱导用户登陆;点赞之后再点一次是取消点赞(当前文章的点赞数减一);
-      //
+    clickStarCount(index, article_id, star_count) {
+      /*
+      改变文章的点赞数(某篇文章的点赞数;某个用户点赞过的文章)
+      已经登陆的用户才可以点赞(当前文章的点赞数加一);未登陆用户点赞弹出登陆对话框诱导用户登陆;点赞之后再点一次是取消点赞(当前文章的点赞数减一);
+       */
+      //如果userArticleStars中根据article_id获取到值，说明该文章已经被该用户点过赞,此时应当取消点赞；
+      //如果未获取到值，说明该文章未被该用户点过赞，此时点赞数加1；
+      //TODO 点赞时候,需要改变背景颜色,可以开始做后台(文章被点赞数和用户点赞的文章,以及表结构设计，用户信息采集->用户画像构建->推荐算法和模型训练->生成推荐数据并返回)
+
+
+      if (!this.userArticleStars[article_id]) {
+        console.log("点赞字典中没有这个文章,此时字典为", this.userArticleStars)
+        this.userArticleStars[article_id] = 1
+        this.resListData[index].star_count += 1
+      } else {
+        console.log("点赞字典中有这个文章,此时字典为", this.userArticleStars)
+        this.resListData[index].star_count -= 1
+        delete this.userArticleStars[article_id]
+      }
     },
-    getMoreSearchData(){
+    clickCommentCount(index, article_id, comment_count) {
+      /*
+      TODO 评论按钮显示当前文章的评论数量，点击评论按钮直接跳转到该文章的详情页的评论区；
+      */
+    },
+    getMoreSearchData() {
       //根据检索条件获取更过的数据
       this.$http.get(this.$articleSearch, {params: {articleName: this.searchInputValue, page: this.page}})
         .then(
           res => {
-            //只需要将请求到的数据append进res_list_data
-            this.res_list_data = this.res_list_data.concat(res.data.data)
+            //只需要将请求到的数据append进resListData
+            this.resListData = this.resListData.concat(res.data.data)
           }
         )
         .catch(
@@ -275,18 +306,20 @@ export default {
         )
     },
     getSearchData(data) {
-      //子组件NavBar传递给本组件值,将结果设置给res_list_data
+      //子组件NavBar传递给本组件值,将结果设置给resListData
       console.log("data是", data)
       //将当前操作设置为 `isSearch`
       this.lastClick = "isSearch"
       //将搜索输入框中的值设置到data中,用于在阅读更多的时候使用
       this.searchInputValue = data.searchInput
       this.noMore = false
-      this.res_list_data = []
+      this.resListData = []
       this.loading = true
       setTimeout(() => {
         this.loading = false
-        this.res_list_data = this.res_list_data.concat(data.resData)
+        this.resListData = this.resListData.concat(data.resData)
+        //评论数为0的话,直接不显示
+        this.commentEqualZero(this.resListData)
         this.page = data.pageNum
       }, 1000)
       //置顶
@@ -306,10 +339,10 @@ export default {
     },
     getMoreArticleBefore() {
       //点击阅读更多时,判断当前
-      if(this.lastClick == "isCategory"){
+      if (this.lastClick == "isCategory") {
         //上一次操作为分类操作
         this.getMoreCategoryArticle()
-      } else if(this.lastClick == "isSearch"){
+      } else if (this.lastClick == "isSearch") {
         //上一次操作为检索操作
         this.getMoreSearchData()
       }
@@ -325,7 +358,7 @@ export default {
         }
       }).then(
         res => {
-          this.res_list_data = this.res_list_data.concat(res.data.data)
+          this.resListData = this.resListData.concat(res.data.data)
           this.page += 1
         }
       ).catch(
@@ -346,7 +379,7 @@ export default {
       //重置noMore
       this.noMore = false;
       //每次将列表数据清空,以便添加新的分类数据
-      this.res_list_data = []
+      this.resListData = []
       //设置加载中为true
       this.loading = true
       setTimeout(() => {
@@ -379,9 +412,12 @@ export default {
         }).then(
           res => {
             console.log("请求的分类数据为", res.data)
-            console.log("this.res_list_data是", this.res_list_data)
+            console.log("this.resListData是", this.resListData)
             //TODO 后台API返回数据格式统一化在进行中...
-            this.res_list_data = this.res_list_data.concat(res.data.data)
+            this.resListData = this.resListData.concat(res.data.data)
+            //评论数为0的话,直接不显示
+            this.commentEqualZero(this.resListData)
+
           }
         )
       }
@@ -405,14 +441,15 @@ export default {
       getArticleList(this.page).then(
         res => {
           console.log("来到了getArticleList,获取到的res的数据为", res.data)
-          this.res_list_data = this.res_list_data.concat(res.data.data)
-          // console.log("此时的res_list_data为", this.res_list_data)
+          this.resListData = this.resListData.concat(res.data.data)
+          //评论数为0的话,直接不显示
+          this.commentEqualZero(this.resListData)
+          // console.log("此时的resListData为", this.resListData)
           // 每调用一次就把page+1
           this.page += 1
           // console.log("此时的page为", this.page)
         }
       )
-
 
       // if (this.current_article_index == 0) {
       //   //第一次只加载前10条，每次下拉新加载10条
@@ -421,13 +458,13 @@ export default {
       //   //获取文章列表
       //   getArticleList(this.current_article_index).then(res => {
       //     console.log("来到了getArticleList=====")
-      //     this.res_list_data = res.data
+      //     this.resListData = res.data
       //   })
       // } else {
       //   //获取文章列表
       //   getArticleList(this.current_article_index).then(res => {
       //     console.log("来到了getArticleList=====")
-      //     this.res_list_data = res.data
+      //     this.resListData = res.data
       //   })
       // }
 
@@ -438,7 +475,17 @@ export default {
       console.log("请求的url地址是", this.$articleDetailWholeUrl + '?id=' + `${id}`)
       window.open(this.$articleDetailWholeUrl + '?id=' + `${id}`);
     },
+    commentEqualZero(resListData) {
+      //评论数为0的话,直接不显示
+      for (let i = 0, len = resListData.length; i < len; i++) {
+        console.log("this.resListData[i].comment_count", this.resListData[i].comment_count)
+        if (this.resListData[i].comment_count == 0) {
+          this.resListData[i].comment_count = null
+        }
+      }
+    },
   },
+
   filters: {
     transPublishTime(publishTime) {
       //将发布时间转换为数天前的格式
