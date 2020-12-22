@@ -3,9 +3,21 @@
 """
 import re
 
+from django.contrib.auth.validators import UnicodeUsernameValidator
 from rest_framework import serializers
 
 from users.models import UserProfile
+
+
+class LoginViewSerializer(serializers.ModelSerializer):
+    """用户登录序列化器"""
+
+    # username = serializers.CharField(validators=[UnicodeUsernameValidator()], label="用户名", write_only=True)
+    # password = serializers.CharField(label="密码", write_only=True)
+
+    class Meta:
+        model = UserProfile
+        fields = ('username', 'password')
 
 
 class CreateUserSerializer(serializers.ModelSerializer):

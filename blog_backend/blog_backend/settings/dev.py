@@ -131,7 +131,7 @@ CACHES = {
         # 缓存使用redis进行存储
         "BACKEND": "django_redis.cache.RedisCache",
         # 缓存的位置: 0 号库
-        "LOCATION": "redis://127.0.0.1:6379/0",
+        "LOCATION": "redis://106.15.8.3:6379/0",
         "OPTIONS": {
             "CLIENT_CLASS": "django_redis.client.DefaultClient",
         }
@@ -141,7 +141,7 @@ CACHES = {
         # 缓存使用redis进行存储
         "BACKEND": "django_redis.cache.RedisCache",
         # 缓存的位置: 1 号库
-        "LOCATION": "redis://127.0.0.1:6379/1",
+        "LOCATION": "redis://106.15.8.3:6379/1",
         "OPTIONS": {
             "CLIENT_CLASS": "django_redis.client.DefaultClient",
         }
@@ -299,3 +299,9 @@ QQ_CLIENT_SECRET = '2d33b582c3b37cee6f8e704bd0834ce9'
 # 我们申请时添加的: 登录成功后回调的路径
 QQ_REDIRECT_URI = 'http://localhost:8080/index'
 QQ_STATE = '/'
+
+# ===============================================================
+# token的有效时间为1个小时
+TOKEN_EXPIRE = 60 * 60
+# token的前缀
+TOKEN_KEY_PREFIX = "ENLIGHTEN_" + "API_" + "V1_"

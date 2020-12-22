@@ -6,11 +6,20 @@ import json
 from django.contrib.auth import authenticate
 from django import http
 from django.views import View
+from drf_yasg.utils import swagger_auto_schema
+from drf_yasg import openapi
 from rest_framework.generics import CreateAPIView, GenericAPIView
 from rest_framework.views import APIView
 
 from users.models import UserProfile
-from users.serializers import CreateUserSerializer
+from users.serializers import CreateUserSerializer, LoginViewSerializer
+from utils.base_response import BaseResponse
+
+
+class UserStarView(APIView):
+    """用户点赞"""
+    # TODO 业务上需要用户认证的，加上该认证类，认证通过才能执行该函数中的操作
+    # 这里要增加认证类
 
 
 class UsernameCountView(View):
@@ -36,6 +45,7 @@ class RegisterView(CreateAPIView):
     # 2.保存注册用户信息
     # 3.返回应答,注册成功
     serializer_class = CreateUserSerializer
+    # TODO 注册成功后需要返回token
 
 
 """
@@ -46,6 +56,10 @@ class RegisterView(CreateAPIView):
 class LoginView(APIView):
     """用户登录"""
 
+    @swagger_auto_schema(
+        operation_summary="用户登录",
+        request_body=LoginViewSerializer,
+    )
     def post(self, request):
         """用户登录"""
         request_data_dict = json.loads(request.body)
@@ -54,9 +68,11 @@ class LoginView(APIView):
         user = authenticate(request, username=username, password=pwd)
         if user is None:
             return http.HttpResponse(status=400, content="用户名或密码错误")
-
-        # 用户存在
-        return http.HttpResponse("登录成功")
+        # 用户认证成功,生成jwt Token,
+        response = UserProfile.generate_jwt_token(user)
+        # 将token存入redis中
+        UserProfile.token_to_cache(user.id, response['token'])
+        return BaseResponse(data=response)
 
 
 class EmailActiveView(View):

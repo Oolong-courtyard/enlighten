@@ -14,7 +14,7 @@ from rest_framework.response import Response
 from rest_framework import status
 from rest_framework.generics import GenericAPIView, ListAPIView, CreateAPIView
 
-from settings.dev import NUM_OF_PER_PAGE
+from django.conf import settings
 from utils.base_response import BaseResponse, BusStatusCode
 from .models import ArticleDetail, ArticleList
 from .serializers import (
@@ -43,7 +43,7 @@ class ArticleSearch(GenericAPIView):
         target_page = request.query_params.dict().get('page')
         # TODO 以下需要修改，新增搜索的序列化器
         queryset = ArticleList.objects.filter(article_name__contains=article_name)
-        num_of_per_page = NUM_OF_PER_PAGE
+        num_of_per_page = settings.NUM_OF_PER_PAGE
         paginator = Paginator(queryset, num_of_per_page)
         page = paginator.page(target_page)
         serializer = ArticleListSerializer(page, many=True)

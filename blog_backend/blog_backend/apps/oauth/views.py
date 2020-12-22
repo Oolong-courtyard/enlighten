@@ -59,26 +59,9 @@ class OAuthQQUserView(APIView):
             """
             # 将用户信息保存后,声称
             oauth_user = OAuthQQUser.objects.get(openid=open_id)
-            return self.generate_jwt_token(oauth_user.user)
+            return UserProfile.generate_jwt_token(oauth_user.user)
         else:
             # 用户已经绑定过,生成 JWT token信息
             user = oauth_user.user
-            return self.generate_jwt_token(user)
+            return UserProfile.generate_jwt_token(user)
 
-    def generate_jwt_token(self, user):
-        """生成 jwt token"""
-        from rest_framework_jwt.settings import api_settings
-        # 生成token
-        jwt_payload_handler = api_settings.JWT_PAYLOAD_HANDLER
-        jwt_encode_handler = api_settings.JWT_ENCODE_HANDLER
-        # 生成载荷信息(payload)
-        payload = jwt_payload_handler(user)
-        # 生成jwt token
-        token = jwt_encode_handler(payload)
-        response = Response({
-            'token': token,
-            'user_id': user.id,
-            'username': user.username,
-            # 可以返回更多的用户信息(比如用户的头像)
-        })
-        return response

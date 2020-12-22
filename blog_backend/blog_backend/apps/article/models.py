@@ -24,8 +24,12 @@ from utils.models import BaseModel
 2. 采用自顶向下的思路进行数据库设计，首先分析系统业务，根据职责定义对象。对象要符合封装的特性，确保与职责相关的数据项被定义在一个对象中；
 3.
 """
+"""
+表结构和业务设计一定要具有可拓展性和非耦合性。
+"""
 
 
+# 文章列表
 class ArticleList(BaseModel):
     """
     文章列表
@@ -51,6 +55,7 @@ class ArticleList(BaseModel):
         ordering = ['-publish_time']  # 指定默认排序字段
 
 
+# 文章详情
 class ArticleDetail(BaseModel):
     """
     文章详情
@@ -74,7 +79,10 @@ class ArticleDetail(BaseModel):
         verbose_name = '文章详情'
         verbose_name_plural = verbose_name
 
+#相似文章
 
+
+# 文章元数据表
 class ArticleMetadata(BaseModel):
     """
     文章元数据表,存储文章相关信息;
