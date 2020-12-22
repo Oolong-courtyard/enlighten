@@ -73,17 +73,20 @@
                     {{ res_item.article_name }}
                   </div>
                   <div style="margin-top: 20px;">
-                    <!--                    <el-badge :value=userArticleStars[res_item.article_id]?userArticleStars[res_item.article_id]:res_item.star_count class="starAndComment">-->
-                    <el-badge :value=res_item.star_count class="starAndComment">
-                      <el-button size="small"
-                                 @click="clickStarCount(index,res_item.article_id,res_item.star_count)">点赞
-                      </el-button>
-                    </el-badge>
-                    <el-badge :value=res_item.comment_count class="starAndComment">
-                      <el-button size="small"
-                                 @click="clickCommentCount(index,res_item.article_id,res_item.comment_count)">评论
-                      </el-button>
-                    </el-badge>
+                    <!--TODO 点赞,关于点赞和评论图标的样式，后续可以找更好看的-->
+                    <el-button class="starStyle"
+                               :style="{'background-color':userArticleStars.indexOf(res_item.article_id) == -1?'':'#66AEE1'}"
+                               @click="clickStarCount(index,res_item.article_id,res_item.star_count)">
+                      <div
+                        :style="{'color':userArticleStars.indexOf(res_item.article_id) == -1?'':'white'}">
+                        👍 {{ res_item.star_count }}
+                      </div>
+                    </el-button>
+                    <!--评论-->
+                    <el-button class="commentStyle"
+                               @click="clickCommentCount(index,res_item.article_id,res_item.comment_count)">
+                      评论 {{ res_item.comment_count }}
+                    </el-button>
                   </div>
                 </div>
 
@@ -213,9 +216,7 @@ export default {
       noMore: false,//是否有更多的数据
       lastClick: "isCategory",//用于点击阅读更多判断当前是`tab分类`还是`检索`(只能是`isCategory`,`isSearch`)
       searchInputValue: "",//存储子组件NavBar中输入框中的值
-      userArticleStars: {
-        2: "2",
-      },//存放用户对某篇文章的点赞数,{article_id:count}
+      userArticleStars: [],//存放用户点赞过的文章id。(用户登陆成功的同时，获取该用户已经点赞的文章id存放到该变量中。)
     }
   },
 
@@ -272,16 +273,22 @@ export default {
       //如果userArticleStars中根据article_id获取到值，说明该文章已经被该用户点过赞,此时应当取消点赞；
       //如果未获取到值，说明该文章未被该用户点过赞，此时点赞数加1；
       //TODO 点赞时候,需要改变背景颜色,可以开始做后台(文章被点赞数和用户点赞的文章,以及表结构设计，用户信息采集->用户画像构建->推荐算法和模型训练->生成推荐数据并返回)
+      if (localStorage.getItem("username")){
+        //用户已经登陆,可以给文章点赞
 
+      }
 
-      if (!this.userArticleStars[article_id]) {
-        console.log("点赞字典中没有这个文章,此时字典为", this.userArticleStars)
-        this.userArticleStars[article_id] = 1
+      if (this.userArticleStars.indexOf(article_id) == -1) {
+        //该文章没有被该用户点赞,将该文章id添加到userArticleStars中
+        this.userArticleStars.push(article_id)
         this.resListData[index].star_count += 1
+        //并发起网络请求，文章角度：当前文章被点赞的总数加1。用户角度：当前用户点赞表中增加该文章。
+        //TODO 后台建模
       } else {
-        console.log("点赞字典中有这个文章,此时字典为", this.userArticleStars)
+        //该文章已经被该用户点赞,此时取消点赞
         this.resListData[index].star_count -= 1
-        delete this.userArticleStars[article_id]
+        this.userArticleStars.splice(this.userArticleStars.indexOf(article_id), 1)
+        //并发起网络请求，文章角度：当前文章被点赞的总数减1。用户角度：当前用户点赞表中删除该文章。
       }
     },
     clickCommentCount(index, article_id, comment_count) {
@@ -417,7 +424,6 @@ export default {
             this.resListData = this.resListData.concat(res.data.data)
             //评论数为0的话,直接不显示
             this.commentEqualZero(this.resListData)
-
           }
         )
       }
@@ -435,13 +441,15 @@ export default {
     loading() {
       console.log("数据加载中")
     },
-    getArticleList() {
+    getArticleList(userId) {
       //获取文章列表
       console.log('文章列表的url为', this.$articleListUrl);
       getArticleList(this.page).then(
         res => {
           console.log("来到了getArticleList,获取到的res的数据为", res.data)
+          //将获取到的数据添加到 resListData 中
           this.resListData = this.resListData.concat(res.data.data)
+          //
           //评论数为0的话,直接不显示
           this.commentEqualZero(this.resListData)
           // console.log("此时的resListData为", this.resListData)
@@ -449,7 +457,8 @@ export default {
           this.page += 1
           // console.log("此时的page为", this.page)
         }
-      )
+      );
+
 
       // if (this.current_article_index == 0) {
       //   //第一次只加载前10条，每次下拉新加载10条
@@ -500,10 +509,26 @@ export default {
   font-size: 50px;
 }
 
-.starAndComment {
+.starStyle {
   /*列表页点赞和评论*/
-  margin-left: 20px;
-  font-size: 10px;
+  /*font-size: 10px;*/
+  /*display: flex;*/
+  height: 32px;
+  width: 50px;
+  text-align: center;
+  padding: 0
+  /*position: center;*/
+}
+
+.commentStyle {
+  /*列表页点赞和评论*/
+  /*font-size: 10px;*/
+  /*display: flex;*/
+  height: 32px;
+  width: 50px;
+  text-align: center;
+  padding: 0;
+  /*position: center;*/
 }
 
 .submenuMainDiv {
@@ -568,7 +593,7 @@ export default {
   margin-top: 10px;
   width: 100%;
   height: 100px;
-  display: flex
+  /*display: flex*/
 }
 
 .item-list:hover {

@@ -406,6 +406,10 @@ export default {
         //  退出登录，清除localStorage中的用户数据
         this.loginSuccess = false
         localStorage.removeItem('username')
+        //TODO star
+        //3.退出的时候需要再`发射`一下,清空父组件中的userArticleStar
+        // (从效果上来看，用户登陆：已点赞的文章背景颜色改变。未登陆用户：无点亮的点赞样式，且点击点赞的时候弹出登陆对话框)
+
       } else if (command === 'a') {
         //个人中心
       } else if (command === 'b') {
@@ -494,12 +498,28 @@ export default {
             this.loginSuccess = true;
             //响应式渲染;将登录填写的username设置到data中的username;将用户名设置进localStorage中
             this.username = this.loginForm.username
+            //设置登陆成功的用户的信息(用户id,用户token)
             localStorage.setItem('username', this.loginForm.username)
+            //登陆成功后需要请求该用户点赞的文章并`发射`给列表父组件(此时会自动调用在父组件中定义的方法(该方法的功能时：将这些文章id添加到 userArticleStar 中。))
+            //TODO 携带token请求db获取该用户点赞的文章id列表
 
             //将菜单右侧登录注册按钮隐藏,转而显示用户名(可以直接使用v-bind，设置一个visibile，为false显示登录注册按钮，为true显示用户名。
             // 个人头像鼠标移动上去自动显示下拉菜单，可以进个人主页；个人主页有购物车(订单)，可以更换头像，可以写个性签名，
             // 主页，增加搜索框，可以直接写文章(支持MarkDown)，
             // )
+            //TODO star
+            /*
+            用户登陆和退出时,
+            1.都要对localStorage中token做处理(增加和删除);
+            3.退出的时候需要再`发射`一下,清空父组件中的userArticleStar
+            */
+            //如果用户登陆,获取该用户点赞的文章id,添加到 userArticleStars 中。在画面样式上我可以直接根据userArticleStars中是否有该文章的id来决定该文章点赞图标的样式
+            //从localStorage中获取登陆用户的token
+            if (localStorage.getItem(userId) != null){
+              //用户已登陆
+
+            }
+
           }
         ).catch(error => {
         console.log("error是", error)
