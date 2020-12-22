@@ -63,8 +63,6 @@
         <!--右侧菜单-->
         <div class="navLoginRegister"
              :style="{'display':this.loginSuccess?'none':'flex'}">
-
-
           <el-menu-item @click="loginDialogFormVisible = true">登录</el-menu-item>
           <el-menu-item @click="registerDialogFormVisible = true">注册
           </el-menu-item>
@@ -208,465 +206,456 @@
 
 
 <script>
-import axios from 'axios';
 
-export default {
-  name: "NavBar",
-  data() {
-    //登录表单username校验
-    let checkLoginUsername = (rule, value, callback) => {
-      let D = /^[a-z0-9]*$/
-      if (!D.test(this.loginForm.username)) {
-        callback(new Error('用户名不存在'))
-      } else callback()
-    }
-    //登录表单password校验
-    let checkLoginPassword = (rule, value, callback) => {
-      let D = /^[a-z0-9]*$/
-      if (!D.test(this.loginForm.password)) {
-        callback(new Error('密码错误'))
-      } else callback()
-    }
+  export default {
+    name: "NavBar",
+    data() {
+      //登录表单username校验
+      let checkLoginUsername = (rule, value, callback) => {
+        let D = /^[a-z0-9]*$/;
+        if (!D.test(this.loginForm.username)) {
+          callback(new Error('用户名不存在'))
+        } else callback()
+      };
+      //登录表单password校验
+      let checkLoginPassword = (rule, value, callback) => {
+        let D = /^[a-z0-9]*$/;
+        if (!D.test(this.loginForm.password)) {
+          callback(new Error('密码错误'))
+        } else callback()
+      };
 
-    //注册表单校验,添加正则校验,用户名只能输入字母或数字
-    let checkRegisterUsername = (rule, value, callback) => {
-      let D = /^[a-z0-9]*$/
-      if (!D.test(this.registerForm.username)) {
-        callback(new Error('用户名只能包含数字或字母'))
-      }
-      //校验用户名是否存在
-      if (this.usernameExist === true) {
-        callback(new Error('用户名已存在'))
-      } else callback()
-    }
-    //注册表单校验,添加正则校验,密码只能输入字母和数字
-    let checkRegisterPassword = (rule, value, callback) => {
-      let D = /^[a-z0-9]*$/
-      if (!D.test(this.registerForm.password)) {
-        callback(new Error('密码只能包含数字或字母'))
-      } else callback()
-    }
-    //注册表单校验,只需要确认与输入的密码一致即可。
-    let checkRegisterEnsurePassword = (rule, value, callback) => {
-      if (this.registerForm.password !== this.registerForm.ensurePassword) {
-        callback(new Error('密码不一致'))
-      } else callback()
-    }
-    return {
-      selectSearch: false,//是否选中了输入框
-      searchInput: '', //搜索输入
-      searchInputValueChange: false,//搜索输入框中的值是否改变(布尔)
-      canLogin: true, //登录数据通过校验的依据
-      canRegister: true, //注册数据通过校验的依据
-      username: null, //页面刷新后,created中将localStorage中的username赋值到这里，用于页面右上角显示
-      usernameExist: false, //用户注册时判断用户名是否已经存在
-      loginSuccess: false, //是否登陆成功。用于控制用户登陆成功后个人用户名的显示
-      otherLoginVisible: true, //其他登录方式显隐
-      registerVerifyFormVisible: false,  //注册时验证码填写form是否显示
-      loginDialogFormVisible: false, //登录对话框显隐
-      registerDialogFormVisible: false, //注册对话框显隐
-      loginForm: {
-        username: '',
-        password: '',
-      }, //登录表单
-      registerForm: {
-        username: '',
-        mobile: '',
-        // verification: '',
-        email: '',
-        password: '',
-        ensurePassword: '',
-      }, //注册表单
-
-      loginFormRules: {
-        // email:[
-        //   { required:true,message:"请输入邮箱地址",trigger:"blur" },
-        //   { min:5,max:15,message: "长度必须在5到15个字符之间",trigger: "blur" },
-        // ],
-        username: [
-          {required: true, message: "请输入用户名", trigger: "blur"},
-          {min: 5, max: 10, message: '用户名不存在', trigger: 'blur'},
-          {validator: checkLoginUsername, trigger: 'blur'},
-        ],
-        password: [
-          {required: true, message: "请输入密码", trigger: "blur"},
-          {min: 5, max: 10, message: "密码错误", trigger: "blur"},
-          {validator: checkLoginPassword, trigger: 'blur'},
-        ],
-      },
-      registerFormRules: {
-        // mobile:[
-        //   {message:"请输入手机号码",trigger:"blur"},
-        //   {len:11,message: "大陆手机号长度必须为11位",trigger: "blur"},
-        // ],
-        username: [
-          {required: true, message: '请输入用户名', trigger: 'blur'},
-          {min: 5, max: 10, message: '长度必须在5到15个字符之间', trigger: 'blur'},
-          {validator: checkRegisterUsername, trigger: 'blur'},
-        ],
-        password: [
-          {required: true, message: '请输入密码', trigger: 'blur'},
-          {min: 5, max: 10, message: '长度必须在5到15个字符之间', trigger: 'blur'},
-          {validator: checkRegisterPassword, trigger: 'blur'},
-        ],
-        ensurePassword: [
-          {required: true, message: '请输入密码确认', trigger: 'blur'},
-          {validator: checkRegisterEnsurePassword, trigger: 'blur'},
-        ],
-      },
-      formLabelWidth: '80px'
-    }
-  },
-  mounted() {
-    //获取localStorage中的用户信息
-    const username = localStorage.getItem('username')
-    if (username) {
-      this.loginSuccess = true; //loginSuccess状态决定当前页面右上角显示用户名还是登录/注册按钮
-      // 为了兼容注册成功后，直接显示用户名,直接在localStorage中获取username后设置到data中的username中；因此注册成功的同时将username设置到localStorage中
-      this.username = username;
-    } else {
-      this.loginSuccess = false;
-    }
-  },
-  methods: {
-    startSearch() {
-      //搜索内容
-      //每一次检索判断输入框是否改变;没有改变不发送任何网络请求
-      if (this.searchInputValueChange == false) {
-        console.log("输入框值未改变,不发送请求")
-        return;
-      }
-      //选中输入框,改变背景颜色
-      this.selectSearch = true;
-      //根据输入的内容发起网络请求
-      this.$http.get(this.$articleSearch, {params: {articleName: this.searchInput, page: 1}})
-        .then(
-          res => {
-            console.log("请求到的数据为", res)
-            //将获取到的数据传递给父组件 Index ,并将值设置给父组件data中res_list_data
-            this.$emit('child-event', {resData: res.data.data, pageNum: 1,searchInput:this.searchInput})
-            //获取到数据之后,如果输入框未改变,不再发送请求
-            //TODO 后续再优化,因为在点击获取分类数据之后,此时虽然输入框内容没有改变,业务上应该还是要发起网络请求的。
-            // this.searchInputValueChange = false
-          }
-        )
-        .catch(
-          err => {
-            console.log("响应异常了", err)
-          }
-        )
-    },
-    searchBlur() {
-      this.selectSearch = false;
-    },
-    searchFocus() {
-      //搜索框样式改变
-      this.selectSearch = true;
-    },
-    searchInputChange() {
-      //输入框改变的时候触发
-      this.searchInputValueChange = true
-    },
-
-    //注册用户名格式校验
-    checkRegisterUsername() {
-
-    },
-
-    //注册时检查用户名是否已经注册过
-    async CheckUsernameExist() {
-      //验证用户名是否已经注册过
-      //验证通过后，向服务器发起网络请求
-      console.log("失去焦点出发了")
-      this.$http.get(this.$usernameCountUrl, {params: {username: this.registerForm.username}}).then(
-        res => {
-          console.log('用户名不存在，可以注册')
-          //将data中的用户名已经存在修改为false
-          this.usernameExist = false;
+      //注册表单校验,添加正则校验,用户名只能输入字母或数字
+      let checkRegisterUsername = (rule, value, callback) => {
+        let D = /^[a-z0-9]*$/;
+        if (!D.test(this.registerForm.username)) {
+          callback(new Error('用户名只能包含数字或字母'))
         }
-      ).catch(err => {
-        if (err.response.status === 400) {
-          //将data中的用户名已经存在修改为True
-          this.usernameExist = true;
-        }
-      })
-      //  根据res的返回结果判断用户是否已经注册过
-      // if (res.status != 200) {
-      //   //  用户已经存在
-      //   this.$message({
-      //     message: '用户已经存在',
-      //     type: 'warning'
-      //   })
-      //   return;
-      // }
-    },
+        //校验用户名是否存在
+        if (this.usernameExist === true) {
+          callback(new Error('用户名已存在'))
+        } else callback()
+      };
+      //注册表单校验,添加正则校验,密码只能输入字母和数字
+      let checkRegisterPassword = (rule, value, callback) => {
+        let D = /^[a-z0-9]*$/;
+        if (!D.test(this.registerForm.password)) {
+          callback(new Error('密码只能包含数字或字母'))
+        } else callback()
+      };
+      //注册表单校验,只需要确认与输入的密码一致即可。
+      let checkRegisterEnsurePassword = (rule, value, callback) => {
+        if (this.registerForm.password !== this.registerForm.ensurePassword) {
+          callback(new Error('密码不一致'))
+        } else callback()
+      };
+      return {
+        selectSearch: false,//是否选中了输入框
+        searchInput: '', //搜索输入
+        searchInputValueChange: false,//搜索输入框中的值是否改变(布尔)
+        canLogin: true, //登录数据通过校验的依据
+        canRegister: true, //注册数据通过校验的依据
+        username: null, //页面刷新后,created中将localStorage中的username赋值到这里，用于页面右上角显示
+        usernameExist: false, //用户注册时判断用户名是否已经存在
+        loginSuccess: false, //是否登陆成功。用于控制用户登陆成功后个人用户名的显示
+        otherLoginVisible: true, //其他登录方式显隐
+        registerVerifyFormVisible: false,  //注册时验证码填写form是否显示
+        loginDialogFormVisible: false, //登录对话框显隐
+        registerDialogFormVisible: false, //注册对话框显隐
+        loginForm: {
+          username: '',
+          password: '',
+        }, //登录表单
+        registerForm: {
+          username: '',
+          mobile: '',
+          // verification: '',
+          email: '',
+          password: '',
+          ensurePassword: '',
+        }, //注册表单
 
-    handleCommand(command) {
-      if (command === 'c') {
-        //  退出登录，清除localStorage中的用户数据
-        this.loginSuccess = false
-        localStorage.removeItem('username')
-        //TODO star
-        //3.退出的时候需要再`发射`一下,清空父组件中的userArticleStar
-        // (从效果上来看，用户登陆：已点赞的文章背景颜色改变。未登陆用户：无点亮的点赞样式，且点击点赞的时候弹出登陆对话框)
-
-      } else if (command === 'a') {
-        //个人中心
-      } else if (command === 'b') {
-        //购物车
+        loginFormRules: {
+          // email:[
+          //   { required:true,message:"请输入邮箱地址",trigger:"blur" },
+          //   { min:5,max:15,message: "长度必须在5到15个字符之间",trigger: "blur" },
+          // ],
+          username: [
+            {required: true, message: "请输入用户名", trigger: "blur"},
+            {min: 5, max: 10, message: '用户名不存在', trigger: 'blur'},
+            {validator: checkLoginUsername, trigger: 'blur'},
+          ],
+          password: [
+            {required: true, message: "请输入密码", trigger: "blur"},
+            {min: 5, max: 10, message: "密码错误", trigger: "blur"},
+            {validator: checkLoginPassword, trigger: 'blur'},
+          ],
+        },
+        registerFormRules: {
+          // mobile:[
+          //   {message:"请输入手机号码",trigger:"blur"},
+          //   {len:11,message: "大陆手机号长度必须为11位",trigger: "blur"},
+          // ],
+          username: [
+            {required: true, message: '请输入用户名', trigger: 'blur'},
+            {min: 5, max: 10, message: '长度必须在5到15个字符之间', trigger: 'blur'},
+            {validator: checkRegisterUsername, trigger: 'blur'},
+          ],
+          password: [
+            {required: true, message: '请输入密码', trigger: 'blur'},
+            {min: 5, max: 10, message: '长度必须在5到15个字符之间', trigger: 'blur'},
+            {validator: checkRegisterPassword, trigger: 'blur'},
+          ],
+          ensurePassword: [
+            {required: true, message: '请输入密码确认', trigger: 'blur'},
+            {validator: checkRegisterEnsurePassword, trigger: 'blur'},
+          ],
+        },
+        formLabelWidth: '80px'
       }
     },
-
-    //qq登录
-    qqLogin() {
-      console.log("qq登录")
-      this.$http.get(this.$qqAuthorizationUrl).then(
-        res => {
-          console.log("请求获取到的qq登录的url为", res);
-          console.log("res.data.login_url为", res.data.login_url)
-          window.open(res.data.login_url)
-        }
-      )
-      //向QQ服务器发起网络请求
-      // window.open("https://graph.qq.com/oauth2.0/authorize?response_type=code&client_id=101911861&redirect_uri=http://www.enlighten.top/index&state=enlighten&scope=get_user_info,list_album,upload_pic,do_like",
-      //   "width=450,height=320,menubar=0,scrollbars=1,resizable=1,status=1,titlebar=0,toolbar=0,location=1"
-      // );
-
-      // this.$message(
-      //   {
-      //     message: "后续功能还在开发中",
-      //     type: "warning"
-      //   }
-      // )
-
-    },
-    //微信登录
-    weChatLogin() {
-      console.log("微信登录")
-    },
-    //github登录
-    githubLogin() {
-      console.log("github登录")
-    },
-    //控制其他登录方式显隐
-    otherLogin() {
-      // this.otherLoginVisible = !this.otherLoginVisible;
-    },
-    //验证手机号
-    verifyMobile() {
-      if (this.registerForm.mobile.len === 11) {
-        this.registerVerifyFormVisible = true
+    mounted() {
+      //获取localStorage中的用户信息
+      if (username) {
+        this.loginSuccess = true; //loginSuccess状态决定当前页面右上角显示用户名还是登录/注册按钮
+        // 为了兼容注册成功后，直接显示用户名,直接在localStorage中获取username后设置到data中的username中；因此注册成功的同时将username设置到localStorage中
+        this.username = username;
       } else {
-        this.$message({
-          message: "大陆手机号必须为11位",
-          type: "warning"
-        })
+        this.loginSuccess = false;
       }
     },
-
-    //获取验证码
-    async getVerifyCode() {
-      this.$message({
-        message: "获取验证码请求已发出"
-      })
-      //点击之后马上倒计时,60s之内无法再次点击
-      // const res = await this.$http.post("/verifcation", this.registerForm.mobile);
-    },
-    //重置表单
-    resetForm(formName) {
-      this.$refs[formName].resetFields();
-    },
-    //登录处理
-    async handleLogin() {
-      console.log("来到了handlogin")
-      //校验登录表单数据
-      this.$refs.loginFormF.validate(valid => {
-        this.canLogin = valid
-      })
-      if (this.canLogin === false) {
-        return;
-      }
-      console.log("发起了登录的网络请求", this.loginForm)
-      //验证通过后，向服务器发起网络请求
-      this.$http.post(this.$userLoginUrl, this.loginForm, {headers: {'content-type': 'application/x-www-form-urlencoded'}})
-        .then(
-          res => {
-            console.log("登录成功")
-            //右侧替换为登录成功的用户名
-            //设置loginDialogFormVisible的值为false
-            this.loginDialogFormVisible = false;
-            this.loginSuccess = true;
-            //响应式渲染;将登录填写的username设置到data中的username;将用户名设置进localStorage中
-            this.username = this.loginForm.username
-            //设置登陆成功的用户的信息(用户id,用户token)
-            localStorage.setItem('username', this.loginForm.username)
-            //登陆成功后需要请求该用户点赞的文章并`发射`给列表父组件(此时会自动调用在父组件中定义的方法(该方法的功能时：将这些文章id添加到 userArticleStar 中。))
-            //TODO 携带token请求db获取该用户点赞的文章id列表
-
-            //将菜单右侧登录注册按钮隐藏,转而显示用户名(可以直接使用v-bind，设置一个visibile，为false显示登录注册按钮，为true显示用户名。
-            // 个人头像鼠标移动上去自动显示下拉菜单，可以进个人主页；个人主页有购物车(订单)，可以更换头像，可以写个性签名，
-            // 主页，增加搜索框，可以直接写文章(支持MarkDown)，
-            // )
-            //TODO star
-            /*
-            用户登陆和退出时,
-            1.都要对localStorage中token做处理(增加和删除);
-            3.退出的时候需要再`发射`一下,清空父组件中的userArticleStar
-            */
-            //如果用户登陆,获取该用户点赞的文章id,添加到 userArticleStars 中。在画面样式上我可以直接根据userArticleStars中是否有该文章的id来决定该文章点赞图标的样式
-            //从localStorage中获取登陆用户的token
-            if (localStorage.getItem(userId) != null){
-              //用户已登陆
-
+    methods: {
+      startSearch() {
+        //搜索内容
+        //每一次检索判断输入框是否改变;没有改变不发送任何网络请求
+        if (this.searchInputValueChange === false) {
+          console.log("输入框值未改变,不发送请求");
+          return;
+        }
+        //选中输入框,改变背景颜色
+        this.selectSearch = true;
+        //根据输入的内容发起网络请求
+        this.$http.get(this.$articleSearch, {params: {articleName: this.searchInput, page: 1}})
+          .then(
+            res => {
+              console.log("请求到的数据为", res);
+              //将获取到的数据传递给父组件 Index ,并将值设置给父组件data中res_list_data
+              this.$emit('child-event', {resData: res.data.data, pageNum: 1, searchInput: this.searchInput})
+              //获取到数据之后,如果输入框未改变,不再发送请求
+              //TODO 后续再优化,因为在点击获取分类数据之后,此时虽然输入框内容没有改变,业务上应该还是要发起网络请求的。
+              // this.searchInputValueChange = false
             }
+          )
+          .catch(
+            err => {
+              console.log("响应异常了", err)
+            }
+          )
+      },
+      searchBlur() {
+        this.selectSearch = false;
+      },
+      searchFocus() {
+        //搜索框样式改变
+        this.selectSearch = true;
+      },
+      searchInputChange() {
+        //输入框改变的时候触发
+        this.searchInputValueChange = true
+      },
 
+      //注册用户名格式校验
+      checkRegisterUsername() {
+
+      },
+
+      //注册时检查用户名是否已经注册过
+      async CheckUsernameExist() {
+        //验证用户名是否已经注册过
+        //验证通过后，向服务器发起网络请求
+        console.log("失去焦点出发了");
+        this.$http.get(this.$usernameCountUrl, {params: {username: this.registerForm.username}}).then(
+          res => {
+            console.log('用户名不存在，可以注册');
+            //将data中的用户名已经存在修改为false
+            this.usernameExist = false;
           }
-        ).catch(error => {
-        console.log("error是", error)
-        if (error.response.status === 400) {
+        ).catch(err => {
+          if (err.response.status === 400) {
+            //将data中的用户名已经存在修改为True
+            this.usernameExist = true;
+          }
+        })
+        //  根据res的返回结果判断用户是否已经注册过
+        // if (res.status != 200) {
+        //   //  用户已经存在
+        //   this.$message({
+        //     message: '用户已经存在',
+        //     type: 'warning'
+        //   })
+        //   return;
+        // }
+      },
+
+      handleCommand(command) {
+        if (command === 'c') {
+          //  退出登录，清除localStorage中的用户数据
+          this.loginSuccess = false;
+          localStorage.clear()
+
+          //TODO star
+          //3.退出的时候需要再`发射`一下,清空父组件中的userArticleStar
+          // (从效果上来看，用户登陆：已点赞的文章背景颜色改变。未登陆用户：无点亮的点赞样式，且点击点赞的时候弹出登陆对话框)
+
+        } else if (command === 'a') {
+          //个人中心
+        } else if (command === 'b') {
+          //购物车
+        }
+      },
+
+      //qq登录
+      qqLogin() {
+        console.log("qq登录");
+        this.$http.get(this.$qqAuthorizationUrl).then(
+          res => {
+            console.log("请求获取到的qq登录的url为", res);
+            console.log("res.data.login_url为", res.data.login_url);
+            window.open(res.data.login_url)
+          }
+        )
+
+      },
+      //微信登录
+      weChatLogin() {
+        console.log("微信登录")
+      },
+      //github登录
+      githubLogin() {
+        console.log("github登录")
+      },
+      //控制其他登录方式显隐
+      otherLogin() {
+        // this.otherLoginVisible = !this.otherLoginVisible;
+      },
+      //验证手机号
+      verifyMobile() {
+        if (this.registerForm.mobile.len === 11) {
+          this.registerVerifyFormVisible = true
+        } else {
           this.$message({
-            message: "用户名或密码错误",
+            message: "大陆手机号必须为11位",
             type: "warning"
           })
         }
-      })
-    },
-    //注册处理
-    handleRegister() {
-      console.log("来到了handleRegister")
-      this.$refs.registerFormF.validate(valid => {
-        this.canRegister = valid
-      })
-      //所有校验通过后，才能发起注册的网络请求(注册过程中维护一个共同变量,只要任一校验没有通过,该变量都为false)
-      if (this.canRegister === false) {
-        console.log('表单校验', this.canRegister)
-        //TODO 特别注意 ! 和  ！= 的区别 (!是相对而言的,你是true ！就是false  你是fals ！就是true)
-        return;
-      }
-      //是否开启注册功能
-      // this.$message({
-      //   message: "注册功能暂不提供",
-      //   type: "warning"
-      // })
+      },
 
-      //先将输入的验证码 设置到registerForm中，并传入到服务器对比
-      // this.registerForm.verification = this.$refs.verifyCode.value
+      //获取验证码
+      async getVerifyCode() {
+        this.$message({
+          message: "获取验证码请求已发出"
+        })
+        //点击之后马上倒计时,60s之内无法再次点击
+        // const res = await this.$http.post("/verifcation", this.registerForm.mobile);
+      },
+      //重置表单
+      resetForm(formName) {
+        this.$refs[formName].resetFields();
+      },
+      //登录处理
+      async handleLogin() {
+        console.log("来到了handlogin");
+        //校验登录表单数据
+        this.$refs.loginFormF.validate(valid => {
+          this.canLogin = valid
+        });
+        if (this.canLogin === false) {
+          return;
+        }
+        console.log("发起了登录的网络请求", this.loginForm);
+        //验证通过后，向服务器发起网络请求
+        this.$http.post(this.$userLoginUrl, this.loginForm, {headers: {'content-type': 'application/x-www-form-urlencoded'}})
+          .then(
+            res => {
+              console.log("登录成功返回的数据是", res);
+              console.log("登录成功");
+              //右侧替换为登录成功的用户名
+              //设置loginDialogFormVisible的值为false
+              this.loginDialogFormVisible = false;
+              this.loginSuccess = true;
+              //响应式渲染;将登录填写的username设置到data中的username;将用户名设置进localStorage中
+              this.username = res.data.data["username"];
+              //设置登陆成功的用户的信息(用户name,用户token)
+              localStorage.setItem('userId', res.data.data["user_id"]);
+              localStorage.setItem('username', res.data.data["username"]);
+              localStorage.setItem('userToken', res.data.data["token"]);
+              //登陆成功后需要请求该用户点赞的文章并`发射`给列表父组件(此时会自动调用在父组件中定义的方法(该方法的功能时：将这些文章id添加到 userArticleStar 中。))
+              //TODO 携带token请求db获取该用户点赞的文章id列表
 
-      console.log('即将发起网络请求,此时的this.canRegister', this.canRegister)
-      //验证通过后，向服务器发起网络请求
-      this.$http.post(this.$userRegisterUrl, this.registerForm).then(
-        res => {
-          console.log("注册成功的res为", res)
+              //将菜单右侧登录注册按钮隐藏,转而显示用户名(可以直接使用v-bind，设置一个visibile，为false显示登录注册按钮，为true显示用户名。
+              // 个人头像鼠标移动上去自动显示下拉菜单，可以进个人主页；个人主页有购物车(订单)，可以更换头像，可以写个性签名，
+              // 主页，增加搜索框，可以直接写文章(支持MarkDown)，
+              // )
+              //TODO star
+              /*
+              用户登陆和退出时,
+              1.都要对localStorage中token做处理(增加和删除);
+              3.退出的时候需要再`发射`一下,清空父组件中的userArticleStar
+              */
+              //如果用户登陆,获取该用户点赞的文章id,添加到 userArticleStars 中。在画面样式上我可以直接根据userArticleStars中是否有该文章的id来决定该文章点赞图标的样式
+              //从localStorage中获取登陆用户的token
+              if (localStorage.getItem("userToken") != null) {
+                //用户已登陆
+                console.log("用户已登录")
+
+              }
+            }
+          ).catch(error => {
+          console.log("error是", error);
+          if (error.response.status === 400) {
+            this.$message({
+              message: "用户名或密码错误",
+              type: "warning"
+            })
+          }
+        })
+      },
+      //注册处理
+      handleRegister() {
+        console.log("来到了handleRegister");
+        this.$refs.registerFormF.validate(valid => {
+          this.canRegister = valid
+        });
+        //所有校验通过后，才能发起注册的网络请求(注册过程中维护一个共同变量,只要任一校验没有通过,该变量都为false)
+        if (this.canRegister === false) {
+          console.log('表单校验', this.canRegister);
+          //TODO 特别注意 ! 和  ！= 的区别 (!是相对而言的,你是true ！就是false  你是fals ！就是true)
+          return;
+        }
+        //是否开启注册功能
+        // this.$message({
+        //   message: "注册功能暂不提供",
+        //   type: "warning"
+        // })
+
+        //先将输入的验证码 设置到registerForm中，并传入到服务器对比
+        // this.registerForm.verification = this.$refs.verifyCode.value
+
+        console.log('即将发起网络请求,此时的this.canRegister', this.canRegister);
+        //验证通过后，向服务器发起网络请求
+        this.$http.post(this.$userRegisterUrl, this.registerForm).then(
+          res => {
+            console.log("注册成功的res为", res);
+            this.$message({
+              message: "注册成功",
+              type: "warning",
+            });
+            this.registerDialogFormVisible = false;
+            this.loginSuccess = true;
+            //直接将用户名设置到data中(因为注册成功对话框消失后，页面没有刷新，created函数没有执行);
+            //同时将用户名设置进localStorage中(这一步是为了刷新页面后用户名仍然显示)
+            this.username = this.registerForm.username;
+            localStorage.setItem('username', this.registerForm.username)
+          }
+        ).catch(err => {
+          console.log("注册失败的err为", err);
           this.$message({
-            message: "注册成功",
+            message: "注册失败,请重新注册",
             type: "warning",
           });
-          this.registerDialogFormVisible = false;
-          this.loginSuccess = true;
-          //直接将用户名设置到data中(因为注册成功对话框消失后，页面没有刷新，created函数没有执行);
-          //同时将用户名设置进localStorage中(这一步是为了刷新页面后用户名仍然显示)
-          this.username = this.registerForm.username
-          localStorage.setItem('username', this.registerForm.username)
-        }
-      ).catch(err => {
-        console.log("注册失败的err为", err)
-        this.$message({
-          message: "注册失败,请重新注册",
-          type: "warning",
-        });
-      })
-      //处理相应的请求
+        })
+        //处理相应的请求
+      },
     },
-  },
-}
+  }
 </script>
 
 <style>
-.el-input__icon {
+  .el-input__icon {
 
-}
+  }
 
-.el-icon-search {
-  padding: 10px;
-  color: #409EFF;
-  cursor: pointer;
-  font-weight: bold;
-  font-size: 20px;
-}
+  .el-icon-search {
+    padding: 10px;
+    color: #409EFF;
+    cursor: pointer;
+    font-weight: bold;
+    font-size: 20px;
+  }
 
-.tabBarDiv {
-  position: fixed;
-  width: 1000px;
-}
+  .tabBarDiv {
+    position: fixed;
+    width: 1000px;
+  }
 
-.loginElDialog {
-  width: 650px;
-  display: flex;
-  /*align-self: center;*/
-  top: 15%;
-  left: 0;
-  right: 0;
-  margin: 0 auto;
-}
+  .loginElDialog {
+    width: 650px;
+    display: flex;
+    /*align-self: center;*/
+    top: 15%;
+    left: 0;
+    right: 0;
+    margin: 0 auto;
+  }
 
-.registerElDialog {
-  width: 650px;
-  height: 580px;
-  display: flex;
-  /*align-self: center;*/
-  top: 10%;
-  left: 0;
-  right: 0;
-  margin: 0 auto;
-  font-weight: bold;
-}
+  .registerElDialog {
+    width: 650px;
+    height: 580px;
+    display: flex;
+    /*align-self: center;*/
+    top: 10%;
+    left: 0;
+    right: 0;
+    margin: 0 auto;
+    font-weight: bold;
+  }
 
-.getVerifyCode:hover {
-  cursor: pointer;
-}
+  .getVerifyCode:hover {
+    cursor: pointer;
+  }
 
-.verifyInput:focus {
-  border-color: #409EFF;
-}
+  .verifyInput:focus {
+    border-color: #409EFF;
+  }
 
-.otherLoginStyle:hover {
-  /*cursor: pointer;*/
-}
+  .otherLoginStyle:hover {
+    /*cursor: pointer;*/
+  }
 
-.otherLoginDivStyle {
-  background-color: #F4F8F8;
-  width: 40px;
-  height: 40px;
-  border-radius: 15px;
-}
+  .otherLoginDivStyle {
+    background-color: #F4F8F8;
+    width: 40px;
+    height: 40px;
+    border-radius: 15px;
+  }
 
-.otherLoginItemStyle:hover {
-  cursor: pointer;
-}
+  .otherLoginItemStyle:hover {
+    cursor: pointer;
+  }
 
-.otherLoginItemStyle {
-  margin-top: 7px;
-  margin-left: 9px;
-  border-radius: 10px;
-  width: 20px;
-  height: 25px
-}
+  .otherLoginItemStyle {
+    margin-top: 7px;
+    margin-left: 9px;
+    border-radius: 10px;
+    width: 20px;
+    height: 25px
+  }
 
-.weChatAndOther {
-  justify-content: space-around;
-  margin-top: 15px;
-  margin-bottom: 20px
-}
+  .weChatAndOther {
+    justify-content: space-around;
+    margin-top: 15px;
+    margin-bottom: 20px
+  }
 
-.userPolicy:hover {
-  cursor: pointer;
-}
+  .userPolicy:hover {
+    cursor: pointer;
+  }
 
-.navLoginRegister {
-  margin-left: 80px
-}
+  .navLoginRegister {
+    margin-left: 80px
+  }
 
-.loginSuccessUser {
-  margin-left: 110px;
-}
+  .loginSuccessUser {
+    margin-left: 110px;
+  }
 </style>
