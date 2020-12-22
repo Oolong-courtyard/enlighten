@@ -88,7 +88,7 @@ class ArticleListView(APIView):
         """
         target_page = request.query_params.dict().get('page')
         queryset = ArticleList.objects.all()
-        num_of_per_page = NUM_OF_PER_PAGE
+        num_of_per_page = settings.NUM_OF_PER_PAGE
         paginator = Paginator(queryset, num_of_per_page)
         page = paginator.page(target_page)
         serializer = ArticleListSerializer(page, many=True)

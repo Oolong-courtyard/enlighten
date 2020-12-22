@@ -6,7 +6,27 @@ import re
 from django.contrib.auth.validators import UnicodeUsernameValidator
 from rest_framework import serializers
 
-from users.models import UserProfile
+from users.models import UserProfile, UserStar
+
+
+class UserStarQuerySerializer(serializers.ModelSerializer):
+    """用户文章点赞查询参数"""
+    action = serializers.ChoiceField(choices=[0, 1], write_only=True, label="点赞行为")
+    article_id = serializers.CharField(label="文章id", required=True)
+
+    class Meta:
+        model = UserStar
+        fields = ('user_id', 'article_id', 'action')
+        # extra_kwargs = {
+        #     'action':{
+        #         'min_length': 1,
+        #         'max_length': 1,
+        #         'error_messages': {
+        #             'min_length': '只能输入0或1',
+        #             'max_length': '只能输入0或1',
+        #         }
+        #     }
+        # }
 
 
 class LoginViewSerializer(serializers.ModelSerializer):

@@ -58,7 +58,7 @@ class UserProfile(AbstractUser):
         # 构建key
         token_key = settings.TOKEN_KEY_PREFIX + str(user_id)
         # 将token存入redis中
-        cache.set(user_id, token, expire=settings.TOKEN_EXPIRE)
+        cache.set(token_key, token, settings.TOKEN_EXPIRE)
 
 
 # 用户点赞

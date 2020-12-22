@@ -10,16 +10,56 @@ from drf_yasg.utils import swagger_auto_schema
 from drf_yasg import openapi
 from rest_framework.generics import CreateAPIView, GenericAPIView
 from rest_framework.views import APIView
+from rest_framework.permissions import IsAuthenticated
 
-from users.models import UserProfile
-from users.serializers import CreateUserSerializer, LoginViewSerializer
+from users.models import UserProfile, UserStar
+from users.serializers import CreateUserSerializer, LoginViewSerializer, UserStarQuerySerializer
 from utils.base_response import BaseResponse
+from utils.user_auth import UserAuth
 
 
 class UserStarView(APIView):
     """用户点赞"""
-    # TODO 业务上需要用户认证的，加上该认证类，认证通过才能执行该函数中的操作
-    # 这里要增加认证类
+    x_token = openapi.Parameter('x-token', openapi.IN_HEADER, description='认证token', type=openapi.TYPE_STRING, required=True)
+    # 自定义认证类
+    authentication_classes = [UserAuth]
+
+    @swagger_auto_schema(
+        operation_summary="文章点赞",
+        query_serializer=UserStarQuerySerializer,
+        manual_parameters=[x_token],
+    )
+    def get(self, request):
+        """根据传递过来的action 点赞/取消点赞"""
+        request_dict = request.query_params.dict()
+        user_id = request_dict.get("user_id")
+        article_id = request_dict.get("article_id")
+        if request_dict.get("action") == "1":
+            # 点赞
+            try:
+                res = UserStar.objects.get(user_id=user_id)
+                if article_id not in res.article_id:
+                    # 将该文章id添加进去
+                    res.article_id.append(article_id)
+                    UserStar.objects.update(user_id=user_id, article_id=res.article_id)
+                # 如果传递过来的文章id在res中，不做操作
+            except UserStar.DoesNotExist:
+                # 用户从未点过赞,将该文章id加入，然后存进db;
+                UserStar.objects.create(user_id=user_id, article_id=[article_id])
+        elif request_dict.get("action") == "0":
+            # 取消点赞
+            try:
+                res = UserStar.objects.get(user_id=user_id)
+            except UserStar.DoesNotExist:
+                # 无需任何操作
+                pass
+            # 如果传递过来的文章id在res中，删除它；否则不做操作
+            if article_id in res.article_id:
+                res.remove(article_id)
+                UserStar.objects.update(user_id=user_id, article_id=res.article_id)
+        else:
+            return BaseResponse(data="操作失败,action只能为`1`或者`2`")
+        return BaseResponse(data="点赞/取消点赞成功")
 
 
 class UsernameCountView(View):

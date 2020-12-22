@@ -47,8 +47,9 @@ class BusStatusCode:
     BAD_REQUEST_4001 = {"code": 4001, "message": "两次密码不一致"}
     BAD_REQUEST_4002 = {"code": 4002, "message": "手机号格式错误"}
     BAD_REQUEST_4004 = {"code": 4004, "message": "数据对象不存在"}
-    BAD_REQUEST_4007 = {"code": 4006, "message": "密码校验失败"}
-    BAD_REQUEST_4006 = {"code": 4007, "message": "密码格式错误"}
+    BAD_REQUEST_4006 = {"code": 4006, "message": "密码格式错误"}
+    BAD_REQUEST_4007 = {"code": 4007, "message": "密码校验失败"}
+    BAD_REQUEST_4008 = {"code": 4008, "message": "token验证失败"}
 
     # 服务端异常
     INTERNAL_SERVER_ERROR_5001 = {"code": 5001, "message": "数据库错误"}
