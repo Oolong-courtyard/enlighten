@@ -16,10 +16,11 @@ class UserAuth(BaseAuthentication):
     def authenticate(self, request):
         """token校验"""
         token = request.META.get('HTTP_X_TOKEN')
-        user_id = settings.TOKEN_KEY_PREFIX + request.query_params.dict().get('user_id')
+        user_id = request.query_params.dict().get('user_id') if request.query_params.dict().get('user_id') else request.data.get('user_id')
+        token_key = settings.TOKEN_KEY_PREFIX + user_id
         # 从redis中获取token
 
-        cache_token = cache.get(user_id)
+        cache_token = cache.get(token_key)
         # 与客户端传过来的token做对比
         try:
             if token != cache_token:

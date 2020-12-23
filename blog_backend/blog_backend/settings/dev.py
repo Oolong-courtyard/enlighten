@@ -49,6 +49,7 @@ INSTALLED_APPS = [
     'users.apps.UsersConfig',
     'article.apps.ArticleConfig',
     'oauth.apps.OauthConfig',
+    'business.apps.BusinessConfig',
     # 'django.contrib.staticfiles',  # required for serving swagger ui's css/js files
     'drf_yasg',
 ]
@@ -289,6 +290,7 @@ CORS_ALLOW_HEADERS = (
     'user-agent',
     'x-csrftoken',
     'x-requested-with',
+    'x-token'
 )
 # ================================================================
 # QQ登录参数

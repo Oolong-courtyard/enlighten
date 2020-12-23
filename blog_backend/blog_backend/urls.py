@@ -39,17 +39,12 @@ urlpatterns = [
     url(r'users/', include('users.urls')),
     url(r'article/', include('article.urls')),
     url(r'oauth/', include('oauth.urls')),
+    url(r'business/', include('business.urls')),
 
-    # openapi文档可视化
-    url(r'^swagger(?P<format>\.json|\.yaml)$',
-        schema_view.without_ui(cache_timeout=0),
-        name='schema-json'),
-    url(r'^swagger/$',
-        schema_view.with_ui('swagger', cache_timeout=0),
-        name='schema-swagger-ui'),
-    url(r'^redoc/$',
-        schema_view.with_ui('redoc', cache_timeout=0),
-        name='schema-redoc'),
+    # open_api文档可视化
+    url(r'^swagger(?P<format>\.json|\.yaml)$', schema_view.without_ui(cache_timeout=0), name='schema-json'),
+    url(r'^swagger/$', schema_view.with_ui('swagger', cache_timeout=0), name='schema-swagger-ui'),
+    url(r'^redoc/$', schema_view.with_ui('redoc', cache_timeout=0), name='schema-redoc'),
 ]
 
 urlpatterns += static.static(dev.MEDIA_URL, document_root=dev.MEDIA_ROOT)

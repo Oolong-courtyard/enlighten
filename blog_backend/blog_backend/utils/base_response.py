@@ -50,6 +50,8 @@ class BusStatusCode:
     BAD_REQUEST_4006 = {"code": 4006, "message": "密码格式错误"}
     BAD_REQUEST_4007 = {"code": 4007, "message": "密码校验失败"}
     BAD_REQUEST_4008 = {"code": 4008, "message": "token验证失败"}
+    BAD_REQUEST_4009 = {"code": 4009, "message": "点赞/取消点赞失败"}
+    BAD_REQUEST_4010 = {"code": 4010, "message": "未查询到该用户对文章的点赞记录,无法取消点赞"}
 
     # 服务端异常
     INTERNAL_SERVER_ERROR_5001 = {"code": 5001, "message": "数据库错误"}
