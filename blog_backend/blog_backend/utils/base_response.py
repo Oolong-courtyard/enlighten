@@ -2,8 +2,12 @@
 所有API接口响应数据标准化;
 业务响应状态码;
 """
+import logging
+
 from rest_framework.response import Response
 from rest_framework import status
+
+logger = logging.getLogger('django')
 
 
 class BaseResponse(Response):
@@ -28,6 +32,8 @@ class BaseResponse(Response):
         self.headers = headers
         self.exception = exception
         self.content_type = content_type
+        # 控制台打印返回的数据
+        logger.info(self.data["message"])
 
         if headers:
             for name, value in headers.items():
