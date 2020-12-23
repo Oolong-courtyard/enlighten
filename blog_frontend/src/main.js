@@ -41,8 +41,10 @@ Vue.prototype.$articleDetailUrl = 'article/article-detail/';
 Vue.prototype.$articleCategoryUrl = 'article/category/';
 //文章搜索
 Vue.prototype.$articleSearch = 'article/search';
-//用户点赞文章
-Vue.prototype.$Star = 'users/star';
+//用户(行为)点赞文章
+Vue.prototype.$Star = 'business/star';//todo 这里地址区分一下
+//获取用户点赞的文章
+Vue.prototype.$getStarCount = '/users/user-star-count'
 //引用
 Vue.use(ElementUI);
 Vue.use(infiniteScroll);
