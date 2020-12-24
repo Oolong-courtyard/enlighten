@@ -206,6 +206,7 @@
 
 
 <script>
+  import {getUserStarCount} from "./getUserStarCount"
 
   export default {
     name: "NavBar",
@@ -491,18 +492,15 @@
               localStorage.setItem('username', res.data.data["username"]);
               localStorage.setItem('userToken', res.data.data["token"]);
               //(此时会自动调用在父组件中定义的方法(该方法的功能时：将这些文章id添加到 userArticleStar 中。))
-              //TODO 携带token请求db获取该用户点赞的文章id列表
+              // 携带token请求db获取该用户点赞的文章id列表
               this.$http.get(
                 this.$getStarCount,
                 {
                   headers: {"x-token": localStorage.getItem('userToken')},
-                  params: {"user_id": localStorage.getItem('userId')},
+                  params: {"user_id": localStorage.getItem("userId")},
                 }).then(
                 res => {
-                  //TODO 处理成功获取用户点赞的文章
-                  console.log("登陆成功获取到的用户点赞的文章res是", res.data.data)
-                  //登陆成功后需要请求该用户点赞的文章并`发射`给列表父组件
-                  // this.$emit('userStarArticle', {"userStarArticle": res.data.data});
+                  //将获取到的点赞文章存入localStorage
                   localStorage.setItem("userArticleStars", res.data.data);
                   location.reload();
                 }
@@ -511,7 +509,6 @@
                   //TODO 处理失败
                 }
               )
-
               //将菜单右侧登录注册按钮隐藏,转而显示用户名(可以直接使用v-bind，设置一个visibile，为false显示登录注册按钮，为true显示用户名。
               // 个人头像鼠标移动上去自动显示下拉菜单，可以进个人主页；个人主页有购物车(订单)，可以更换头像，可以写个性签名，
               // 主页，增加搜索框，可以直接写文章(支持MarkDown)，
