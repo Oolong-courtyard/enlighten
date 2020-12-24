@@ -7,6 +7,7 @@ from rest_framework.views import APIView
 from oauth.models import OAuthQQUser
 from oauth.utils import OAuthQQ
 from users.models import UserProfile
+from utils.base_response import BaseResponse
 
 
 class QQAuthURLView(APIView):
@@ -59,9 +60,16 @@ class OAuthQQUserView(APIView):
             """
             # 将用户信息保存后,声称
             oauth_user = OAuthQQUser.objects.get(openid=open_id)
-            return UserProfile.generate_jwt_token(oauth_user.user)
+            # 生成token
+            user_token = UserProfile.generate_jwt_token(oauth_user.user)
+            # 将该token存入cache
+            UserProfile.token_to_cache(user_token["user_id"], user_token["token"])
+            return BaseResponse(data=user_token)
         else:
             # 用户已经绑定过,生成 JWT token信息
             user = oauth_user.user
-            return UserProfile.generate_jwt_token(user)
-
+            # 生成token
+            user_token = UserProfile.generate_jwt_token(oauth_user.user)
+            # 将该token存入cache
+            UserProfile.token_to_cache(user_token["user_id"], user_token["token"])
+            return BaseResponse(data=user_token)

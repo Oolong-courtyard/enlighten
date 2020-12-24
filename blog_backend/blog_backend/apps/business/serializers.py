@@ -5,6 +5,11 @@ from rest_framework import serializers
 from article.models import ArticleList
 
 
+class ArticleRecommendQuerySerializer(serializers.Serializer):
+    """推荐接口查询参数"""
+    user_id = serializers.CharField(label="用户id", max_length=100, required=True)
+
+
 class StarViewSerializer(serializers.Serializer):
     """点赞数序列化器"""
     user_id = serializers.CharField(label="用户id", max_length=100, required=True)

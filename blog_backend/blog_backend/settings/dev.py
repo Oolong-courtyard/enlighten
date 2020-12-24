@@ -307,3 +307,6 @@ QQ_STATE = '/'
 TOKEN_EXPIRE = 60 * 60
 # token的前缀
 TOKEN_KEY_PREFIX = "ENLIGHTEN_" + "API_" + "V1_"
+
+# 推荐url
+RECOMMEND_URL = "127.0.0.1:8001/recommend_article"

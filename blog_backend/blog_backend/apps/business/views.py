@@ -6,11 +6,34 @@ from drf_yasg.utils import swagger_auto_schema
 from drf_yasg import openapi
 
 from article.models import ArticleList
-from business.serializers import StarViewSerializer
+from business.serializers import (
+    StarViewSerializer,
+    ArticleRecommendQuerySerializer,
+)
 from users.models import UserStar
 from utils.base_response import BaseResponse, BusStatusCode
 from utils.exceptions import logger
 from utils.user_auth import UserAuth
+
+
+# 文章推荐
+class ArticleRecommendView(APIView):
+    """
+    文章推荐(用户必须是登录状态)
+    用户登录,根据用户历史喜好推荐文章；
+    用户未登录，直接推荐热榜
+    """
+    x_token = openapi.Parameter('x-token', openapi.IN_HEADER, description='认证token', type=openapi.TYPE_STRING, required=True)
+    authentication_classes = [UserAuth]
+
+    @swagger_auto_schema(
+        operation_summary="获取推荐文章列表",
+        query_serializer=ArticleRecommendQuerySerializer,
+    )
+    def get_commend_list(self, request):
+        """获取推荐文章列表"""
+
+
 
 
 # 文章点赞

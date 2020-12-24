@@ -21,6 +21,7 @@ class UserAuth(BaseAuthentication):
         # 从redis中获取token
 
         cache_token = cache.get(token_key)
+        # print("cache_token是", cache_token)
         # 与客户端传过来的token做对比
         try:
             if token != cache_token:

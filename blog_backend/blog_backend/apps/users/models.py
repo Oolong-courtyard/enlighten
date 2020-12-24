@@ -64,7 +64,7 @@ class UserProfile(AbstractUser):
 # 用户点赞
 class UserStar(BaseModel):
     """
-    用户点赞；
+    用户对文章点赞；
     user_id唯一，一个user_id对应一个article_id列表，列表中存放点赞的文章id
     注意：某个用户点赞的article_id列表中不能 有重复元素，insert的时候先去重。
     """
@@ -74,6 +74,20 @@ class UserStar(BaseModel):
     class Meta:
         db_table = "user_star"
         verbose_name = "用户点赞数"
+        verbose_name_plural = verbose_name
+
+
+# 用户推荐
+class UserCommend(BaseModel):
+    """
+    推荐给用户文章
+    """
+    user_id = models.CharField(max_length=100, verbose_name="用户id", unique=True)
+    article_id = ArrayField(base_field=models.CharField(max_length=100, verbose_name="推荐的文章id"), null=True, verbose_name="推荐的文章id列表")
+
+    class Meta:
+        db_table = "user_commend"
+        verbose_name = "推荐文章表"
         verbose_name_plural = verbose_name
 
 
