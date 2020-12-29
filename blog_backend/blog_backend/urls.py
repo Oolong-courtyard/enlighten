@@ -40,6 +40,7 @@ urlpatterns = [
     url(r'article/', include('article.urls')),
     url(r'oauth/', include('oauth.urls')),
     url(r'business/', include('business.urls')),
+    url(r'verification/', include('verification.urls')),
 
     # open_api文档可视化
     url(r'^swagger(?P<format>\.json|\.yaml)$', schema_view.without_ui(cache_timeout=0), name='schema-json'),

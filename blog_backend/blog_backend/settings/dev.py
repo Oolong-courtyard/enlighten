@@ -312,3 +312,14 @@ TOKEN_KEY_PREFIX = "ENLIGHTEN_" + "API_" + "V1_"
 
 # 推荐url
 RECOMMEND_URL = "127.0.0.1:8001/recommend_article"
+
+# ================================================================
+# 腾讯云发送短信验证码
+# ================================================================
+SMS_SECRET_ID = 'AKID1m37QhLKWxSYQqq9RbDvtb3tj0z5x9gu'
+SMS_SECRET_KEY = '7OZU7SsEBsItOZTF0h6FE9zZtw2steCT'
+SMS_TEMPLATE_ID = '827164'
+SMS_SDK_APP_ID = '1400467647'
+SMS_SIGN = '启发你Mind'
+# cache验证码前缀
+SMS_PREFIX = 'SMS_CODE:'

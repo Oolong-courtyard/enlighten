@@ -4,12 +4,17 @@
 import re
 
 from django.contrib.auth.validators import UnicodeUsernameValidator
-from rest_framework import serializers
+from django.core.cache import cache
+from rest_framework import serializers, status
+from rest_framework import exceptions
+from django.conf import settings
 
 from users.models import UserProfile, UserStar
 
-
 # 用户点赞文章查询序列化器
+from utils.base_response import BaseResponse, BusStatusCode
+
+
 class UserStarCountQuerySerializer(serializers.Serializer):
     """用户点赞文章"""
     user_id = serializers.CharField(label="用户id", required=True)
@@ -33,13 +38,15 @@ class CreateUserSerializer(serializers.ModelSerializer):
     创建用户序列化器
     """
     # 该字段只在反序列化的时候使用,序列化的时候用不到
-    ensurePassword = serializers.CharField(label="确认密码", write_only=True)
+
+    sms_code = serializers.CharField(label="短信验证码", write_only=True)
+    ensure_password = serializers.CharField(label="确认密码", write_only=True)
+    phone = serializers.CharField(label="手机号", write_only=True)
 
     class Meta:
         # 指定序列化的对象
         model = UserProfile
-        fields = ('username', 'birthday', 'gender',
-                  'mobile', 'password', 'ensurePassword')
+        fields = ('username', 'sms_code', 'password', 'phone', 'ensure_password')
         # 配置额外参数的校验规则
         extra_kwargs = {
             'username': {
@@ -67,24 +74,33 @@ class CreateUserSerializer(serializers.ModelSerializer):
         """验证用户名"""
         count = UserProfile.objects.filter(username=value).count()
         if count > 0:
-            raise serializers.ValidationError("用户名已存在")
+            # TODO 无法直接return，只能raise，但是raise无法区分具体报错信息了？？
+            raise exceptions.ValidationError(**BusStatusCode.BAD_REQUEST_4013)
+            # return BaseResponse(status=status.HTTP_400_BAD_REQUEST, **BusStatusCode.BAD_REQUEST_4013)
         return value
 
-    # def validate_mobile(self, value):
-    #     """验证手机号"""
-    #     # 验证手机号格式
-    #     if not re.match(r'^1[3-9]\d{9}$', value):
-    #         raise serializers.ValidationError("手机号格式错误")
-    #
-    #     # 验证手机号是否已经存在
-    #     count = UserProfile.objects.filter(mobile=value).count()
-    #     if count > 0:
-    #         raise serializers.ValidationError("手机号已存在")
+    def validate_phone(self, value):
+        """验证手机号"""
+        # 验证手机号格式
+        if not re.match(r'^1[3-9]\d{9}$', value):
+            raise exceptions.ValidationError(**BusStatusCode.BAD_REQUEST_4002)
+            # return BaseResponse(status=status.HTTP_400_BAD_REQUEST, **BusStatusCode.BAD_REQUEST_4002)
+
+        # 验证手机号是否已经存在
+        count = UserProfile.objects.filter(mobile=value).count()
+        if count > 0:
+            return BaseResponse(status=status.HTTP_400_BAD_REQUEST, **BusStatusCode.BAD_REQUEST_4012)
+        return value
 
     def validate(self, attrs):
-        """判断两次密码是否一致"""
-        if attrs['password'] != attrs['ensurePassword']:
-            raise serializers.ValidationError("两次密码不一致")
+        """
+        判断手机验证码是否正确；
+        判断两次密码是否一致；
+        """
+        if attrs['sms_code'] != cache.get(settings.SMS_PREFIX + attrs['phone']):
+            return BaseResponse(status=status.HTTP_400_BAD_REQUEST, **BusStatusCode.BAD_REQUEST_4011)
+        if attrs['password'] != attrs['ensure_password']:
+            return BaseResponse(status=status.HTTP_400_BAD_REQUEST, **BusStatusCode.BAD_REQUEST_4001)
         return attrs
 
     def create(self, validated_data):
@@ -92,7 +108,11 @@ class CreateUserSerializer(serializers.ModelSerializer):
         创建用户
         """
         # 移除数据库模型类中不存在的属性
+        validated_data['mobile'] = validated_data['phone']
         del validated_data['ensurePassword']
+        del validated_data['sms_code']
+        del validated_data['ensurePassword']
+        del validated_data['phone']
         # 创建用户
         user = UserProfile.objects.create_user(**validated_data)
         return user

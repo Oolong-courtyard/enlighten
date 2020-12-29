@@ -8,7 +8,7 @@ import traceback
 from django.core.exceptions import ObjectDoesNotExist
 from django.db import DatabaseError
 from redis.exceptions import RedisError
-from rest_framework.exceptions import AuthenticationFailed
+from rest_framework.exceptions import AuthenticationFailed, ValidationError
 from rest_framework.views import exception_handler as drf_exception_handler
 from rest_framework import status
 from utils.base_response import BaseResponse, BusStatusCode
@@ -41,6 +41,13 @@ def exception_handler(exc, context):
             logger.error('[%s] %s' % (view, exc))
             response = BaseResponse(**BusStatusCode.BAD_REQUEST_4004,
                                     status=status.HTTP_404_NOT_FOUND)
+        # elif isinstance(exc, ValidationError):
+        #     logger.error('[%s] %s' % (view, exc))
+        #     response = BaseResponse(**BusStatusCode.BAD_REQUEST_4004,
+        #                             status=status.HTTP_400_BAD_REQUEST)
+        # TODO 这里的异常处理，如何统一，在序列化器中验证失败之后，无法直接return，
+        #  只能raise，但是多个业务场景都是ValidateError，但是其内容不一样，如何区分它们各自的内容
+        # elif response.status_code < 500 and response.status_code >= 400:
         else:
             logger.error('[%s] %s' % (view, exc))
             response = BaseResponse(code=65535,

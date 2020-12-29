@@ -58,6 +58,9 @@ class BusStatusCode:
     BAD_REQUEST_4008 = {"code": 4008, "message": "token验证失败"}
     BAD_REQUEST_4009 = {"code": 4009, "message": "点赞/取消点赞失败"}
     BAD_REQUEST_4010 = {"code": 4010, "message": "未查询到该用户对文章的点赞记录,无法取消点赞"}
+    BAD_REQUEST_4011 = {"code": 4011, "message": "短信验证码校验失败,请重新获取"}
+    BAD_REQUEST_4012 = {"code": 4012, "message": "手机号已存在"}
+    BAD_REQUEST_4013 = {"code": 4013, "message": "用户名已存在"}
 
     # 服务端异常
     INTERNAL_SERVER_ERROR_5001 = {"code": 5001, "message": "数据库错误"}
