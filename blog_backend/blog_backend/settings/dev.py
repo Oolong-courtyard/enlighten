@@ -50,8 +50,10 @@ INSTALLED_APPS = [
     'article.apps.ArticleConfig',
     'oauth.apps.OauthConfig',
     'business.apps.BusinessConfig',
+    'verification.apps.VerificationConfig',
     # 'django.contrib.staticfiles',  # required for serving swagger ui's css/js files
     'drf_yasg',
+
 ]
 
 MIDDLEWARE = [

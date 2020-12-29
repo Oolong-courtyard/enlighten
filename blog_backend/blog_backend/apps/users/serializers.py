@@ -9,11 +9,13 @@ from rest_framework import serializers
 from users.models import UserProfile, UserStar
 
 
+# 用户点赞文章查询序列化器
 class UserStarCountQuerySerializer(serializers.Serializer):
     """用户点赞文章"""
     user_id = serializers.CharField(label="用户id", required=True)
 
 
+# 用户登录序列化器
 class LoginViewSerializer(serializers.ModelSerializer):
     """用户登录序列化器"""
 
@@ -25,6 +27,7 @@ class LoginViewSerializer(serializers.ModelSerializer):
         fields = ('username', 'password')
 
 
+# 创建用户序列化器
 class CreateUserSerializer(serializers.ModelSerializer):
     """
     创建用户序列化器
@@ -93,3 +96,9 @@ class CreateUserSerializer(serializers.ModelSerializer):
         # 创建用户
         user = UserProfile.objects.create_user(**validated_data)
         return user
+
+
+# 用户注册手机验证码
+class SmsCodeViewSerializer(serializers.ModelSerializer):
+    """用户注册手机验证码"""
+    pass

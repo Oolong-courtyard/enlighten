@@ -12,5 +12,4 @@ urlpatterns = [
     url('^login$', views.LoginView.as_view()),
     url('^emails/verification$', views.EmailActiveView.as_view()),
     url('^user-star-count', views.UserStarCountView.as_view()),
-
 ]

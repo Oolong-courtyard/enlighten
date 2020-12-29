@@ -18,6 +18,7 @@ from users.serializers import (
     CreateUserSerializer,
     LoginViewSerializer,
     UserStarCountQuerySerializer,
+    SmsCodeViewSerializer,
 )
 from utils.base_response import BaseResponse
 from utils.user_auth import UserAuth
