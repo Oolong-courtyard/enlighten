@@ -3,6 +3,7 @@
 增加数据库异常处理和redis异常处理等
 """
 import logging
+import re
 import traceback
 
 from django.core.exceptions import ObjectDoesNotExist
@@ -30,6 +31,7 @@ def exception_handler(exc, context):
     traceback.print_exc()
 
     if response is None:
+        # 这里是drf未捕获的异常
         view = context['view']
         if isinstance(exc, DatabaseError) or isinstance(exc, RedisError):
             # 数据库异常
@@ -41,24 +43,46 @@ def exception_handler(exc, context):
             logger.error('[%s] %s' % (view, exc))
             response = BaseResponse(**BusStatusCode.BAD_REQUEST_4004,
                                     status=status.HTTP_404_NOT_FOUND)
-        # elif isinstance(exc, ValidationError):
-        #     logger.error('[%s] %s' % (view, exc))
-        #     response = BaseResponse(**BusStatusCode.BAD_REQUEST_4004,
-        #                             status=status.HTTP_400_BAD_REQUEST)
-        # TODO 这里的异常处理，如何统一，在序列化器中验证失败之后，无法直接return，
-        #  只能raise，但是多个业务场景都是ValidateError，但是其内容不一样，如何区分它们各自的内容
-        # elif response.status_code < 500 and response.status_code >= 400:
         else:
             logger.error('[%s] %s' % (view, exc))
             response = BaseResponse(code=65535,
-                                    message="服务器异常",
-                                    data="",
+                                    detail="服务器异常",
+                                    data=traceback_get(),
                                     status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+        return response
     else:
-        logger.error(' %s' % (exc,))
+        # 对drf捕获到的异常处理后返回
+        # logger.error(' %s' % (exc,))
         if isinstance(exc, AuthenticationFailed):
             # token认证失败
-            response = BaseResponse(**BusStatusCode.BAD_REQUEST_4008,
-                                    status=status.HTTP_403_FORBIDDEN)
+            return BaseResponse(**BusStatusCode.BAD_REQUEST_4008,
+                                status=status.HTTP_403_FORBIDDEN)
+        response_data = {}
+        if status.HTTP_400_BAD_REQUEST <= response.status_code < status.HTTP_500_INTERNAL_SERVER_ERROR:
+            for (k, v) in dict(response.data).items():
+                response_data["detail"] = str(v[0])
+                try:
+                    code = re.findall('\d+', str(v))[0]
+                except Exception as e:
+                    print(e)
+                    response_data["code"] = None
+                else:
+                    response_data["code"] = code
+                break
+            return BaseResponse(**response_data, status=response.status_code)
 
-    return response
+        if response.status_code == status.HTTP_500_INTERNAL_SERVER_ERROR:
+            response_data['detail'] = "服务器异常"
+            response_data['code'] = 65535
+            response_data['data'] = traceback_get()
+            return BaseResponse(**response_data, status=response.status_code)
+
+
+def traceback_get():
+    """截取异常栈部分信息"""
+    s = traceback.format_exc()
+    s = s.split('\n')
+    s.pop()
+    if len(s) > 6:
+        s = s[-6:]
+    return s

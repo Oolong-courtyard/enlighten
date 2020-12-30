@@ -18,7 +18,7 @@ from tencentcloud.common.exception.tencent_cloud_sdk_exception import TencentClo
 from tencentcloud.sms.v20190711 import sms_client, models
 
 # 用户短信验证码
-from utils.base_response import BaseResponse
+from utils.base_response import BaseResponse, BusStatusCode
 from verification.serializers import SmsCodeViewQuerySerializer
 
 
@@ -33,14 +33,14 @@ class SmsCodeView(APIView):
         """获取短信验证码"""
         phone = request.query_params.dict().get('phone')
         if not re.match('^1[3-9]\d{9}$', phone):
-            return BaseResponse(message="手机号格式错误", status=status.HTTP_400_BAD_REQUEST)
+            return BaseResponse(detail="手机号格式错误", status=status.HTTP_400_BAD_REQUEST)
         sms_code = self.sms_callback(phone)
         if sms_code:
             # 验证码发送成功,将验证码存入cache中
             cache_key = settings.SMS_PREFIX + phone
             # TODO 后续使用celery完成发送短信
-            cache.set(cache_key, sms_code, 60)
-            return BaseResponse(data=sms_code, message="短信验证码发送成功")
+            cache.set(cache_key, sms_code, settings.SMS_EXPIRE)
+            return BaseResponse(data=sms_code, detail="短信验证码发送成功")
         else:
             return BaseResponse(status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 

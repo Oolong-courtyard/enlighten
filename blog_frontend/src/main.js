@@ -32,6 +32,10 @@ Vue.prototype.$usernameCountUrl = 'users/username-count';
 Vue.prototype.$userLoginUrl = "users/login";
 //用户注册
 Vue.prototype.$userRegisterUrl = "users/register";
+//手机号数量
+Vue.prototype.$phoneCount = "users/phone-count";
+//获取手机验证码
+Vue.prototype.$getSmsCode = "verification/sms/";
 
 //文章列表
 Vue.prototype.$articleListUrl = 'article/article-list/?page=';

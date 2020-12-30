@@ -33,6 +33,8 @@ SECRET_KEY = 'ef-@^(&ol522la&9a&p0ie)!)7r+iw$oj4x-vr_^o7_$kt%*!g'
 DEBUG = True
 
 ALLOWED_HOSTS = ["*"]
+# 不主动添加 /
+# APPEND_SLASH = False
 
 # Application definition
 
@@ -323,3 +325,5 @@ SMS_SDK_APP_ID = '1400467647'
 SMS_SIGN = '启发你Mind'
 # cache验证码前缀
 SMS_PREFIX = 'SMS_CODE:'
+# 验证码有效时间为10min
+SMS_EXPIRE = 60 * 10

@@ -328,10 +328,11 @@ export default {
           res => {
             //点赞/取消点赞成功 data中数据如何改变？画面如何渲染
             console.log("点赞/取消点赞成功后返回的res是", res)
+            console.log("点赞/取消点赞成功后返回的res的status是", res.status)
             if (res.status == 200) {
               //点赞/取消点赞成功
               let action = this.userArticleStars.indexOf(article_id) == -1 ? "1" : "0"
-              // console.log("action是", action);
+              console.log("action是", action);
               //本地存储中用户点赞文章
               let uAStar = localStorage.getItem("userArticleStars").split(",")
               if (action == "1") {
@@ -343,6 +344,8 @@ export default {
               } else if (action == "0") {
                 //取消点赞
                 //该文章已经被该用户点赞,此时取消点赞
+                console.log("this.resListData[index].star_count",this.resListData[index].star_count)
+                console.log("this.resListData是",this.resListData)
                 this.resListData[index].star_count -= 1;
                 this.userArticleStars.splice(this.userArticleStars.indexOf(article_id), 1);
                 //这里应对的是页面刷新的情况

@@ -34,8 +34,6 @@ class ArticleRecommendView(APIView):
         """获取推荐文章列表"""
 
 
-
-
 # 文章点赞
 class StarView(APIView):
     """
@@ -63,7 +61,7 @@ class StarView(APIView):
         # low 手动数据校验
         if not all([user_id, article_id, action]):
             return BaseResponse(status=status.HTTP_400_BAD_REQUEST,
-                                message="缺少必须参数"
+                                detail="缺少必须参数"
                                 )
         if action == "1":
             # 点赞
@@ -86,11 +84,11 @@ class StarView(APIView):
                                                 **BusStatusCode.INTERNAL_SERVER_ERROR_5001,
                                                 )
                         transaction.savepoint_commit(save_id)
-                        return BaseResponse(message="点赞成功")
+                        return BaseResponse(detail="点赞成功")
 
                 # 如果传递过来的文章id在res中，不做操作
                 return BaseResponse(status=status.HTTP_400_BAD_REQUEST,
-                                    message="你已点赞过该文章,无法再次点赞",
+                                    detail="你已点赞过该文章,无法再次点赞",
                                     )
             except UserStar.DoesNotExist:
                 """这里使用数据库事务"""
@@ -113,7 +111,7 @@ class StarView(APIView):
                                             )
                 # 点赞成功,提交从保存点到当前状态的所有数据库事务操作
                 transaction.savepoint_commit(save_id)
-                return BaseResponse(message="点赞成功")
+                return BaseResponse(detail="点赞成功")
 
         elif action == "0":
             # 取消点赞
@@ -139,7 +137,7 @@ class StarView(APIView):
                                                 )
                         # 取消点赞成功
                         transaction.savepoint_commit(save_id)
-                        return BaseResponse(message="取消点赞成功")
+                        return BaseResponse(detail="取消点赞成功")
                 # 该文章id不在点赞文章id列表中
                 return BaseResponse(status=status.HTTP_400_BAD_REQUEST,
                                     **BusStatusCode.BAD_REQUEST_4010,
@@ -151,4 +149,4 @@ class StarView(APIView):
                                     )
         else:
             return BaseResponse(status=status.HTTP_400_BAD_REQUEST,
-                                message="操作失败,action只能为`0`或者`1`")
+                                detail="操作失败,action只能为`0`或者`1`")
