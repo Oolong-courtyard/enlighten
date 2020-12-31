@@ -43,7 +43,7 @@ Vue.prototype.$phoneCount = "users/phone-count";
 //获取手机验证码
 Vue.prototype.$getSmsCode = "verification/sms/";
 
-//文章列表
+//TODO 文章列表(区分爬取的文章和用户发布的文章,后台通过origin来区分)
 Vue.prototype.$articleListUrl = 'article/article-list/?page=';
 //文章详情
 Vue.prototype.$articleDetailUrl = 'article/article-detail/';
@@ -54,7 +54,8 @@ Vue.prototype.$articleSearch = 'article/search';
 //用户(行为)点赞文章
 Vue.prototype.$Star = 'business/star';//todo 这里地址区分一下
 //获取用户点赞的文章
-Vue.prototype.$getStarCount = '/users/user-star-count'
+Vue.prototype.$getStarCount = '/users/user-star-count';
+
 //引用
 Vue.use(ElementUI);
 Vue.use(infiniteScroll);

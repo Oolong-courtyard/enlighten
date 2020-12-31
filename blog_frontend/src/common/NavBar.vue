@@ -21,8 +21,9 @@
           </el-menu-item>
           <el-menu-item index="index" style="font-size: 15px">首页</el-menu-item>
           <!--          TODO tab首页下加入子标题进行分类(后端，前端，ios，android...)-->
+          <el-menu-item index="myPublish" >历程</el-menu-item>
           <el-menu-item index="project" disabled>项目</el-menu-item>
-          <el-menu-item index="3" disabled>历程</el-menu-item>
+
         </div>
         <!--搜索框-->
         <div
@@ -49,7 +50,7 @@
           <!--            <el-button icon="el-icon-search" circle></el-button>-->
           <!--          </div>-->
         </div>
-        <div>
+        <div style="margin-left: 50px">
           <el-menu-item index="article-publish" >写文章</el-menu-item>
         </div>
         <!--右侧菜单-->
@@ -63,7 +64,7 @@
         <div class="loginSuccessUser"
              :style="{'display':this.loginSuccess?'flex':'none'}">
           <el-dropdown @command="handleCommand">
-            <el-menu-item><img :src="userProfilePhoto" ></el-menu-item>
+            <el-menu-item><img :src="userProfilePhoto" style="height: 36px;width: 36px;border-radius: 50px" ></el-menu-item>
             <el-dropdown-menu slot="dropdown">
               <el-dropdown-item command="a">个人中心</el-dropdown-item>
               <el-dropdown-item command="b">购物车</el-dropdown-item>
@@ -330,11 +331,12 @@ export default {
   },
   mounted() {
     //获取localStorage中的用户信息
-    let username = localStorage.getItem("username")
+    let username = localStorage.getItem("username");
     if (username != null) {
       this.loginSuccess = true; //loginSuccess状态决定当前页面右上角显示用户名还是登录/注册按钮
       // 为了兼容注册成功后，直接显示用户名,直接在localStorage中获取username后设置到data中的username中；因此注册成功的同时将username设置到localStorage中
       this.username = username;
+      this.userProfilePhoto = localStorage.getItem("userProfilePhoto");
     } else {
       this.loginSuccess = false;
     }
@@ -532,11 +534,11 @@ export default {
             this.loginSuccess = true;
             //响应式渲染;将登录填写的username设置到data中的username;将用户名设置进localStorage中
             this.username = res.data.data["username"];
-            this.userProfilePhoto = res.data.data["profile_photo"]
             //设置登陆成功的用户的信息(用户name,用户token)
             localStorage.setItem('userId', res.data.data["user_id"]);
             localStorage.setItem('username', res.data.data["username"]);
             localStorage.setItem('userToken', res.data.data["token"]);
+            localStorage.setItem('userProfilePhoto', res.data.data["profile_photo"]);
             //(此时会自动调用在父组件中定义的方法(该方法的功能时：将这些文章id添加到 userArticleStar 中。))
             // 携带token请求db获取该用户点赞的文章id列表
             this.$http.get(
@@ -728,6 +730,6 @@ export default {
 }
 
 .loginSuccessUser {
-  margin-left: 110px;
+  margin-left: 20px;
 }
 </style>

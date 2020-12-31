@@ -95,6 +95,7 @@ class ArticleListView(APIView):
         """
         获取文章列表信息
         """
+        # TODO 这里通过origin来区分获取的是爬取的文章列表还是用户发布的文章列表
         target_page = request.query_params.dict().get('page')
         queryset = ArticleList.objects.all()
         num_of_per_page = settings.NUM_OF_PER_PAGE

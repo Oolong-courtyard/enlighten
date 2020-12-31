@@ -4,9 +4,9 @@ import VueRouter from 'vue-router'
 import Index from "../components/Index";
 
 //配置路由的懒加载(按需加载),即:除了首页之外,其他页面只有点击之后才请求加载
-const ArticleDetail = () => import("@/components/ArticleDetail")
-const ArticlePublish = () => import("@/components/ArticlePublish")
-
+const ArticleDetail = () => import("@/components/ArticleDetail");
+const ArticlePublish = () => import("@/components/ArticlePublish");
+const myPublishArticle = () => import("@/components/myPublishArticle");
 //1.安装插件
 Vue.use(VueRouter)
 
@@ -26,8 +26,12 @@ const routes = [
     component: ArticleDetail
   },
   {
-    path:'/article-publish',
+    path: '/article-publish',
     component: ArticlePublish
+  },
+  {
+    path: '/myPublish',
+    component: myPublishArticle
   },
 ]
 
