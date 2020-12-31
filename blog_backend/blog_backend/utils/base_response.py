@@ -61,6 +61,7 @@ class BusStatusCode:
     BAD_REQUEST_4011 = {"code": 4011, "detail": "短信验证码校验失败,请重新获取"}
     BAD_REQUEST_4012 = {"code": 4012, "detail": "手机号已注册"}
     BAD_REQUEST_4013 = {"code": 4013, "detail": "用户名已存在"}
+    BAD_REQUEST_4014 = {"code": 4014, "detail": "该页没有内容"}
 
     # 服务端异常
     INTERNAL_SERVER_ERROR_5001 = {"code": 5001, "detail": "数据库错误"}

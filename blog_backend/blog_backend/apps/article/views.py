@@ -2,7 +2,7 @@
 文章对应的view
 """
 
-from django.core.paginator import Paginator
+from django.core.paginator import Paginator, EmptyPage
 from django_redis import get_redis_connection
 from drf_yasg.utils import swagger_auto_schema
 from rest_framework import status
@@ -23,6 +23,7 @@ from .serializers import (
     ArticleCategorySerializer,
     ArticleDetailQuerySerializer,
     ArticleListQuerySerializer,
+    ArticleSearchQuerySerializer,
 )
 
 """
@@ -38,15 +39,22 @@ class ArticleSearch(GenericAPIView):
     """文章搜索"""
     serializer_class = ArticleListSerializer
 
+    @swagger_auto_schema(
+        operation_summary="文章搜索",
+        query_serializer=ArticleSearchQuerySerializer,
+    )
     def get(self, request):
         """文章搜索"""
         article_name = request.query_params.dict().get('articleName')
-        target_page = request.query_params.dict().get('page')
+        target_page = request.query_params.dict().get('page', 1)
         # TODO 以下需要修改，新增搜索的序列化器
         queryset = ArticleList.objects.filter(article_name__contains=article_name)
         num_of_per_page = settings.NUM_OF_PER_PAGE
         paginator = Paginator(queryset, num_of_per_page)
-        page = paginator.page(target_page)
+        try:
+            page = paginator.page(target_page)
+        except EmptyPage:
+            return BaseResponse(status=status.HTTP_400_BAD_REQUEST, **BusStatusCode.BAD_REQUEST_4014)
         serializer = ArticleListSerializer(page, many=True)
         # 返回响应: status 201,新建文章列表信息成功
         return BaseResponse(data=serializer.data)

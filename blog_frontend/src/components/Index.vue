@@ -400,6 +400,8 @@ export default {
           res => {
             //只需要将请求到的数据append进resListData
             this.resListData = this.resListData.concat(res.data.data)
+            console.log("搜索到的文章列表是", this.resListData)
+            this.page += 1
           }
         )
         .catch(
@@ -432,7 +434,7 @@ export default {
         this.resListData = this.resListData.concat(data.resData);
         //评论数为0的话,直接不显示
         this.commentEqualZero(this.resListData);
-        this.page = data.pageNum
+        this.page = data.pageNum + 1
       }, 1000);
       //置顶
       this.$refs.ElBacktop.handleClick()

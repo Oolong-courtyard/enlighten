@@ -24,6 +24,11 @@ class ArticleListSerializer(serializers.ModelSerializer):
         return obj
 
 
+class ArticleSearchQuerySerializer(serializers.Serializer):
+    """文章搜素查询条件"""
+    articleName = serializers.CharField(label="文章标题", required=True)
+
+
 class ArticleListQuerySerializer(serializers.Serializer):
     """文章列表查询条件"""
     page = serializers.CharField(required=False)
