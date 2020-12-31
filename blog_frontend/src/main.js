@@ -11,6 +11,12 @@ import infiniteScroll from 'vue-infinite-scroll'
 //导入网络请求库 axios
 import axios from 'axios';
 
+//导入markdown编辑器(mavonEditor)
+import mavonEditor from 'mavon-editor'
+import 'mavon-editor/dist/css/index.css'
+// use mavonEditor
+Vue.use(mavonEditor)
+
 //根据环境变量配置请求的根路径
 axios.defaults.baseURL = process.env.VUE_APP_BASE_URL;
 Vue.prototype.$http = axios;

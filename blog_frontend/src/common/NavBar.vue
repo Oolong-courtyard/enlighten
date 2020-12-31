@@ -49,6 +49,9 @@
           <!--            <el-button icon="el-icon-search" circle></el-button>-->
           <!--          </div>-->
         </div>
+        <div>
+          <el-menu-item index="article-publish" >写文章</el-menu-item>
+        </div>
         <!--右侧菜单-->
         <div class="navLoginRegister"
              :style="{'display':this.loginSuccess?'none':'flex'}">
@@ -60,7 +63,7 @@
         <div class="loginSuccessUser"
              :style="{'display':this.loginSuccess?'flex':'none'}">
           <el-dropdown @command="handleCommand">
-            <el-menu-item>{{ this.username }}</el-menu-item>
+            <el-menu-item><img :src="userProfilePhoto" ></el-menu-item>
             <el-dropdown-menu slot="dropdown">
               <el-dropdown-item command="a">个人中心</el-dropdown-item>
               <el-dropdown-item command="b">购物车</el-dropdown-item>
@@ -259,6 +262,7 @@ export default {
       canLogin: true, //登录数据通过校验的依据
       canRegister: true, //注册数据通过校验的依据
       username: null, //页面刷新后,created中将localStorage中的username赋值到这里，用于页面右上角显示
+      userProfilePhoto:null, //用户头像地址
       usernameExist: false, //用户注册时判断用户名是否已经存在
       loginSuccess: false, //是否登陆成功。用于控制用户登陆成功后个人用户名的显示
       otherLoginVisible: false, //其他登录方式显隐
@@ -287,19 +291,19 @@ export default {
         // ],
         username: [
           {required: true, message: "请输入用户名", trigger: "blur"},
-          {min: 5, max: 10, message: '用户名不存在', trigger: 'blur'},
+          {min: 5, max: 11, message: '用户名不存在', trigger: 'blur'},
           {validator: checkLoginUsername, trigger: 'blur'},
         ],
         password: [
           {required: true, message: "请输入密码", trigger: "blur"},
-          {min: 5, max: 10, message: "密码错误", trigger: "blur"},
+          {min: 5, max: 11, message: "密码错误", trigger: "blur"},
           {validator: checkLoginPassword, trigger: 'blur'},
         ],
       },
       registerFormRules: {
         username: [
           {required: true, message: '请输入用户名', trigger: 'blur'},
-          {min: 5, max: 10, message: '长度必须在5到15个字符之间', trigger: 'blur'},
+          {min: 5, max: 11, message: '长度必须在5到15个字符之间', trigger: 'blur'},
           {validator: checkRegisterUsername, trigger: 'blur'},
         ],
         mobile: [
@@ -313,7 +317,7 @@ export default {
         ],
         password: [
           {required: true, message: '请输入密码', trigger: 'blur'},
-          {min: 5, max: 10, message: '长度必须在5到15个字符之间', trigger: 'blur'},
+          {min: 5, max: 11, message: '长度必须在5到15个字符之间', trigger: 'blur'},
           {validator: checkRegisterPassword, trigger: 'blur'},
         ],
         ensurePassword: [
@@ -528,6 +532,7 @@ export default {
             this.loginSuccess = true;
             //响应式渲染;将登录填写的username设置到data中的username;将用户名设置进localStorage中
             this.username = res.data.data["username"];
+            this.userProfilePhoto = res.data.data["profile_photo"]
             //设置登陆成功的用户的信息(用户name,用户token)
             localStorage.setItem('userId', res.data.data["user_id"]);
             localStorage.setItem('username', res.data.data["username"]);

@@ -10,6 +10,7 @@
     "axios": "^0.18.0",
     "better-scroll": "^1.13.2",
     "element-ui": "^2.13.2",
+    "mavon-editor": "^2.9.1",
     "uglifyjs-webpack-plugin": "^2.2.0",
     "vue": "^2.5.21",
     "vue-infinite-scroll": "^2.0.2",

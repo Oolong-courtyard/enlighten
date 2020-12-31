@@ -124,6 +124,8 @@ class LoginView(APIView):
         response = UserProfile.generate_jwt_token(user)
         # 将token存入redis中
         UserProfile.token_to_cache(user.id, response['token'])
+        # 登录成功返回用户头像
+        response['profile_photo'] = user.profile_photo
         return BaseResponse(data=response)
 
 
