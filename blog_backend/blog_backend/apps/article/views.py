@@ -36,6 +36,7 @@ msg = cache.get('msg')
 # 搜索
 class ArticleSearch(GenericAPIView):
     """文章搜索"""
+    serializer_class = ArticleListSerializer
 
     def get(self, request):
         """文章搜索"""

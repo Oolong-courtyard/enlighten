@@ -59,7 +59,7 @@ class BusStatusCode:
     BAD_REQUEST_4009 = {"code": 4009, "detail": "点赞/取消点赞失败"}
     BAD_REQUEST_4010 = {"code": 4010, "detail": "未查询到该用户对文章的点赞记录,无法取消点赞"}
     BAD_REQUEST_4011 = {"code": 4011, "detail": "短信验证码校验失败,请重新获取"}
-    BAD_REQUEST_4012 = {"code": 4012, "detail": "手机号已存在"}
+    BAD_REQUEST_4012 = {"code": 4012, "detail": "手机号已注册"}
     BAD_REQUEST_4013 = {"code": 4013, "detail": "用户名已存在"}
 
     # 服务端异常

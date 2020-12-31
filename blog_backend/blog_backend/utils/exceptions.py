@@ -59,16 +59,29 @@ def exception_handler(exc, context):
                                 status=status.HTTP_403_FORBIDDEN)
         response_data = {}
         if status.HTTP_400_BAD_REQUEST <= response.status_code < status.HTTP_500_INTERNAL_SERVER_ERROR:
-            for (k, v) in dict(response.data).items():
-                response_data["detail"] = str(v[0])
+            if isinstance(response.data, list):
+                # request方法中抛出
+                response_data["detail"] = str(response.data[0])
                 try:
-                    code = re.findall('\d+', str(v))[0]
+                    tem_code = str(response.data).split('),')[0]
+                    code = re.findall('\d+', tem_code)[0]
                 except Exception as e:
                     print(e)
                     response_data["code"] = None
                 else:
                     response_data["code"] = code
-                break
+            if isinstance(response.data, dict):
+                # serializer中抛出
+                for (k, v) in dict(response.data).items():
+                    response_data["detail"] = str(v[0])
+                    try:
+                        code = re.findall('\d+', str(v))[0]
+                    except Exception as e:
+                        print(e)
+                        response_data["code"] = None
+                    else:
+                        response_data["code"] = code
+                    break
             return BaseResponse(**response_data, status=response.status_code)
 
         if response.status_code == status.HTTP_500_INTERNAL_SERVER_ERROR:

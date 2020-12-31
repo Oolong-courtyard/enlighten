@@ -374,12 +374,10 @@ export default {
       //输入框改变的时候触发
       this.searchInputValueChange = true
     },
-
     //注册用户名格式校验
     checkRegisterUsername() {
 
     },
-
     //注册时检查用户名是否已经注册过
     async CheckUsernameExist() {
       //验证用户名是否已经注册过
@@ -418,7 +416,6 @@ export default {
         //购物车
       }
     },
-
     //qq登录
     qqLogin() {
       console.log("qq登录");
@@ -453,7 +450,6 @@ export default {
         })
       }
     },
-
     //获取验证码
     async getVerifyCode() {
       //手机号格式校验通过
@@ -499,9 +495,11 @@ export default {
 
       }).catch(err => {
         //失败
-        console.log(err);
+        this.$message({
+          "message": "手机号已注册",
+          "type": "warning",
+        })
       })
-
 
       //点击之后马上倒计时,60s之内无法再次点击
       // const res = await this.$http.post("/verifcation", this.registerForm.mobile);
@@ -613,6 +611,7 @@ export default {
           localStorage.setItem('username', res.data.data["username"]);
           localStorage.setItem('userToken', res.data.data["token"]);
           localStorage.setItem("userArticleStars", "");
+          location.reload();
         }
       ).catch(err => {
         console.log("注册失败的err为", err.response.data);

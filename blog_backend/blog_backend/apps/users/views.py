@@ -2,12 +2,13 @@
 用户views
 """
 import json
+import re
 
 from django.contrib.auth import authenticate
 from django import http
 from django.views import View
 from drf_yasg.utils import swagger_auto_schema
-from rest_framework import status
+from rest_framework import status, exceptions
 from rest_framework.views import APIView
 
 from users.models import UserProfile, UserStar
@@ -15,8 +16,10 @@ from users.serializers import (
     LoginViewSerializer,
     UserStarCountQuerySerializer,
     UserRegisterSerializer,
+    UsernameCountViewQuerySerializer,
+    PhoneCountViewQuerySerializer,
 )
-from utils.base_response import BaseResponse
+from utils.base_response import BaseResponse, BusStatusCode
 from utils.user_auth import UserAuth
 
 
@@ -36,9 +39,13 @@ class UserStarCountView(APIView):
         return BaseResponse(data=res.article_id)
 
 
-class UsernameCountView(View):
+class UsernameCountView(APIView):
     """用户数量"""
 
+    @swagger_auto_schema(
+        operation_summary="获取用户数量",
+        query_serializer=UsernameCountViewQuerySerializer
+    )
     def get(self, request):
         """获取用户数量"""
         # 这里判断用户数量只是为了给前台用户提示
@@ -50,18 +57,24 @@ class UsernameCountView(View):
             return http.HttpResponse('用户名不存在,可以注册')
 
 
-class PhoneCountView(View):
+class PhoneCountView(APIView):
     """手机号数量"""
 
+    @swagger_auto_schema(
+        operation_summary="获取手机号数量",
+        query_serializer=PhoneCountViewQuerySerializer
+    )
     def get(self, request):
         """获取手机号数量"""
         # 这里判断手机号数量只是为了给前台用户提示
-        count = UserProfile.objects.filter(
-            mobile=request.GET.get('phone')).count()
+        phone = request.GET.get('phone')
+        if not re.match("^1[3-9]\d{9}$", phone):
+            raise exceptions.ValidationError(**BusStatusCode.BAD_REQUEST_4002)
+        count = UserProfile.objects.filter(mobile=phone).count()
         if count > 0:
-            return http.HttpResponseBadRequest('手机号已经注册')
+            return BaseResponse(status=status.HTTP_400_BAD_REQUEST, **BusStatusCode.BAD_REQUEST_4012)
         else:
-            return http.HttpResponse('手机号可以注册')
+            return BaseResponse(detail="手机号可以注册")
 
 
 class RegisterView(APIView):

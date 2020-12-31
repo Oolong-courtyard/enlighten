@@ -31,6 +31,18 @@ class LoginViewSerializer(serializers.ModelSerializer):
         fields = ('username', 'password')
 
 
+# 用户数量序列化器
+class UsernameCountViewQuerySerializer(serializers.Serializer):
+    """用户数量"""
+    username = serializers.CharField(label="用户名", required=True)
+
+
+# 手机号数量
+class PhoneCountViewQuerySerializer(serializers.Serializer):
+    """手机号数量"""
+    phone = serializers.RegexField(regex='^1[3-9]\d{9}$', label="手机号", min_length=11, max_length=11, required=True)
+
+
 # 创建用户序列化器
 class UserRegisterSerializer(serializers.ModelSerializer):
     """

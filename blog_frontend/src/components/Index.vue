@@ -238,11 +238,13 @@ export default {
   mounted() {
     // console.log("此时的环境变量为",process.env);
     //设置首页显示默认分类
+    console.log("进入了mounted");
     this.categoryTag = "推荐";
     //每一次页面加载获取localStorage中的点赞文章
     if (localStorage.getItem("userArticleStars") != null) {
       this.userArticleStars = this.userArticleStars.concat(localStorage.getItem("userArticleStars").split(","));
     }
+    console.log("用户文章点赞的列表是", this.userArticleStars);
     //根据地址栏中是否有code参数请求server获取用户的openid
     let code = this.get_query_string('code');
     if (code != null) {
@@ -340,16 +342,22 @@ export default {
                 this.userArticleStars.push(article_id);
                 //这里应对的是页面刷新的情况
                 uAStar.push(article_id);
+                //将uAStar转换为字符串并存储到localStorage中
+                let userArticleStarsStr = uAStar.toString()
+                localStorage.setItem("userArticleStars", userArticleStarsStr)
                 this.resListData[index].star_count += 1
               } else if (action == "0") {
                 //取消点赞
                 //该文章已经被该用户点赞,此时取消点赞
-                console.log("this.resListData[index].star_count",this.resListData[index].star_count)
-                console.log("this.resListData是",this.resListData)
+                console.log("this.resListData[index].star_count", this.resListData[index].star_count)
+                console.log("this.resListData是", this.resListData)
                 this.resListData[index].star_count -= 1;
                 this.userArticleStars.splice(this.userArticleStars.indexOf(article_id), 1);
                 //这里应对的是页面刷新的情况
                 uAStar.splice(uAStar.indexOf(article_id), 1);
+                //将uAStar转换为字符串并存储到localStorage中
+                let userArticleStarsStr = uAStar.toString()
+                localStorage.setItem("userArticleStars", userArticleStarsStr)
               }
             }
           }
