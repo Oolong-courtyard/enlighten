@@ -23,6 +23,7 @@ from utils.base_response import BaseResponse, BusStatusCode
 from utils.user_auth import UserAuth
 
 
+# 获取用户点赞的文章
 class UserStarCountView(APIView):
     """获取用户点赞的文章"""
 
@@ -39,6 +40,7 @@ class UserStarCountView(APIView):
         return BaseResponse(data=res.article_id)
 
 
+# 用户数量
 class UsernameCountView(APIView):
     """用户数量"""
 
@@ -57,6 +59,7 @@ class UsernameCountView(APIView):
             return http.HttpResponse('用户名不存在,可以注册')
 
 
+# 手机号数量
 class PhoneCountView(APIView):
     """手机号数量"""
 
@@ -77,6 +80,7 @@ class PhoneCountView(APIView):
             return BaseResponse(detail="手机号可以注册")
 
 
+# 用户注册
 class RegisterView(APIView):
     """
     用户注册
@@ -105,6 +109,7 @@ class RegisterView(APIView):
 """
 
 
+# 用户登录
 class LoginView(APIView):
     """用户登录"""
 
@@ -129,6 +134,7 @@ class LoginView(APIView):
         return BaseResponse(data=response)
 
 
+# 邮箱激活
 class EmailActiveView(View):
     """邮箱激活"""
     pass

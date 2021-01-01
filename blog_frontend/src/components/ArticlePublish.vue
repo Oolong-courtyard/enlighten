@@ -1,6 +1,7 @@
 <template>
+  <!-- 编辑文章发布-->
   <div style="position:absolute;width: 100%;height: 100%;background-color: #EFEFEF">
-<!--    <el-backtop></el-backtop>-->
+    <!--    <el-backtop></el-backtop>-->
     <div style="position: fixed;
                 height:60px;
                 width: 100%;
@@ -10,6 +11,7 @@
   "
     >
       <!--                  <ArticlePublishNavBar style="margin:0 auto;"></ArticlePublishNavBar>-->
+      <!--引用Navbar组件-->
       <ArticlePublishNavBar style="margin-left: 450px"></ArticlePublishNavBar>
       <!--美化页面的风格阴影-->
       <div style="background-color: #EFEFEF;height: 20px;z-index: 998"></div>

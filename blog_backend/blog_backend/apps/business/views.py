@@ -32,6 +32,7 @@ class ArticleRecommendView(APIView):
     )
     def get_commend_list(self, request):
         """获取推荐文章列表"""
+        pass
 
 
 # 文章点赞

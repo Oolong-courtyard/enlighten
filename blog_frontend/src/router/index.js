@@ -17,19 +17,23 @@ const routes = [
     redirect: '/index'
   },
   {
+    //首页，爬取的文章列表页
     path: '/index',
     component: Index
   },
   // 每一{}就代表一条route
   {
+    //文章详情页面
     path: '/article-detail',
     component: ArticleDetail
   },
   {
+    //文章编辑发布页面
     path: '/article-publish',
     component: ArticlePublish
   },
   {
+    //我发布的文章列表
     path: '/myPublish',
     component: myPublishArticle
   },

@@ -15,7 +15,7 @@ import axios from 'axios';
 import mavonEditor from 'mavon-editor'
 import 'mavon-editor/dist/css/index.css'
 // use mavonEditor
-Vue.use(mavonEditor)
+Vue.use(mavonEditor);
 
 //根据环境变量配置请求的根路径
 axios.defaults.baseURL = process.env.VUE_APP_BASE_URL;
