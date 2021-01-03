@@ -20,12 +20,13 @@
             index="">enlighten
           </el-menu-item>
           <el-menu-item index="index" style="font-size: 15px">首页</el-menu-item>
+          <el-menu-item index="myPublish">历程</el-menu-item>
           <!--          TODO tab首页下加入子标题进行分类(后端，前端，ios，android...)-->
         </div>
         <div style="margin-left: 500px">
           <el-menu-item style="background-color:black;border-radius: 30px;font-size:18px"
                         index="article-publish"
-                        @click="articlePublish"
+                        @click="articlePublish(htmlContent)"
           >发布
           </el-menu-item>
         </div>
@@ -33,7 +34,7 @@
         <!--登陆成功(或注册成功后直接)显示当前登陆用户名称-->
         <div class="loginSuccessUser"
              :style="{'display':'flex'}">
-          <el-dropdown @command="handleCommand">
+          <el-dropdown trigger="click" @command="handleCommand">
             <el-menu-item><img :src="userProfilePhoto" style="height: 36px;width: 36px;border-radius: 50px">
             </el-menu-item>
             <el-dropdown-menu slot="dropdown">
@@ -56,6 +57,7 @@
 
   export default {
     name: "ArticlePublishNavBar",
+    props: ['htmlContent'],
     data() {
       return {
         selectSearch: false,//是否选中了输入框
@@ -89,7 +91,7 @@
       handleCommand() {
         console.log("handleCommand");
       },
-      articlePublish() {
+      articlePublish(htmlContent) {
         //文章发布
         //TODO 判断用户token有效期。
         //user story ：用户点击发布之后，跳转到发布成功界面(包含发布文章的标题,点击标题可以进入文章详情);点击历程，可以看到刚刚发布的文章。
@@ -99,9 +101,24 @@
 
         //后台的文章列表和文章详情两张表应该合并成为一张表。前台请求列表和详情的时候是不一样的url，
         // 但是是同一个视图同一个方法，通过类似action这样的字段区分前台行为。最终查询数据库的行为不一样。
+        //获取到的用户输入的md全部内容是：
 
-
-
+        //向后台发送请求，将该用户发布的这篇文章的内容存入数据库中
+        console.log("content是",htmlContent);
+        this.$http.post(this.$articlePublish, {
+            "user_id": localStorage.getItem("userId"),
+            "author": localStorage.getItem("username"),
+            "content": htmlContent
+          },
+          {headers: {"x-token": localStorage.getItem("userToken")}},
+        ).then(res => {
+          //成功
+          console.log("发布文章的res的code是", res.status)
+          //TODO 文章发布的时候先要判断用户token是否过期。发布成功之后跳转到一个新的界面，展示 发布成功。然后在历程中可以看到发布的文章，点进去看到文章详情。
+        }).catch(err => {
+          //失败
+          console.log("发布文章的err的code是", err.response.status)
+        })
       },
     },
 

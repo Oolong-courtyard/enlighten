@@ -63,7 +63,7 @@
         <!--登陆成功(或注册成功后直接)显示当前登陆用户名称-->
         <div class="loginSuccessUser"
              :style="{'display':this.loginSuccess?'flex':'none'}">
-          <el-dropdown @command="handleCommand">
+          <el-dropdown trigger="click" @command="handleCommand">
             <el-menu-item><img :src="userProfilePhoto" style="height: 36px;width: 36px;border-radius: 50px" ></el-menu-item>
             <el-dropdown-menu slot="dropdown">
               <el-dropdown-item command="a">个人中心</el-dropdown-item>
