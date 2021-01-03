@@ -43,6 +43,7 @@ class ArticleList(BaseModel):
     #                           null=True, max_length=500)
     image = models.TextField(verbose_name='文章图片', null=True, max_length=500)
     origin = models.CharField(null=True, max_length=100, verbose_name="爬取于")
+    content = models.TextField(verbose_name="文章详情内容", null=True, blank=True)
     scraped_date_time = models.DateTimeField(auto_now=True, verbose_name="爬取时间")
     publish_time = models.CharField(null=True, max_length=50, verbose_name="发布时间")
     star_count = models.IntegerField(null=True, default=0, verbose_name="点赞数")

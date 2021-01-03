@@ -1,4 +1,7 @@
 """跨模块业务"""
+import datetime
+
+import shortuuid
 from django.db import transaction
 from rest_framework import status
 from rest_framework.views import APIView
@@ -8,9 +11,9 @@ from drf_yasg import openapi
 from article.models import ArticleList
 from business.serializers import (
     StarViewSerializer,
-    ArticleRecommendQuerySerializer,
+    ArticleRecommendQuerySerializer, ArticlePublishViewSerializer,
 )
-from users.models import UserStar
+from users.models import UserStar, UserPublish
 from utils.base_response import BaseResponse, BusStatusCode
 from utils.exceptions import logger
 from utils.user_auth import UserAuth
@@ -33,6 +36,58 @@ class ArticleRecommendView(APIView):
     def get_commend_list(self, request):
         """获取推荐文章列表"""
         pass
+
+
+# 发布文章
+class ArticlePublishView(APIView):
+    """发布文章"""
+    x_token = openapi.Parameter('x-token', openapi.IN_HEADER, description='认证token', type=openapi.TYPE_STRING, required=True)
+    authentication_classes = [UserAuth]
+
+    @swagger_auto_schema(
+        operation_summary="发布文章",
+        manual_parameters=[x_token],
+        request_body=ArticlePublishViewSerializer,
+    )
+    def post(self, request):
+        """新增文章"""
+        request_data = request.data
+        # 生成文章id(uuid)
+        user_id = request_data.get("user_id")
+        article_id = shortuuid.uuid()
+        article_name = request_data.get("content").split("\n")[0]
+        author = request_data.get("author")
+        origin = "enlighten"
+        content = request_data.get("content")
+        publish_time = datetime.datetime.now().strftime('%Y%m%d %H-%M-%S')
+        article_dict = {
+            "article_id": article_id,
+            "article_name": article_name,
+            "author": author,
+            "origin": origin,
+            "content": content,
+            "publish_time": publish_time,
+        }
+        # 显式地开启一个事务
+        with transaction.atomic():
+            # 创建事务保存点
+            save_id = transaction.savepoint()
+            try:
+                # UserPublish更新该用户的发布文章列表
+                pub_res = UserPublish.objects.get(user_id=user_id)
+                UserPublish.objects.create(user_id=user_id, article_id=pub_res.article_id.append(article_id))
+                # 文章表加一条记录
+                ArticleList.objects.create(**article_dict)
+            except Exception as e:
+                logger.info(e)
+                # 点赞失败回滚到保存点
+                transaction.savepoint_rollback(save_id)
+                return BaseResponse(status=status.HTTP_500_INTERNAL_SERVER_ERROR,
+                                    **BusStatusCode.INTERNAL_SERVER_ERROR_5001,
+                                    )
+        # 点赞成功,提交从保存点到当前状态的所有数据库事务操作
+        transaction.savepoint_commit(save_id)
+        return BaseResponse(detail="文章发布成功")
 
 
 # 文章点赞

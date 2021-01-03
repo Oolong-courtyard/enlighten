@@ -10,6 +10,15 @@ class ArticleRecommendQuerySerializer(serializers.Serializer):
     user_id = serializers.CharField(label="用户id", max_length=100, required=True)
 
 
+class ArticlePublishViewSerializer(serializers.Serializer):
+    """发布文章序列化器"""
+    user_id = serializers.CharField(label="用户id", max_length=100, required=True)
+    author = serializers.CharField(label="用户名称", max_length=100, required=True)
+    content = serializers.CharField(label="文章内容", max_length=9999, required=True)
+
+
+
+
 class StarViewSerializer(serializers.Serializer):
     """点赞数序列化器"""
     user_id = serializers.CharField(label="用户id", max_length=100, required=True)

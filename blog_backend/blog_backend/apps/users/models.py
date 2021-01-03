@@ -77,6 +77,18 @@ class UserStar(BaseModel):
         verbose_name_plural = verbose_name
 
 
+# 用户发布的文章
+class UserPublish(BaseModel):
+    """用户发布的文章"""
+    user_id = models.CharField(max_length=100, verbose_name="用户id", unique=True)
+    article_id = ArrayField(base_field=models.CharField(max_length=100, verbose_name="文章id"), null=True, verbose_name="文章id列表")
+
+    class Meta:
+        db_table = "user_publish"
+        verbose_name = "用户发布文章"
+        verbose_name_plural = verbose_name
+
+
 # 用户推荐
 class UserCommend(BaseModel):
     """

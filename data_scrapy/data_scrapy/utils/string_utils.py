@@ -3,7 +3,6 @@
 """
 import time
 
-
 def to_string(value, default=''):
     return_value = default
     if value is None:

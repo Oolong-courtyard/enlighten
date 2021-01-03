@@ -156,3 +156,4 @@ class ArticleDetailView(GenericAPIView):
         serializer.save()
         # 返回响应: status 201,新建文章列表信息成功
         return Response(serializer.data, status=status.HTTP_201_CREATED)
+
