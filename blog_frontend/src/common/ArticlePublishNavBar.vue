@@ -25,7 +25,6 @@
         </div>
         <div style="margin-left: 500px">
           <el-menu-item style="background-color:black;border-radius: 30px;font-size:18px"
-                        index="article-publish"
                         @click="articlePublish(htmlContent)"
           >发布
           </el-menu-item>
@@ -55,83 +54,97 @@
 
 <script>
 
-  export default {
-    name: "ArticlePublishNavBar",
-    props: ['htmlContent'],
-    data() {
-      return {
-        selectSearch: false,//是否选中了输入框
-        searchInput: '', //搜索输入
-        searchInputValueChange: false,//搜索输入框中的值是否改变(布尔)
-        canLogin: true, //登录数据通过校验的依据
-        canRegister: true, //注册数据通过校验的依据
-        username: null, //页面刷新后,created中将localStorage中的username赋值到这里，用于页面右上角显示
-        userProfilePhoto: null, //用户头像地址
-        usernameExist: false, //用户注册时判断用户名是否已经存在
-        otherLoginVisible: false, //其他登录方式显隐
-        registerVerifyFormVisible: false,  //注册时验证码填写form是否显示
-        loginDialogFormVisible: false, //登录对话框显隐
-        registerDialogFormVisible: false, //注册对话框显隐
-        formLabelWidth: '80px'
-      }
+export default {
+  name: "ArticlePublishNavBar",
+  props: ['htmlContent'],
+  data() {
+    return {
+      selectSearch: false,//是否选中了输入框
+      searchInput: '', //搜索输入
+      searchInputValueChange: false,//搜索输入框中的值是否改变(布尔)
+      canLogin: true, //登录数据通过校验的依据
+      canRegister: true, //注册数据通过校验的依据
+      username: null, //页面刷新后,created中将localStorage中的username赋值到这里，用于页面右上角显示
+      userProfilePhoto: null, //用户头像地址
+      usernameExist: false, //用户注册时判断用户名是否已经存在
+      otherLoginVisible: false, //其他登录方式显隐
+      registerVerifyFormVisible: false,  //注册时验证码填写form是否显示
+      loginDialogFormVisible: false, //登录对话框显隐
+      registerDialogFormVisible: false, //注册对话框显隐
+      formLabelWidth: '80px'
+    }
+  },
+  mounted() {
+    //获取localStorage中的用户信息
+    let username = localStorage.getItem("username");
+    if (username != null) {
+      this.loginSuccess = true; //loginSuccess状态决定当前页面右上角显示用户名还是登录/注册按钮
+      // 为了兼容注册成功后，直接显示用户名,直接在localStorage中获取username后设置到data中的username中；因此注册成功的同时将username设置到localStorage中
+      this.username = username;
+      this.userProfilePhoto = localStorage.getItem("userProfilePhoto");
+    } else {
+      this.loginSuccess = false;
+    }
+  },
+  methods: {
+    handleCommand() {
+      console.log("handleCommand");
     },
-    mounted() {
-      //获取localStorage中的用户信息
-      let username = localStorage.getItem("username");
-      if (username != null) {
-        this.loginSuccess = true; //loginSuccess状态决定当前页面右上角显示用户名还是登录/注册按钮
-        // 为了兼容注册成功后，直接显示用户名,直接在localStorage中获取username后设置到data中的username中；因此注册成功的同时将username设置到localStorage中
-        this.username = username;
-        this.userProfilePhoto = localStorage.getItem("userProfilePhoto");
-      } else {
-        this.loginSuccess = false;
-      }
-    },
-    methods: {
-      handleCommand() {
-        console.log("handleCommand");
-      },
-      articlePublish(htmlContent) {
-        //文章发布
-        //TODO 判断用户token有效期。
-        //user story ：用户点击发布之后，跳转到发布成功界面(包含发布文章的标题,点击标题可以进入文章详情);点击历程，可以看到刚刚发布的文章。
+    articlePublish(htmlContent) {
+      //文章发布
+      //TODO 判断用户token有效期。
+      //user story ：用户点击发布之后，跳转到发布成功界面(包含发布文章的标题,点击标题可以进入文章详情);点击历程，可以看到刚刚发布的文章。
 
-        //流程：用户点击发布之后，首先判断用户token的有效期(token过期需要重新登录);
-        // token未过期，向后台发送请求将该文章所有相关信息存入db。历程 在created的时候请求db获取发布的文章列表展示即可。
+      //流程：用户点击发布之后，首先判断用户token的有效期(token过期需要重新登录);
+      // token未过期，向后台发送请求将该文章所有相关信息存入db。历程 在created的时候请求db获取发布的文章列表展示即可。
 
-        //后台的文章列表和文章详情两张表应该合并成为一张表。前台请求列表和详情的时候是不一样的url，
-        // 但是是同一个视图同一个方法，通过类似action这样的字段区分前台行为。最终查询数据库的行为不一样。
-        //获取到的用户输入的md全部内容是：
+      //后台的文章列表和文章详情两张表应该合并成为一张表。前台请求列表和详情的时候是不一样的url，
+      // 但是是同一个视图同一个方法，通过类似action这样的字段区分前台行为。最终查询数据库的行为不一样。
+      //获取到的用户输入的md全部内容是：
 
-        //向后台发送请求，将该用户发布的这篇文章的内容存入数据库中
-        console.log("content是",htmlContent);
-        this.$http.post(this.$articlePublish, {
-            "user_id": localStorage.getItem("userId"),
-            "author": localStorage.getItem("username"),
-            "content": htmlContent
-          },
-          {headers: {"x-token": localStorage.getItem("userToken")}},
-        ).then(res => {
-          //成功
-          console.log("发布文章的res的code是", res.status)
-          //TODO 文章发布的时候先要判断用户token是否过期。发布成功之后跳转到一个新的界面，展示 发布成功。然后在历程中可以看到发布的文章，点进去看到文章详情。
-        }).catch(err => {
+      //向后台发送请求，将该用户发布的这篇文章的内容存入数据库中
+      console.log("content是", htmlContent);
+      this.$http.post(this.$articlePublish, {
+          "user_id": localStorage.getItem("userId"),
+          "author": localStorage.getItem("username"),
+          "content": htmlContent
+        },
+        {headers: {"x-token": localStorage.getItem("userToken")}},
+      ).then(res => {
+        //成功
+        // console.log("发布文章的res的code是", res.status);
+        //成功直接跳转到发布成功界面
+        this.$router.push({path: '/publishSuccess', params: {articleId: res.data.data.article_id}})
+        console.log("发布文章的res的code是，路由即将跳转");
+        //TODO 文章发布的时候先要判断用户token是否过期。发布成功之后跳转到一个新的界面，展示 发布成功。然后在历程中可以看到发布的文章，点进去看到文章详情。
+      }).catch(err => {
+        if (err.response.status === 403) {
+          this.$message({
+            message: "token过期,请重新登陆",
+            type: "warning",
+          })
+        } else {
           //失败
-          console.log("发布文章的err的code是", err.response.status)
-        })
-      },
+          // console.log("发布文章的err的code是", err.response.status)
+          //失败路由中断,并弹框提示用户发布失败的信息
+          this.$message({
+            message: "发布文章失败,请稍后重试",
+            type: "warning",
+          })
+        }
+      })
     },
-
-  }
+  },
+}
 </script>
 
 <style>
-  .tabBarDiv {
-    /*position: absolute;*/
-    width: 1000px;
-  }
+.tabBarDiv {
+  /*position: absolute;*/
+  width: 1000px;
+}
 
-  .loginSuccessUser {
-    margin-left: 10px;
-  }
+.loginSuccessUser {
+  margin-left: 10px;
+}
 </style>

@@ -7,6 +7,7 @@ import Index from "../components/Index";
 const ArticleDetail = () => import("@/components/ArticleDetail");
 const ArticlePublish = () => import("@/components/ArticlePublish");
 const myPublishArticle = () => import("@/components/myPublishArticle");
+const PublishSuccess = () => import("@/components/PublishSuccess");
 //1.安装插件
 Vue.use(VueRouter)
 
@@ -37,6 +38,11 @@ const routes = [
     path: '/myPublish',
     component: myPublishArticle
   },
+  {
+    //文章发布成功界面
+    path: '/publishSuccess',
+    component: PublishSuccess
+  },
 ]
 
 const router = new VueRouter(
@@ -45,5 +51,12 @@ const router = new VueRouter(
     mode: 'history'
   }
 )
+//导航守卫(beforeEach:全局前置导航钩子；afterEach:全局后置导航钩子)它们会在路由即将改变前和改变后触发。
+//暂时业务不需要
+// router.beforeEach((to,from,next)=>{
+//   console.log(to);
+//   console.log(from);
+//   next();
+// })
 
 export default router

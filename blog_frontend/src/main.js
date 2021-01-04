@@ -45,8 +45,9 @@ Vue.prototype.$getSmsCode = "verification/sms/";
 
 //TODO 文章列表(区分爬取的文章和用户发布的文章,后台通过origin来区分)
 Vue.prototype.$articleListUrl = 'article/article-list/?page=';
-//新增文章地址
-Vue.prototype.$articleListUrl = 'article/article-list/?page=';
+//获取用户发布的文章列表
+Vue.prototype.$publishArticleList = 'article/article-list/'
+
 Vue.prototype.$articlePublish = 'business/article-publish/';
 //文章详情
 Vue.prototype.$articleDetailUrl = 'article/article-detail/';

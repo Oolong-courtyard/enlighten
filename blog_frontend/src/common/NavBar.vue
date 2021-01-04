@@ -22,7 +22,7 @@
           <el-menu-item index="index" style="font-size: 15px">首页</el-menu-item>
           <!--          TODO tab首页下加入子标题进行分类(后端，前端，ios，android...)-->
           <el-menu-item index="myPublish" >历程</el-menu-item>
-          <el-menu-item index="project" disabled>项目</el-menu-item>
+          <el-menu-item >项目</el-menu-item>
 
         </div>
         <!--搜索框-->

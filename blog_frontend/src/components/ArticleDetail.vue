@@ -112,10 +112,7 @@ export default {
     },
     getArticleDetail(id) {
       //获取文章详情
-      getArticleDetail(id).then(res => {
-        console.log("来到了getArticleDetail=====")
-        console.log("获取到的res的data是", res.data.data)
-        console.log("获取到的res的状态码是", res.status)
+      this.$http.get('article/article-details/?article_id=' + id.toString()).then(res => {
         this.res_detail_data = res.data.data
       }).catch(
         err => {

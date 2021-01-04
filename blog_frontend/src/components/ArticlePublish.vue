@@ -22,9 +22,7 @@
     </div>
     <!--一键置顶-->
     <el-backtop style="position: fixed;z-index: 1000;"></el-backtop>
-
   </div>
-
 </template>
 
 <script>
