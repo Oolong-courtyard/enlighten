@@ -11,3 +11,4 @@ djangorestframework-jwt==1.11.0
 requests==2.24.0
 drf-yasg==1.20.0
 tencentcloud-sdk-python==3.0.316
+shortuuid==1.0.1

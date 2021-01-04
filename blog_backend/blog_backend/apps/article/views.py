@@ -96,8 +96,12 @@ class ArticleListView(APIView):
         获取文章列表信息
         """
         # TODO 这里通过origin来区分获取的是爬取的文章列表还是用户发布的文章列表
-        target_page = request.query_params.dict().get('page')
-        queryset = ArticleList.objects.all()
+        target_page = request.query_params.dict().get('page', 1)
+        origin = request.query_params.dict().get('origin')
+        if origin:
+            queryset = ArticleList.objects.filter(origin=origin).order_by('-publish_time')
+        else:
+            queryset = ArticleList.objects.all()
         num_of_per_page = settings.NUM_OF_PER_PAGE
         paginator = Paginator(queryset, num_of_per_page)
         page = paginator.page(target_page)
@@ -123,6 +127,23 @@ class ArticleListView(APIView):
         serializer.save()
         # 返回响应: status 201,新建文章列表信息成功
         return Response(serializer.data, status=status.HTTP_201_CREATED)
+
+
+class ArticleDetailsView(GenericAPIView):
+    queryset = ArticleList.objects.all()
+    serializer_class = ArticleDetailSerializer
+    pagination_class = None
+
+    @swagger_auto_schema(
+        operation_summary="获取文章详情aaaaa",
+        query_serializer=ArticleDetailQuerySerializer,
+    )
+    def get(self, request):
+        """根据文章id,获取文章详情信息"""
+        # print(request.query_params)
+        queryset = ArticleList.objects.get(article_id=request.query_params.dict().get('article_id'))
+        serializer = ArticleListSerializer(queryset)
+        return BaseResponse(data=serializer.data)
 
 
 # 详情
@@ -156,4 +177,3 @@ class ArticleDetailView(GenericAPIView):
         serializer.save()
         # 返回响应: status 201,新建文章列表信息成功
         return Response(serializer.data, status=status.HTTP_201_CREATED)
-

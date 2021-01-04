@@ -1,5 +1,7 @@
 """跨模块业务"""
 import datetime
+import re
+import time
 
 import shortuuid
 from django.db import transaction
@@ -56,10 +58,11 @@ class ArticlePublishView(APIView):
         user_id = request_data.get("user_id")
         article_id = shortuuid.uuid()
         article_name = request_data.get("content").split("\n")[0]
+        article_name = re.compile(r'<[^>]+>', re.S).sub('', article_name)
         author = request_data.get("author")
         origin = "enlighten"
         content = request_data.get("content")
-        publish_time = datetime.datetime.now().strftime('%Y%m%d %H-%M-%S')
+        publish_time = int(time.time())
         article_dict = {
             "article_id": article_id,
             "article_name": article_name,
@@ -75,7 +78,15 @@ class ArticlePublishView(APIView):
             try:
                 # UserPublish更新该用户的发布文章列表
                 pub_res = UserPublish.objects.get(user_id=user_id)
-                UserPublish.objects.create(user_id=user_id, article_id=pub_res.article_id.append(article_id))
+                # 如果 pub_res有,说明该用户至少发布过一篇文章,此时更新 UserPublish
+                article_id_list = pub_res.article_id
+                article_id_list.append(article_id)
+                UserPublish.objects.filter(user_id=user_id).update(article_id=article_id_list)
+                # 文章表加一条记录
+                ArticleList.objects.create(**article_dict)
+            except UserPublish.DoesNotExist:
+                # 该用户未发表过任何文章,UserPublish表增加一条记录
+                UserPublish.objects.create(user_id=user_id, article_id=[article_id])
                 # 文章表加一条记录
                 ArticleList.objects.create(**article_dict)
             except Exception as e:
@@ -87,7 +98,7 @@ class ArticlePublishView(APIView):
                                     )
         # 点赞成功,提交从保存点到当前状态的所有数据库事务操作
         transaction.savepoint_commit(save_id)
-        return BaseResponse(detail="文章发布成功")
+        return BaseResponse(detail="文章发布成功", data={"article_id": article_id})
 
 
 # 文章点赞
