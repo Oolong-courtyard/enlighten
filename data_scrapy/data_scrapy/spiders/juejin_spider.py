@@ -8,7 +8,7 @@ import jsonpath
 import scrapy
 
 from items.jue_jin_item import JueJinArticleListScrapyItem, JueJinArticleDetailScrapyItem
-from utils import datetime_utils
+from data_scrapy.utils import datetime_utils
 
 
 class JueJinSpiderSpider(scrapy.Spider):
@@ -74,7 +74,6 @@ class JueJinSpiderSpider(scrapy.Spider):
             item['author'] = jsonpath.jsonpath(data_item, '$..user_name')[0]
             item['category'] = jsonpath.jsonpath(data_item, '$..category_name')[0]
             item['scraped_date_time'] = datetime_utils.current_datetime()
-            yield item
             yield scrapy.Request(
                 url='https://juejin.im/post/' + item['article_id'],
                 meta={'item': item},
@@ -103,11 +102,5 @@ class JueJinSpiderSpider(scrapy.Spider):
         detail_content = response.xpath('//*[@id="juejin"]/div[2]/main/div/div[1]/article/div[5]/div[1]').extract_first()
         if detail_content is None:
             detail_content = response.xpath('//*[@id="juejin"]/div[2]/main/div/div[1]/article/div[4]/div[1]').extract_first()
-        item = JueJinArticleDetailScrapyItem()
-        item['article_id'] = list_item['article_id']
-        item['article_name'] = list_item['article_name']
-        item['publish_time'] = list_item['publish_time']
-        item['author'] = list_item['author']
-        item['category'] = list_item['category']
-        item['content'] = detail_content
-        yield item
+        list_item['content'] = detail_content
+        yield list_item

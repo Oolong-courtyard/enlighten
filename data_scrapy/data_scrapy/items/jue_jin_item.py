@@ -5,8 +5,8 @@
 
 import scrapy
 
-from utils.datetime_utils import timestamp_to_datetime
-from utils.string_utils import to_string
+from data_scrapy.utils.datetime_utils import timestamp_to_datetime
+from data_scrapy.utils.string_utils import to_string
 
 from configs.scrapy_configs import SERVE_BASE_URL
 
@@ -25,6 +25,7 @@ class JueJinArticleListScrapyItem(scrapy.Item):
     image = scrapy.Field()
     origin = scrapy.Field()
     scraped_date_time = scrapy.Field()
+    content = scrapy.Field()
 
     def to_request_obj(self):
         """将scrapy item 转换为符合请求的数据格式"""
@@ -36,6 +37,7 @@ class JueJinArticleListScrapyItem(scrapy.Item):
             'category': to_string(self.get('category')),
             'origin': '掘金',
             'scraped_date_time': to_string(self.get('scraped_date_time')),
+            'content': to_string(self.get('content'))
         }
         return trans_data
 
