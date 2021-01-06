@@ -15,7 +15,7 @@ Vue.use(VueRouter)
 const routes = [
   {
     path: '',
-    redirect: '/index'
+    component: Index
   },
   {
     //首页，爬取的文章列表页
