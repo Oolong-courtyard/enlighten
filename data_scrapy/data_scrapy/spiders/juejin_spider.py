@@ -74,6 +74,7 @@ class JueJinSpiderSpider(scrapy.Spider):
             item['author'] = jsonpath.jsonpath(data_item, '$..user_name')[0]
             item['category'] = jsonpath.jsonpath(data_item, '$..category_name')[0]
             item['scraped_date_time'] = datetime_utils.current_datetime()
+            yield item
             yield scrapy.Request(
                 url='https://juejin.im/post/' + item['article_id'],
                 meta={'item': item},
@@ -99,8 +100,19 @@ class JueJinSpiderSpider(scrapy.Spider):
     def parse_article_detail(self, response, **kwargs):
         """解析文章详情"""
         list_item = response.meta['item']
+        detail_item = JueJinArticleDetailScrapyItem()
         detail_content = response.xpath('//*[@id="juejin"]/div[2]/main/div/div[1]/article/div[5]/div[1]').extract_first()
         if detail_content is None:
             detail_content = response.xpath('//*[@id="juejin"]/div[2]/main/div/div[1]/article/div[4]/div[1]').extract_first()
-        list_item['content'] = detail_content
-        yield list_item
+        # 对content进行处理
+        # 1.删除string中的文字 `复制代码`
+        detail_content = detail_content.replace("复制代码", "")
+        # 2.将string中的data-src更改为src
+        detail_content = detail_content.replace("data-src", "src")
+        detail_item['article_id'] = list_item['article_id']
+        detail_item['article_name'] = list_item['article_name']
+        detail_item['publish_time'] = list_item['publish_time']
+        detail_item['author'] = list_item['author']
+        detail_item['category'] = list_item['category']
+        detail_item['content'] = detail_content
+        yield detail_item

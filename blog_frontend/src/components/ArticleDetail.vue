@@ -112,7 +112,7 @@ export default {
     },
     getArticleDetail(id) {
       //获取文章详情
-      this.$http.get('article/article-details/?article_id=' + id.toString()).then(res => {
+      this.$http.get('article/article-detail/?article_id=' + id.toString()).then(res => {
         this.res_detail_data = res.data.data
       }).catch(
         err => {

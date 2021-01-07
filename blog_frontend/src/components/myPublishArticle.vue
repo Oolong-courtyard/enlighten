@@ -44,6 +44,25 @@
               >
                 {{ res_item.article_name }}
               </div>
+              <!--点赞-->
+              <div style="margin-top: 20px;">
+                <!--TODO 点赞,关于点赞和评论图标的样式，后续可以找更好看的-->
+                <!--                    :style="{'background-color':userArticleStars.indexOf(res_item.article_id) == -1?'':'#66AEE1'}"-->
+                <el-button class="starStyle"
+                           :style="{'background-color':userArticleStars.indexOf(res_item.article_id) == -1?'':'#66AEE1'}"
+                           @click="clickStarCount(index,res_item.article_id,res_item.star_count)">
+                  <!--                                              :style="{'color':userArticleStars.indexOf(res_item.article_id) == -1?'':'white'}">-->
+                  <div :style="{'color':userArticleStars.indexOf(res_item.article_id) == -1?'':'white'}"
+                  >
+                    👍 {{ res_item.star_count }}
+                  </div>
+                </el-button>
+                <!--评论-->
+                <el-button class="commentStyle"
+                           @click="clickCommentCount(index,res_item.article_id,res_item.comment_count)">
+                  评论 {{ res_item.comment_count }}
+                </el-button>
+              </div>
               <!--              <div style="margin-top: 20px;">-->
               <!--                &lt;!&ndash;TODO 点赞,关于点赞和评论图标的样式，后续可以找更好看的&ndash;&gt;-->
               <!--                &lt;!&ndash;                    :style="{'background-color':userArticleStars.indexOf(res_item.article_id) == -1?'':'#66AEE1'}"&ndash;&gt;-->
@@ -124,6 +143,93 @@ export default {
     this.getArticleList()
   },
   methods: {
+    async clickStarCount(index, article_id, star_count) {
+      /*
+      改变文章的点赞数
+      已经登陆的用户才可以点赞(当前文章的点赞数加一);未登陆用户点赞弹出登陆对话框诱导用户登陆;点赞之后再点一次是取消点赞(当前文章的点赞数减一);
+       */
+      //如果userArticleStars中根据article_id获取到值，说明该文章已经被该用户点过赞,此时应当取消点赞；
+      //如果未获取到值，说明该文章未被该用户点过赞，此时点赞数加1；
+      //TODO 可以开始做后台(文章被点赞数和用户点赞的文章,以及表结构设计，用户信息采集->用户画像构建->推荐算法和模型训练->生成推荐数据并返回)
+      //已经登陆的用户才可以点赞
+      console.log("localStorage中用户点赞文章列表是", localStorage.getItem("userArticleStars"))
+      if (localStorage.getItem("username") === null) {
+        //本地为获取到username.当前用户为未登录状态,弹出登录对话框
+        this.$refs.navbar.loginDialogFormVisible = true;
+      }
+      if (localStorage.getItem("username") != null) {
+        //用户登陆过(localStorage不会自动清理)
+        //所以要判断用户token是否过期,如果token过期,用户需重新登陆
+        this.$http.put(
+          this.$Star,
+          {
+            "user_id": localStorage.getItem("userId"),
+            "article_id": article_id,
+            "action": this.userArticleStars.indexOf(article_id) == -1 ? "1" : "0",
+          },
+          {headers: {"x-token": localStorage.getItem("userToken")}},
+        ).then(
+          res => {
+            //点赞/取消点赞成功 data中数据如何改变？画面如何渲染
+            console.log("点赞/取消点赞成功后返回的res是", res)
+            console.log("点赞/取消点赞成功后返回的res的status是", res.status)
+            if (res.status == 200) {
+              //点赞/取消点赞成功
+              let action = this.userArticleStars.indexOf(article_id) == -1 ? "1" : "0"
+              console.log("action是", action);
+              //本地存储中用户点赞文章
+              let uAStar = localStorage.getItem("userArticleStars").split(",")
+              if (action == "1") {
+                //点赞,该文章没有被该用户点赞,将该文章id添加到userArticleStars中
+                this.userArticleStars.push(article_id);
+                //这里应对的是页面刷新的情况
+                uAStar.push(article_id);
+                //将uAStar转换为字符串并存储到localStorage中
+                let userArticleStarsStr = uAStar.toString()
+                localStorage.setItem("userArticleStars", userArticleStarsStr)
+                this.resListData[index].star_count += 1
+              } else if (action == "0") {
+                //取消点赞
+                //该文章已经被该用户点赞,此时取消点赞
+                console.log("this.resListData[index].star_count", this.resListData[index].star_count)
+                console.log("this.resListData是", this.resListData)
+                this.resListData[index].star_count -= 1;
+                this.userArticleStars.splice(this.userArticleStars.indexOf(article_id), 1);
+                //这里应对的是页面刷新的情况
+                uAStar.splice(uAStar.indexOf(article_id), 1);
+                //将uAStar转换为字符串并存储到localStorage中
+                let userArticleStarsStr = uAStar.toString()
+                localStorage.setItem("userArticleStars", userArticleStarsStr)
+              }
+            }
+          }
+        ).catch(
+          err => {
+            if (err.response.status == 403) {
+              //提示用户token过期需要重新登录
+              this.$message({
+                message: "token过期,请重新登录",
+                type: 'warning'
+              });
+              //TODO 改变右上角登录按钮未退出状态
+
+              setTimeout(() => {
+                //token过期,需要弹出登陆对话框
+                this.$refs.navbar.loginDialogFormVisible = true;
+              }, 500)
+            } else {
+              //点赞失败，弹窗对话框，提示用户稍后重试
+              this.$message({
+                message: "操作失败,请稍后重试",
+                type: 'warning'
+              })
+            }
+            //点赞/取消点赞失败
+            console.log("点赞/取消点赞失败后返回的res是", err)
+          }
+        )
+      }
+    },
     getArticleList() {
       //获取作者发布的文章列表
       this.$http.get(this.$publishArticleList + "?page=" + this.page.toString() + "&origin=enlighten").then(
@@ -138,7 +244,7 @@ export default {
         }
       );
     },
-    getArticleDetail(id){
+    getArticleDetail(id) {
       //获取文章详情
       window.open(this.$articleDetailWholeUrl + '?id=' + `${id}`);
     },

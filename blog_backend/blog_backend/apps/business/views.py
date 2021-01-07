@@ -10,7 +10,7 @@ from rest_framework.views import APIView
 from drf_yasg.utils import swagger_auto_schema
 from drf_yasg import openapi
 
-from article.models import ArticleList
+from article.models import ArticleList, ArticleDetail
 from business.serializers import (
     StarViewSerializer,
     ArticleRecommendQuerySerializer, ArticlePublishViewSerializer,
@@ -62,13 +62,22 @@ class ArticlePublishView(APIView):
         author = request_data.get("author")
         origin = "enlighten"
         content = request_data.get("content")
+        title_index = re.search("\n", content).span()[1]
+        content_no_title = content[title_index:]
         publish_time = int(time.time())
-        article_dict = {
+        article_list_dict = {
             "article_id": article_id,
             "article_name": article_name,
             "author": author,
             "origin": origin,
-            "content": content,
+            "publish_time": publish_time,
+        }
+        article_detail_dict = {
+            "article_id": article_id,
+            "article_name": article_name,
+            "author": author,
+            "category": "原创",  # TODO 暂定原创，后续添加文章发布的分类可选功能。
+            "content": content_no_title,
             "publish_time": publish_time,
         }
         # 显式地开启一个事务
@@ -83,12 +92,14 @@ class ArticlePublishView(APIView):
                 article_id_list.append(article_id)
                 UserPublish.objects.filter(user_id=user_id).update(article_id=article_id_list)
                 # 文章表加一条记录
-                ArticleList.objects.create(**article_dict)
+                ArticleList.objects.create(**article_list_dict)
+                ArticleDetail.objects.create(**article_detail_dict)
             except UserPublish.DoesNotExist:
                 # 该用户未发表过任何文章,UserPublish表增加一条记录
                 UserPublish.objects.create(user_id=user_id, article_id=[article_id])
                 # 文章表加一条记录
-                ArticleList.objects.create(**article_dict)
+                ArticleList.objects.create(**article_list_dict)
+                ArticleDetail.objects.create(**article_detail_dict)
             except Exception as e:
                 logger.info(e)
                 # 点赞失败回滚到保存点

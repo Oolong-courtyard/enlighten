@@ -37,7 +37,7 @@ class JueJinArticleListScrapyItem(scrapy.Item):
             'category': to_string(self.get('category')),
             'origin': '掘金',
             'scraped_date_time': to_string(self.get('scraped_date_time')),
-            'content': to_string(self.get('content'))
+            # 'content': to_string(self.get('content'))
         }
         return trans_data
 
