@@ -7,6 +7,7 @@ import time
 import jsonpath
 import scrapy
 
+from datetime_utils import timestamp_to_datetime
 from items.jue_jin_item import JueJinArticleListScrapyItem, JueJinArticleDetailScrapyItem
 from data_scrapy.utils import datetime_utils
 
@@ -67,10 +68,19 @@ class JueJinSpiderSpider(scrapy.Spider):
         for data_item in res['data']:
             if data_item['item_type'] != 2:
                 continue
+            # 判断该文章的发布时间是否在一天之内(24小时)
+            # 该文章发布时间的时间戳
+            publish_time = int(jsonpath.jsonpath(data_item, '$..ctime')[0])
+            # 昨天此刻时间戳
+            yesterday_timestamp = int(str(time.time())[0:10]) - 86400
+            # 比较时间不是一天之内的直接pass
+            if publish_time < yesterday_timestamp:
+                continue
             item = JueJinArticleListScrapyItem()
             item['article_id'] = jsonpath.jsonpath(data_item, '$..article_id')[0]
             item['article_name'] = jsonpath.jsonpath(data_item, '$..title')[0]
             item['publish_time'] = jsonpath.jsonpath(data_item, '$..ctime')[0]
+
             item['author'] = jsonpath.jsonpath(data_item, '$..user_name')[0]
             item['category'] = jsonpath.jsonpath(data_item, '$..category_name')[0]
             item['scraped_date_time'] = datetime_utils.current_datetime()
@@ -84,7 +94,8 @@ class JueJinSpiderSpider(scrapy.Spider):
         # 是否有下一页
         has_more = res['has_more']
         self.num += 1
-        if has_more and self.num < 2500:
+        # 每运行一次只爬取10页数据，只需要保证每天都有新的且最近发布的文章入库即可
+        if has_more and self.num < 10:
             # 处理response中的cursor
             next_cursor = res['cursor']
             self.payloadData['cursor'] = next_cursor

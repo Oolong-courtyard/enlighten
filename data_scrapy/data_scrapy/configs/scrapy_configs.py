@@ -11,7 +11,7 @@
 #     https://docs.scrapy.org/en/latest/topics/downloader-middleware.html
 #     https://docs.scrapy.org/en/latest/topics/spider-middleware.html
 
-DEBUG = True
+DEBUG = False
 if DEBUG:
     SERVE_BASE_URL = 'http://127.0.0.1:8000'
 else:

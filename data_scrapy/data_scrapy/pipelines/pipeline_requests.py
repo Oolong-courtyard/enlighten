@@ -21,8 +21,8 @@ class DataScrapyRequestPipeline(object):
         # TODO 如何控制这里请求的启动和停止?
         self.process = True
 
-        print('此时的item为', item)
-        print('此时的spider是', spider.name)
+        # print('此时的item为', item)
+        # print('此时的spider是', spider.name)
         # 1.拼接请求的url,组织request_data,发送请求存入数据
         req_list = [grequests.request("POST",
                                       url=item.request_url,

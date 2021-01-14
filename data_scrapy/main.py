@@ -6,14 +6,15 @@ spider入口
 import os
 import sys
 
+# 将同级的data_scrapy加入项目的搜索包路径中
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+sys.path.insert(0, os.path.join(BASE_DIR, 'data_scrapy'))
+sys.path.insert(0, os.path.join(BASE_DIR, 'data_scrapy/utils'))
+
 from scrapy.crawler import CrawlerProcess
 from scrapy.utils.project import get_project_settings
 
 from spiders.juejin_spider import JueJinSpiderSpider
-
-# 将同级的data_scrapy加入项目的搜索包路径中
-BASE_DIR = os.path.dirname(os.path.abspath(__file__))
-sys.path.insert(0, os.path.join(BASE_DIR, 'data_scrapy'))
 
 
 def main(name='jue_jin'):
@@ -36,4 +37,4 @@ def main(name='jue_jin'):
 
 
 if __name__ == '__main__':
-    main()
+    main("jue_jin")

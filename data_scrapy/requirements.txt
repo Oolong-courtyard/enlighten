@@ -1,6 +1,8 @@
-scrapy>=2.3.0
-requests>=2.24.0
+scrapy
+requests
 twisted
 func-timeout
-bs4>=0.0.1
-func_timeout
+bs4
+grequests
+pytz
+jsonpath
