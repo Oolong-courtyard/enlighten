@@ -50,23 +50,30 @@
           <!--相关文章-->
           <div></div>
         </ul>
+      </div>
+
+      <div style="background-color:white;margin-left: 1275px;margin-top: 80px;position:fixed">
+        <div>
+          <el-progress type="circle" :percentage="percentage" :color="colors"></el-progress>
+        </div>
 
       </div>
 
-      <div
-        style="
-          width: 800px;
-          font-size: 50px;
-          left: 0;
-          right: 0;
-          margin: 0 auto;
-          background-color: white;
-    "
-        v-else
-      >
-        404
-        页面找不到
-      </div>
+
+      <!--      <div-->
+      <!--        style="-->
+      <!--          width: 800px;-->
+      <!--          font-size: 50px;-->
+      <!--          left: 0;-->
+      <!--          right: 0;-->
+      <!--          margin: 0 auto;-->
+      <!--          background-color: white;-->
+      <!--    "-->
+      <!--        v-else-->
+      <!--      >-->
+      <!--        404-->
+      <!--        页面找不到-->
+      <!--      </div>-->
 
     </div>
   </div>
@@ -86,106 +93,123 @@
 </template>
 
 <script>
-import {getArticleDetail} from 'network/home';
-import {timeago} from "@/common/time";
+  import {getArticleDetail} from 'network/home';
+  import {timeago} from "@/common/time";
 
-const NavBar = () => import("../common/NavBar")
+  const NavBar = () => import("../common/NavBar")
 
-export default {
-  name: "ArticleDetail",
-  components: {NavBar},
-  data() {
-    return {
-      res_detail_data: {}, //文章详情
-      pageNotFound: false,//详情页是否存在(true为不存在,false为存在)
-    }
-  },
-  created() {
-    console.log("created的时候取到的id是", this.$route.query.id)
-    this.getArticleDetail(this.$route.query.id)
-  },
-  methods: {
-    load() {
-      // 动态加载列表数据
-      console.log("触发了加载方法")
-      this.loading = true
+  export default {
+    name: "ArticleDetail",
+    components: {NavBar},
+    data() {
+      return {
+        res_detail_data: {}, //文章详情
+        pageNotFound: false,//详情页是否存在(true为不存在,false为存在)
+        percentage: 0,
+        colors: [
+          {color: '#f56c6c', percentage: 20},
+          {color: '#e6a23c', percentage: 40},
+          {color: '#5cb87a', percentage: 60},
+          {color: '#1989fa', percentage: 80},
+          {color: '#6f7ad3', percentage: 100}
+        ]
+      }
     },
-    getArticleDetail(id) {
-      //获取文章详情
-      this.$http.get('article/article-detail/?article_id=' + id.toString()).then(res => {
-        this.res_detail_data = res.data.data
-      }).catch(
-        err => {
-          //响应非200,显示页面找不到
-          this.pageNotFound = true;
-        }
-      )
+    mounted() {
+      window.addEventListener('scroll', this.scrollHandle);//绑定页面滚动事件
     },
-  },
-  filters: {
-    transPublishTime(publishTime) {
-      //将发布时间转换为数天前的格式
-      return timeago(publishTime)
+    created() {
+      console.log("created的时候取到的id是", this.$route.query.id)
+      this.getArticleDetail(this.$route.query.id)
     },
-  },
-}
+    methods: {
+      scrollHandle(e) {
+        let top = document.documentElement.scrollTop;    // 获取页面滚动高度
+        let totalHeight = document.body.scrollHeight;  //当前页面文档的总高度
+        this.percentage = parseInt(top / totalHeight * 100);
+      },
+      load() {
+        // 动态加载列表数据
+        console.log("触发了加载方法")
+        this.loading = true
+      },
+      getArticleDetail(id) {
+        //获取文章详情
+        this.$http.get('article/article-detail/?article_id=' + id.toString()).then(res => {
+          this.res_detail_data = res.data.data
+        }).catch(
+          err => {
+            //响应非200,显示页面找不到
+            this.pageNotFound = true;
+          }
+        )
+      },
+    },
+    filters: {
+      transPublishTime(publishTime) {
+        //将发布时间转换为数天前的格式
+        return timeago(publishTime)
+      },
+    },
+  }
 </script>
 
 <style scoped>
-.followAuthor:hover {
-  /*cursor: pointer;*/
-}
+  .followAuthor:hover {
+    /*cursor: pointer;*/
+  }
 
-.author:hover {
-  cursor: pointer;
-}
+  .author:hover {
+    cursor: pointer;
+  }
 
-.authorRelated {
-  padding: 20px;
-}
+  .authorRelated {
+    padding: 20px;
+  }
 
-.outOutermostDiv {
-  background-color: white;
-  width: 100%;
-  height: 100%;
-}
+  .outOutermostDiv {
+    background-color: white;
+    width: 100%;
+    height: 100%;
+  }
 
-.outermostDiv {
-  background-color: #EFEFEF;
-  width: 100%;
-  height: 100%;
-}
+  .outermostDiv {
+    display: flex;
+    background-color: #EFEFEF;
+    width: 100%;
+    height: 100%;
+  }
 
-.secondDiv {
-  margin-left: 450px;
-  width: 800px;
-  /*left: 0;*/
-  /*right: 0;*/
-  /*margin: 0 auto;*/
-  background-color: white;
-}
+  .secondDiv {
+    margin-left: 450px;
+    width: 800px;
+    /*left: 0;*/
+    /*right: 0;*/
+    /*margin: 0 auto;*/
+    background-color: white;
+  }
 
-.contentDiv {
-  margin-top: 20px;
-}
+  .contentDiv {
+    margin-top: 20px;
+  }
 
-.item-list {
-  padding: 20px;
-  margin-top: 10px;
-  width: 100%;
-  height: 100px;
-  display: flex
-}
+  .item-list {
+    padding: 20px;
+    margin-top: 10px;
+    width: 100%;
+    height: 100px;
+    display: flex
+  }
 
-.item-list:hover {
+  .item-list:hover {
 
-  background-color: #EFEFEF;
-}
+    background-color: #EFEFEF;
+  }
 
-.article-name {
-  text-align: center;
-  font-size: 15px;
-  font-weight: bold;
-  margin-top: 10px
-}
+  .article-name {
+    text-align: center;
+    font-size: 15px;
+    font-weight: bold;
+    margin-top: 10px
+  }
 </style>
