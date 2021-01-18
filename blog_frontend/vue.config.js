@@ -21,6 +21,9 @@
 // }
 
 module.exports = {
+  baseUrl: '/',//打包后的位置(如果不设置这个静态资源会报404)
+  outputDir: 'dist',//打包后的目录名称
+  assetsDir: 'static',//静态资源目录名称
   configureWebpack: {
     resolve: {
       alias: {
@@ -47,6 +50,7 @@ module.exports = {
   //打包的时候去除map文件(map文件的作用:prod下可以看到具体的哪一行的代码错误信息)
   //设置为false后可以大大减少打包后文件的体积
   productionSourceMap: false,
+
 
 }
 
