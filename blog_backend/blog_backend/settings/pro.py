@@ -18,6 +18,8 @@ import sys
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 # 把apps加入项目的搜索包路径中
 sys.path.insert(0, os.path.join(BASE_DIR, 'apps'))
+# 把内层blog_backend加入项目的搜索包路径中
+sys.path.insert(0, BASE_DIR)
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/2.2/howto/deployment/checklist/
@@ -32,6 +34,8 @@ SECRET_KEY = 'ef-@^(&ol522la&9a&p0ie)!)7r+iw$oj4x-vr_^o7_$kt%*!g'
 DEBUG = False
 
 ALLOWED_HOSTS = ["*"]
+# 不主动添加 /
+# APPEND_SLASH = False
 
 # Application definition
 
@@ -48,6 +52,11 @@ INSTALLED_APPS = [
     'users.apps.UsersConfig',
     'article.apps.ArticleConfig',
     'oauth.apps.OauthConfig',
+    'business.apps.BusinessConfig',
+    'verification.apps.VerificationConfig',
+    # 'django.contrib.staticfiles',  # required for serving swagger ui's css/js files
+    'drf_yasg',
+
 ]
 
 MIDDLEWARE = [
@@ -62,13 +71,16 @@ MIDDLEWARE = [
     # 'article.middleware.my_middleware,  # 添加中间件'
 ]
 
+# 每页数量
+NUM_OF_PER_PAGE = 15
+
 # 配置文件中增加异常处理的相关配置
 REST_FRAMEWORK = {
     # 异常处理
     'EXCEPTION_HANDLER': 'blog_backend.utils.exceptions.exception_handler',
     # 指定分页配置
     'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
-    'PAGE_SIZE': 20,  # 每页数目
+    'PAGE_SIZE': 15,  # 每页数目
     # 添加过滤配置选项,增加过滤功能
     'DEFAULT_FILTER_BACKENDS': ('django_filters.rest_framework.DjangoFilterBackend',),
     # 指定认证类
@@ -125,7 +137,7 @@ CACHES = {
         # 缓存使用redis进行存储
         "BACKEND": "django_redis.cache.RedisCache",
         # 缓存的位置: 0 号库
-        "LOCATION": "redis://127.0.0.1:6379/0",
+        "LOCATION": "redis://106.15.8.3:6379/0",
         "OPTIONS": {
             "CLIENT_CLASS": "django_redis.client.DefaultClient",
         }
@@ -135,7 +147,7 @@ CACHES = {
         # 缓存使用redis进行存储
         "BACKEND": "django_redis.cache.RedisCache",
         # 缓存的位置: 1 号库
-        "LOCATION": "redis://127.0.0.1:6379/1",
+        "LOCATION": "redis://106.15.8.3:6379/1",
         "OPTIONS": {
             "CLIENT_CLASS": "django_redis.client.DefaultClient",
         }
@@ -283,6 +295,7 @@ CORS_ALLOW_HEADERS = (
     'user-agent',
     'x-csrftoken',
     'x-requested-with',
+    'x-token'
 )
 # ================================================================
 # QQ登录参数
@@ -291,6 +304,27 @@ QQ_CLIENT_ID = '101912333'
 # 我们申请的 客户端秘钥
 QQ_CLIENT_SECRET = '2d33b582c3b37cee6f8e704bd0834ce9'
 # 我们申请时添加的: 登录成功后回调的路径
-QQ_REDIRECT_URI = 'http://www.enlighten.top/index'
-
+QQ_REDIRECT_URI = 'http://www.enlighten.top/#/index'
 QQ_STATE = '/'
+
+# ===============================================================
+# token的有效时间为1个小时
+TOKEN_EXPIRE = 60 * 60
+# token的前缀
+TOKEN_KEY_PREFIX = "ENLIGHTEN_" + "API_" + "V1_"
+
+# 推荐url
+RECOMMEND_URL = "127.0.0.1:8001/recommend_article"
+
+# ================================================================
+# 腾讯云发送短信验证码
+# ================================================================
+SMS_SECRET_ID = 'AKID1m37QhLKWxSYQqq9RbDvtb3tj0z5x9gu'
+SMS_SECRET_KEY = '7OZU7SsEBsItOZTF0h6FE9zZtw2steCT'
+SMS_TEMPLATE_ID = '827164'
+SMS_SDK_APP_ID = '1400467647'
+SMS_SIGN = '启发你Mind'
+# cache验证码前缀
+SMS_PREFIX = 'SMS_CODE:'
+# 验证码有效时间为10min
+SMS_EXPIRE = 60 * 10

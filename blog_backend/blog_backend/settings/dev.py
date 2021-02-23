@@ -20,6 +20,7 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 sys.path.insert(0, os.path.join(BASE_DIR, 'apps'))
 # 把内层blog_backend加入项目的搜索包路径中
 sys.path.insert(0, BASE_DIR)
+
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/2.2/howto/deployment/checklist/
 
@@ -72,6 +73,7 @@ MIDDLEWARE = [
 
 # 每页数量
 NUM_OF_PER_PAGE = 15
+
 
 # 配置文件中增加异常处理的相关配置
 REST_FRAMEWORK = {

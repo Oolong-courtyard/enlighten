@@ -2,14 +2,14 @@ FROM python:3.7
 
 VOLUME ["/enlighten"]
 
-RUN mkdir /enlighten
+RUN mkdir /enlighten_backend
 
 #Set the application directory
-WORKDIR /enlighten
+WORKDIR /enlighten_backend
 
-ADD . /enlighten
+ADD . /enlighten_backend
 
-ADD requirements.txt /enlighten
+ADD requirements.txt /enlighten_backend
 
 ENV PIP_MIRROR=http://mirrors.aliyun.com/pypi/simple/
 
