@@ -12,7 +12,7 @@
     >
       <!--                  <ArticlePublishNavBar style="margin:0 auto;"></ArticlePublishNavBar>-->
       <!--引用Navbar组件-->
-      <ArticlePublishNavBar :htmlContent="htmlContent" style="margin-left: 450px"></ArticlePublishNavBar>
+      <ArticlePublishNavBar :htmlContent="htmlContent" :style="'margin-left:'+ marginLeft + 'px'"></ArticlePublishNavBar>
       <!--美化页面的风格阴影-->
       <div style="background-color: #EFEFEF;height: 20px;z-index: 998"></div>
     </div>
@@ -33,6 +33,7 @@
     components: {ArticlePublishNavBar},
     data() {
       return {
+        marginLeft: (document.documentElement.clientWidth -1000)*0.45, //动态获取屏幕宽度
         content: '', // 输入的markdown
         htmlContent: '',    // 转成的html
       }

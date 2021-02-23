@@ -10,7 +10,7 @@
                 z-index: 999;
 "
     >
-      <div style="margin-left: 450px;">
+      <div :style="'margin-left:'+marginLeft+ 'px'">
         <nav-bar
           ref="navbar"
           @child-event="getSearchData"
@@ -21,7 +21,7 @@
     </div>
 
     <!--为首页子菜单，内容为(推荐，后端，前端，等等)仅当首页被选中时显示-->
-    <div class="submenuMainDiv">
+    <div class="submenuMainDiv" :style="'margin-left:'+marginLeft+'px' ">
       <ul style="display: flex">
         <li v-for="(classification,index) in this.class1"
             style="list-style: none"
@@ -40,7 +40,7 @@
     <!--TODO 关键点在下面这里,背景颜色灰色。。。-->
     <div class="outermostDiv">
       <!--第3层容器,在该层容器中展示所有效果-->
-      <div class="secondDiv">
+      <div class="secondDiv" :style="'margin-left:'+marginLeft+'px'">
         <!--一键置顶-->
         <el-backtop ref="ElBacktop"></el-backtop>
 
@@ -212,6 +212,7 @@ export default {
   components: {NavBar},
   data() {
     return {
+      marginLeft: (document.documentElement.clientWidth -1000)*0.45, //动态获取屏幕宽度
       recommendAuthor: ['作者1', '作者2', '作者3', '作者4'],//推荐作者
       class1: ['推荐', '后端', '前端', 'iOS', 'Android'], //首页文章列表一级分类 TODO 用户未登录的时候不显示 推荐 按钮，登录之后 推荐 按钮样式改变
       page: 1, //初始page为1
@@ -230,6 +231,7 @@ export default {
 
   created() {
     //获取文章列表页信息,如果开启，
+    console.log("this.marginLeft", this.marginLeft);
     this.getArticleList()
   },
   updated() {
@@ -644,7 +646,6 @@ export default {
   z-index: 999;
   width: 100%;
   margin-top: 60px;
-  margin-left: 450px;
   display: flex;
   background-color: white;
 }
@@ -678,7 +679,6 @@ export default {
 
 .secondDiv {
   width: 700px;
-  margin-left: 450px;
   background-color: white;
 }
 

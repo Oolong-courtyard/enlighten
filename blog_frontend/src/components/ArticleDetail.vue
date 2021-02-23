@@ -10,14 +10,14 @@
                 z-index: 999;
 "
     >
-      <div style="margin-left: 450px;">
+      <div :style="'margin-left:'+ marginLeft + 'px'">
         <nav-bar></nav-bar>
       </div>
     </div>
     <div class="outermostDiv">
 
       <!--第二层容器,在该层容器中展示所有效果-->
-      <div class="secondDiv" v-if="this.pageNotFound==false">
+      <div class="secondDiv" :style="'margin-left:'+ marginLeft + 'px'" v-if="this.pageNotFound==false">
         <!--一键置顶-->
         <el-backtop></el-backtop>
         <div style="height: 50px"></div>
@@ -103,6 +103,7 @@
     components: {NavBar},
     data() {
       return {
+        marginLeft: (document.documentElement.clientWidth -1000)*0.45, //动态获取屏幕宽度
         res_detail_data: {}, //文章详情
         pageNotFound: false,//详情页是否存在(true为不存在,false为存在)
         percentage: 0,
@@ -181,7 +182,6 @@
   }
 
   .secondDiv {
-    margin-left: 450px;
     width: 800px;
     /*left: 0;*/
     /*right: 0;*/

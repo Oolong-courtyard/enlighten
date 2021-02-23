@@ -9,7 +9,7 @@
                 z-index: 999;
 "
     >
-      <div style="margin-left: 450px;">
+      <div :style="'margin-left:'+ marginLeft + 'px'">
         <nav-bar ref="navbar"></nav-bar>
       </div>
     </div>
@@ -19,7 +19,7 @@
     <div style="height: 35px;background-color: #EFEFEF"></div>
     <!--只是为了占位，达到样式上的效果-->
     <!--      <div style="height: 50px"></div>-->
-    <div class="contentDiv">
+    <div class="contentDiv" :style="'margin-left:'+ marginLeft + 'px'">
       <!--        load方法使用，如何下拉请求请数据并渲染，以及详情页的爬虫和详情页支持markdown。-->
       <ul v-infinite-scroll=""
           v-loading="loading"
@@ -123,6 +123,7 @@ export default {
   components: {NavBar},
   data() {
     return {
+      marginLeft: (document.documentElement.clientWidth -1000)*0.45, //动态获取屏幕宽度
       recommendAuthor: ['作者1', '作者2', '作者3', '作者4'],//推荐作者
       class1: ['推荐', '后端', '前端', 'iOS', 'Android'], //首页文章列表一级分类 TODO 用户未登录的时候不显示 推荐 按钮，登录之后 推荐 按钮样式改变
       page: 1, //初始page为1
@@ -340,7 +341,6 @@ export default {
   /*cursor 鼠标移动上去变小手*/
   /*cursor: pointer;*/
   margin-top: 50px;
-  margin-left: 450px;
   width: 800px;
   /*left: 0;*/
   /*right: 0;*/

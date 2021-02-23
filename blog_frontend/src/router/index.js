@@ -48,7 +48,7 @@ const routes = [
 const router = new VueRouter(
   {
     routes,
-    mode: 'history'
+    // mode: 'history'
   }
 )
 //导航守卫(beforeEach:全局前置导航钩子；afterEach:全局后置导航钩子)它们会在路由即将改变前和改变后触发。
