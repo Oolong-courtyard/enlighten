@@ -23,7 +23,6 @@
 // 定义压缩文件类型
 const productionGzipExtensions = ['js', 'css']
 
-
 module.exports = {
   chainWebpack: config => {
     //通过externals机制加载CDN资源
@@ -45,6 +44,9 @@ module.exports = {
     //   .end()
   },
 
+  baseUrl: '/',//打包后的位置(如果不设置这个静态资源会报404)
+  outputDir: 'dist',//打包后的目录名称
+  assetsDir: 'static',//静态资源目录名称
   configureWebpack: {
     // plugins: [
     //   //开启gzip支持
@@ -80,6 +82,6 @@ module.exports = {
   },
   //打包的时候去除map文件(map文件的作用:prod下可以看到具体的哪一行的代码错误信息)
   //设置为false后可以大大减少打包后文件的体积
-  productionSourceMap: false,
+  productionSourceMap: false
 }
 
