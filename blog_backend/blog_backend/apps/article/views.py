@@ -2,6 +2,7 @@
 文章对应的view
 """
 
+from django.core.cache import cache
 from django.core.paginator import Paginator, EmptyPage
 from django_redis import get_redis_connection
 from drf_yasg.utils import swagger_auto_schema
@@ -98,14 +99,26 @@ class ArticleListView(APIView):
         # TODO 这里通过origin来区分获取的是爬取的文章列表还是用户发布的文章列表
         target_page = request.query_params.dict().get('page', 1)
         origin = request.query_params.dict().get('origin')
+        num_of_per_page = settings.NUM_OF_PER_PAGE
+        # 首页列表访问压力最大，做缓存优化
+        cache_key = settings.CACHE_KEY_PREFIX + "::" + str(target_page) + ":" + str(num_of_per_page)
+        cache_res = cache.get(cache_key)
+        if cache_res:
+            # todo 2021/03/26
+            # todo 增加了缓存，手动模拟测试单个响应时间是原来的 1/5，但是随着请求数的增加，响应效果并不是线性减少的；
+            # todo 我在使用locust测试的时候甚至发现加了redis之后，RPS 反而上不去。
+            print("走了缓存")
+            return BaseResponse(data=cache_res)
+        print("查询了数据库")
         if origin:
             queryset = ArticleList.objects.filter(origin=origin).order_by('-publish_time')
         else:
             queryset = ArticleList.objects.all()
-        num_of_per_page = settings.NUM_OF_PER_PAGE
         paginator = Paginator(queryset, num_of_per_page)
         page = paginator.page(target_page)
         serializer = ArticleListSerializer(page, many=True)
+        # 将该查询条件下的结果存入缓存中
+        cache.set(cache_key, serializer.data, settings.CACHE_RES_EXPIRE)
         return BaseResponse(data=serializer.data)
 
     @swagger_auto_schema(

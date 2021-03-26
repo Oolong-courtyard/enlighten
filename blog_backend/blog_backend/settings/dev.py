@@ -329,3 +329,11 @@ SMS_SIGN = '启发你Mind'
 SMS_PREFIX = 'SMS_CODE:'
 # 验证码有效时间为10min
 SMS_EXPIRE = 60 * 10
+
+
+# ================================================================
+# 查询缓存相关
+# 文章查询的缓存key结构：【 CACHE_KEY:文章分类:文章来源:页码:每页条数 】
+CACHE_KEY_PREFIX = "CACHE_KEY:"
+# 文章条件查询结果过期时间
+CACHE_RES_EXPIRE = 300

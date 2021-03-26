@@ -328,3 +328,7 @@ SMS_SIGN = '启发你Mind'
 SMS_PREFIX = 'SMS_CODE:'
 # 验证码有效时间为10min
 SMS_EXPIRE = 60 * 10
+
+# ================================================================
+# 查询缓存相关
+CACHE_KEY_PREFIX = "CACHE_KEY:"
