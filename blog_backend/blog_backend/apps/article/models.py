@@ -29,6 +29,14 @@ from utils.models import BaseModel
 """
 
 
+# 评论表
+class Comment(BaseModel):
+    """
+    评论表
+    """
+    id = models.IntegerField()
+
+
 # 文章列表
 class ArticleList(BaseModel):
     """
@@ -80,7 +88,8 @@ class ArticleDetail(BaseModel):
         verbose_name = '文章详情'
         verbose_name_plural = verbose_name
 
-#相似文章
+
+# 相似文章
 
 
 # 文章元数据表
