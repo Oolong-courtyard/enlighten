@@ -13,6 +13,8 @@ import datetime
 import os
 import sys
 
+from blog_backend.utils.trans_time import current_time_str
+
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 # Specify the directory path to the root path.
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -68,12 +70,11 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
-    # 'article.middleware.my_middleware,  # 添加中间件'
+    # 'article.middleware,  # 添加中间件'
 ]
 
 # 每页数量
 NUM_OF_PER_PAGE = 15
-
 
 # 配置文件中增加异常处理的相关配置
 REST_FRAMEWORK = {
@@ -126,7 +127,7 @@ DATABASES = {
         'NAME': 'enlighten_db',
         'USER': 'postgres',
         'PASSWORD': 'gresql',
-        'HOST': '106.15.8.3',
+        'HOST': os.getenv("DB_HOST", "106.15.8.3"),
         'PORT': '5432',
     }
 }
@@ -138,7 +139,7 @@ CACHES = {
         # 缓存使用redis进行存储
         "BACKEND": "django_redis.cache.RedisCache",
         # 缓存的位置: 0 号库
-        "LOCATION": "redis://106.15.8.3:6379/0",
+        "LOCATION": "redis://{}:6379/0".format(os.getenv("CACHE_DB", "106.15.8.3")),
         "OPTIONS": {
             "CLIENT_CLASS": "django_redis.client.DefaultClient",
         }
@@ -148,7 +149,7 @@ CACHES = {
         # 缓存使用redis进行存储
         "BACKEND": "django_redis.cache.RedisCache",
         # 缓存的位置: 1 号库
-        "LOCATION": "redis://106.15.8.3:6379/1",
+        "LOCATION": "redis://{}:6379/1".format(os.getenv("CACHE_DB", "106.15.8.3")),
         "OPTIONS": {
             "CLIENT_CLASS": "django_redis.client.DefaultClient",
         }
@@ -192,10 +193,18 @@ LOGGING = {
             'backupCount': 10,
             'formatter': 'verbose'
         },
+        # 'error': {
+        #     'level': 'ERROR',
+        #     'class': 'logging.handlers.RotatingFileHandler',  # 保存到文件，自动切
+        #     'filename': os.path.join(os.path.dirname(BASE_DIR) + "/" + current_time_str(), "err.log"),  # 日志文件
+        #     'maxBytes': 1024 * 1024 * 500,  # 日志大小 500M
+        #     'backupCount': 5,
+        #     'formatter': 'verbose'
+        # },
     },
     'loggers': {  # 日志器
         'django': {  # 定义了一个名为django的日志器
-            'handlers': ['console', 'file'],  # 可以同时向终端与文件中输出日志
+            'handlers': ['console'],  # 可以同时向终端与文件中输出日志
             'propagate': True,  # 是否继续传递日志信息
             'level': 'INFO',  # 日志器接收的最低日志级别
         },
@@ -329,7 +338,6 @@ SMS_SIGN = '启发你Mind'
 SMS_PREFIX = 'SMS_CODE:'
 # 验证码有效时间为10min
 SMS_EXPIRE = 60 * 10
-
 
 # ================================================================
 # 查询缓存相关

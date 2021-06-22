@@ -7,6 +7,7 @@ from django.contrib.auth.models import AbstractUser
 from django.contrib.postgres.fields import ArrayField
 from django.core.cache import cache
 from django.db import models
+from django_mysql.models import ListTextField
 from django.conf import settings
 from django.utils import timezone
 from rest_framework.response import Response
@@ -69,7 +70,7 @@ class UserStar(BaseModel):
     注意：某个用户点赞的article_id列表中不能 有重复元素，insert的时候先去重。
     """
     user_id = models.CharField(max_length=100, verbose_name="用户id", unique=True)
-    article_id = ArrayField(base_field=models.CharField(max_length=100, verbose_name="文章id"), null=True, verbose_name="文章id列表")
+    article_id = ListTextField(base_field=models.CharField(max_length=100, verbose_name="文章id"), null=True, verbose_name="文章id列表")
 
     class Meta:
         db_table = "user_star"
@@ -81,7 +82,7 @@ class UserStar(BaseModel):
 class UserPublish(BaseModel):
     """用户发布的文章"""
     user_id = models.CharField(max_length=100, verbose_name="用户id", unique=True)
-    article_id = ArrayField(base_field=models.CharField(max_length=100, verbose_name="文章id"), null=True, verbose_name="文章id列表")
+    article_id = ListTextField(base_field=models.CharField(max_length=100, verbose_name="文章id"), null=True, verbose_name="文章id列表")
 
     class Meta:
         db_table = "user_publish"

@@ -14,10 +14,12 @@
 ```
 1. 搭建私有gitlab服务器，将项目代码加进去
 5. 调查设置docker 最大存储容量
+
 2. 学习搭建 jenkins，构建自动化部署步骤
 3. 写一些测试代码
 4. 跑CI/CD 后自动发布
 6. 将日志系统集成到系统中
 7. 开发Go后端
 8. 开发machine learning
+9. 学习 dockerignore gitignore gitkeep 等文件在项目中的正确用法
 ```

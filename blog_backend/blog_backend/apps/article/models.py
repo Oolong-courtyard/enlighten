@@ -30,11 +30,11 @@ from utils.models import BaseModel
 
 
 # 评论表
-class Comment(BaseModel):
-    """
-    评论表
-    """
-    id = models.IntegerField()
+# class Comment(BaseModel):
+#     """
+#     评论表
+#     """
+#     id = models.IntegerField()
 
 
 # 文章列表

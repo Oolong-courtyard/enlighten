@@ -15,6 +15,8 @@ import sys
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 # Specify the directory path to the root path.
+from utils.trans_time import current_time_str
+
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 # 把apps加入项目的搜索包路径中
 sys.path.insert(0, os.path.join(BASE_DIR, 'apps'))
@@ -121,12 +123,12 @@ WSGI_APPLICATION = 'blog_backend.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.postgresql',
+        'ENGINE': 'django.db.backends.mysql',
         'NAME': 'enlighten_db',
-        'USER': 'postgres',
-        'PASSWORD': 'gresql',
-        'HOST': '106.15.8.3',
-        'PORT': '5432',
+        'USER': 'root',
+        'PASSWORD': 'mysql',
+        'HOST': os.getenv("DB_HOST", "106.15.8.3"),
+        'PORT': '3306',
     }
 }
 
@@ -137,7 +139,7 @@ CACHES = {
         # 缓存使用redis进行存储
         "BACKEND": "django_redis.cache.RedisCache",
         # 缓存的位置: 0 号库
-        "LOCATION": "redis://106.15.8.3:6379/0",
+        "LOCATION": "redis://{}:6379/0".format(os.getenv("CACHE_DB", "106.15.8.3")),
         "OPTIONS": {
             "CLIENT_CLASS": "django_redis.client.DefaultClient",
         }
@@ -147,7 +149,7 @@ CACHES = {
         # 缓存使用redis进行存储
         "BACKEND": "django_redis.cache.RedisCache",
         # 缓存的位置: 1 号库
-        "LOCATION": "redis://106.15.8.3:6379/1",
+        "LOCATION": "redis://{}:6379/1".format(os.getenv("CACHE_DB", "106.15.8.3")),
         "OPTIONS": {
             "CLIENT_CLASS": "django_redis.client.DefaultClient",
         }
@@ -191,10 +193,18 @@ LOGGING = {
             'backupCount': 10,
             'formatter': 'verbose'
         },
+        'error': {
+            'level': 'ERROR',
+            'class': 'logging.handlers.RotatingFileHandler',  # 保存到文件，自动切
+            'filename': os.path.join(os.path.dirname(BASE_DIR) + "/" + current_time_str(), "err.log"),  # 日志文件
+            'maxBytes': 1024 * 1024 * 500,  # 日志大小 500M
+            'backupCount': 5,
+            'formatter': 'verbose'
+        },
     },
     'loggers': {  # 日志器
         'django': {  # 定义了一个名为django的日志器
-            'handlers': ['console', 'file'],  # 可以同时向终端与文件中输出日志
+            'handlers': ['console', 'file','error'],  # 可以同时向终端与文件中输出日志
             'propagate': True,  # 是否继续传递日志信息
             'level': 'INFO',  # 日志器接收的最低日志级别
         },
