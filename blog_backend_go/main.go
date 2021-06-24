@@ -4,8 +4,11 @@ import (
 	"blog_backend_go/models"
 	"blog_backend_go/pkg/setting"
 	"blog_backend_go/pkg/util"
+	"blog_backend_go/routers"
 	"fmt"
 	"github.com/gin-gonic/gin"
+	"log"
+	"net/http"
 )
 
 func init() {
@@ -19,22 +22,24 @@ func main() {
 	//使用 web framework gin 的流程：路由分发-->参数解析-->规则校验-->db交互-->数据处理-->响应返回
 
 	gin.SetMode(setting.ServerSetting.RunMode)
+
 	routersInit := routers.InitRouter()
+	ReadTimeout := setting.ServerSetting.ReadTimeout
+	WriteTimeout := setting.ServerSetting.WriteTimeout
+	endPoint := fmt.Sprintf("%d", setting.ServerSetting.HttpPort)
+	maxHeaderByes := 1 << 20
 
-	// 创建一个默认的路由引擎
-	r := gin.Default()
-	// 路由组1，处理GET 请求
-	v1 := r.Group("/v1")
-	{
-		v1.GET("/login", login)
+	server := &http.Server{
+		Handler:        routersInit,
+		ReadTimeout:    ReadTimeout,
+		WriteTimeout:   WriteTimeout,
+		MaxHeaderBytes: maxHeaderByes,
 	}
-	// 启动HTTP服务，默认在0.0.0.0:8080启动服务
-	r.Run()
-	//
-}
 
-// login 函数
-func login(c *gin.Context) {
-	name := c.DefaultQuery("name", "liuzh")
-	c.String(200, fmt.Sprintf("hello %s\n", name))
+	log.Printf("[info] start up server listening %s", endPoint)
+
+	err := server.ListenAndServe()
+	if err != nil {
+		fmt.Printf("server err:%s", err)
+	}
 }

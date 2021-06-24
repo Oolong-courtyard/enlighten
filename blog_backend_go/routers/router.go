@@ -1,8 +1,11 @@
 package routers
 
-import "github.com/gin-gonic/gin"
+import (
+	"blog_backend_go/routers/api"
+	"github.com/gin-gonic/gin"
+)
 
-//
+//InitRouter initialize routing information
 func InitRouter() *gin.Engine {
 	r := gin.New()
 	r.Use(gin.Logger())
