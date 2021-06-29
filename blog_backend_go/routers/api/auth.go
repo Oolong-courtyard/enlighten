@@ -3,6 +3,7 @@ package api
 import (
 	"blog_backend_go/pkg/app"
 	"blog_backend_go/pkg/e"
+	"blog_backend_go/pkg/util"
 	"blog_backend_go/service/auth_service"
 	"github.com/astaxie/beego/validation"
 	"github.com/gin-gonic/gin"
@@ -40,6 +41,14 @@ func GetAuth(c *gin.Context) {
 		appG.Response(http.StatusInternalServerError, e.ERROR_AUTH_TOKEN, nil)
 	}
 
+	token, err := util.GenerateToken(username, password)
+	if err != nil {
+		appG.Response(http.StatusInternalServerError, e.ERROR_AUTH_TOKEN, nil)
+		return
+	}
 
+	appG.Response(http.StatusOK, e.SUCCESS, map[string]string{
+		"token": token,
+	})
 
 }

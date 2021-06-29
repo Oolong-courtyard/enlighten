@@ -1,9 +1,12 @@
 package app
 
-import "github.com/gin-gonic/gin"
+import (
+	"blog_backend_go/pkg/e"
+	"github.com/gin-gonic/gin"
+)
 
 type Gin struct {
-	c *gin.Context
+	C *gin.Context
 }
 
 type Response struct {
