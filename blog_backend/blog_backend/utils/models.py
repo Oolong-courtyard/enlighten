@@ -11,6 +11,7 @@ class BaseModel(models.Model):
                                         verbose_name="创建时间")
     updated_time = models.DateTimeField(auto_now=True,
                                         verbose_name="更新时间")
+    is_delete = models.BooleanField(verbose_name="是否被删除", default=False)
 
     class Meta:
         # 说明该类为抽象模型类,用于继承使用,数据库迁移时,不生成BaseModel的表

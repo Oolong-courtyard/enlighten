@@ -12,8 +12,10 @@ https://docs.djangoproject.com/en/2.2/ref/settings/
 import datetime
 import os
 import sys
+from dotenv import load_dotenv
 
-from blog_backend.utils.trans_time import current_time_str
+# 读取 .env,转换为环境变量
+load_dotenv()
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 # Specify the directory path to the root path.
