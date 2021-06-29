@@ -7,7 +7,6 @@ import time
 import jsonpath
 import scrapy
 
-from datetime_utils import timestamp_to_datetime
 from items.jue_jin_item import JueJinArticleListScrapyItem, JueJinArticleDetailScrapyItem
 from data_scrapy.utils import datetime_utils
 
@@ -15,7 +14,7 @@ from data_scrapy.utils import datetime_utils
 class JueJinSpiderSpider(scrapy.Spider):
     """爬取掘金文章"""
     name = 'jue_jin'
-    allowed_domains = ['juejin.im', 'apinew.juejin.im']
+    allowed_domains = ['juejin.im', 'apinew.juejin.im','juejin.cn']
     # start_urls = [
     #     'https://apinew.juejin.im/recommend_api/v1/article/recommend_all_feed']
     headers = {
@@ -48,7 +47,7 @@ class JueJinSpiderSpider(scrapy.Spider):
     def start_requests(self):
         """重写,起始请求方式为 post"""
         yield scrapy.Request(
-            url='https://apinew.juejin.im/recommend_api/v1/article/recommend_all_feed',
+            url='https://api.juejin.cn/recommend_api/v1/article/recommend_all_feed',
             dont_filter=True,
             method='post',
             headers=self.headers,
@@ -86,7 +85,7 @@ class JueJinSpiderSpider(scrapy.Spider):
             item['scraped_date_time'] = datetime_utils.current_datetime()
             yield item
             yield scrapy.Request(
-                url='https://juejin.im/post/' + item['article_id'],
+                url='https://juejin.cn/post/' + item['article_id'],
                 meta={'item': item},
                 callback=self.parse_article_detail,
             )
@@ -100,7 +99,7 @@ class JueJinSpiderSpider(scrapy.Spider):
             next_cursor = res['cursor']
             self.payloadData['cursor'] = next_cursor
             yield scrapy.Request(
-                url='https://apinew.juejin.im/recommend_api/v1/article/recommend_all_feed',
+                url='https://api.juejin.cn/recommend_api/v1/article/recommend_all_feed',
                 dont_filter=True,
                 method='post',
                 headers=self.headers,
@@ -112,9 +111,12 @@ class JueJinSpiderSpider(scrapy.Spider):
         """解析文章详情"""
         list_item = response.meta['item']
         detail_item = JueJinArticleDetailScrapyItem()
-        detail_content = response.xpath('//*[@id="juejin"]/div[2]/main/div/div[1]/article/div[5]/div[1]').extract_first()
+        detail_content = response.xpath(
+            '//*[@id="juejin"]/div[2]/main/div/div[1]/article/div[5]/div[1]').extract_first()
         if detail_content is None:
-            detail_content = response.xpath('//*[@id="juejin"]/div[2]/main/div/div[1]/article/div[4]/div[1]').extract_first()
+            detail_content = response.xpath('//*[@id="juejin"]/div[1]/main/div/div[1]/article/div[4]/div').extract_first()
+            # detail_content = response.xpath(
+            #     '//*[@id="juejin"]/div[2]/main/div/div[1]/article/div[4]/div[1]').extract_first()
         # 对content进行处理
         # 1.删除string中的文字 `复制代码`
         detail_content = detail_content.replace("复制代码", "")
