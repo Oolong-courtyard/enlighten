@@ -6,7 +6,7 @@
       <sourceFolder url="file://$MODULE_DIR$/blog_backend/blog_backend" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/blog_backend/blog_backend/apps" isTestSource="false" />
     </content>
-    <orderEntry type="inheritedJdk" />
+    <orderEntry type="jdk" jdkName="Python 3.8 (flask_sample)" jdkType="Python SDK" />
     <orderEntry type="sourceFolder" forTests="false" />
   </component>
   <component name="PyDocumentationSettings">

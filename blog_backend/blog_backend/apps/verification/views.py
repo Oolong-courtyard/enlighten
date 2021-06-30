@@ -34,7 +34,9 @@ class SmsCodeView(APIView):
         phone = request.query_params.dict().get('phone')
         if not re.match('^1[3-9]\d{9}$', phone):
             return BaseResponse(detail="手机号格式错误", status=status.HTTP_400_BAD_REQUEST)
-        sms_code = self.sms_callback(phone)
+        # sms_code = self.sms_callback(phone) # 腾讯云应该是过期不可用了
+        sms_code = '%06d' % random.randint(0, 999999)
+        print("手机验证码", sms_code)
         if sms_code:
             # 验证码发送成功,将验证码存入cache中
             cache_key = settings.SMS_PREFIX + phone

@@ -19,7 +19,7 @@ from spiders.juejin_spider import JueJinSpiderSpider
 
 def main(name='jue_jin'):
     """入口"""
-    "进入了main函数=="
+    print("进入了main函数==")
     # 获取项目配置
     setting = get_project_settings()
     # 所有爬虫

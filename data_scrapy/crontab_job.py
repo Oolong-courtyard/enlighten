@@ -6,12 +6,12 @@
 from apscheduler.schedulers.blocking import BlockingScheduler
 from pytz import utc
 from apscheduler.schedulers.background import BackgroundScheduler
-from apscheduler.jobstores.mongodb import MongoDBJobStore
+# from apscheduler.jobstores.mongodb import MongoDBJobStore
 from apscheduler.executors.pool import ThreadPoolExecutor, ProcessPoolExecutor
 
-jobstores = {
-    'enlighten_scrapy': MongoDBJobStore(),
-}
+# jobstores = {
+#     'enlighten_scrapy': MongoDBJobStore(),
+# }
 
 executors = {
     'default': ThreadPoolExecutor(20),
@@ -30,7 +30,6 @@ scheduler = BlockingScheduler()
 def job1():
     from main import main
     main("jue_jin")
-
 
 
 # 每天 2 点运行
