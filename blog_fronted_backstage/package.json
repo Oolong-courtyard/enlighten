@@ -1,0 +1,88 @@
+{
+    "name": "antd-admin",
+    "version": "0.1.0",
+    "private": true,
+    "jest": {
+        "moduleNameMapper": {
+            "^@/(.*)$": "<rootDir>/src/$1"
+        },
+        "collectCoverageFrom": [
+            "src/**/*.{tsx,jsx}",
+            "!src/plugin/**",
+            "!src/tests/**",
+            "!src/index.tsx",
+            "!src/main.js",
+            "!src/router/index.js",
+            "!src/api/**",
+            "!**/node_modules/**"
+        ]
+    },
+    "eslintConfig": {
+        "extends": "react-app"
+    },
+    "dependencies": {
+        "@testing-library/jest-dom": "^4.2.4",
+        "@testing-library/react": "^9.3.2",
+        "@testing-library/user-event": "^7.1.2",
+        "@types/enzyme": "^3.10.5",
+        "@types/enzyme-adapter-react-16": "^1.0.6",
+        "@types/enzyme-to-json": "^1.5.3",
+        "@types/file-saver": "^2.0.1",
+        "@types/mockdate": "^2.0.0",
+        "@types/react-router-dom": "^5.1.5",
+        "@types/swiper": "^5.3.1",
+        "antd": "^4.1.4",
+        "axios": "^0.19.2",
+        "babel": "^6.23.0",
+        "babel-plugin-import": "^1.13.0",
+        "classnames": "^2.2.6",
+        "customize-cra": "^0.9.1",
+        "enzyme-adapter-react-16": "^1.15.2",
+        "file-saver": "^2.0.2",
+        "jquery": "^3.5.0",
+        "json2csv": "^5.0.1",
+        "less": "^3.11.1",
+        "less-loader": "^5.0.0",
+        "mockdate": "^3.0.2",
+        "react": "^16.13.1",
+        "react-app-polyfill": "^1.0.6",
+        "react-app-rewired": "^2.1.5",
+        "react-dom": "^16.13.1",
+        "react-router-dom": "^5.1.2",
+        "react-scripts": "3.4.1",
+        "swiper": "^5.4.1",
+        "typescript": "^3.8.3",
+        "webuploader": "^0.1.8"
+    },
+    "scripts": {
+        "start": "react-app-rewired start",
+        "build": "react-app-rewired build",
+        "test": "react-scripts test --colors --coverage --watchAll",
+        "test-unit": "react-app-rewired test --forceExit",
+        "eject": "react-scripts eject"
+    },
+    "browserslist": {
+        "production": [
+            ">0.2%",
+            "not dead",
+            "not op_mini all",
+            "ie 11"
+        ],
+        "development": [
+            "last 1 chrome version",
+            "last 1 firefox version",
+            "last 1 safari version",
+            "ie 11"
+        ]
+    },
+    "devDependencies": {
+        "@testing-library/react-hooks": "^3.2.1",
+        "@types/jest": "^25.2.3",
+        "enzyme": "^3.11.0",
+        "enzyme-to-json": "^3.5.0",
+        "eslint-plugin-react-hooks": "^4.0.5",
+        "jest-junit-reporter": "^1.1.0",
+        "react-test-renderer": "^16.13.1",
+        "ts-jest": "^26.0.0"
+    }
+}

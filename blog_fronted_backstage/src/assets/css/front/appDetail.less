@@ -1,0 +1,213 @@
+.top-header {
+    height: 70px;
+    line-height: 70px;
+    background-color: #d1e2f2;
+}
+
+.top-content {
+    max-width: 1200px;
+    margin: auto;
+    display: flex;
+}
+
+.back-icon {
+    flex: 1;
+    color: #354577;
+    font-size: 16px;
+    .img-style {
+        margin-top: 26px;
+        margin-right: 10px;
+    }
+}
+
+.back-logo {
+    flex: 3;
+    text-align: center;
+    .img-style {
+        margin-top: 20px;
+    }
+    .img-top {
+        height: 50px;
+        margin-top: 10px;
+    }
+}
+
+.detail-block {
+    max-width: 1200px;
+    // height: 1500px;
+    box-shadow: 2px 2px 8px 0 #aaa;
+    margin: auto;
+    margin-top: 20px;
+    margin-bottom: 20px;
+    padding: 40px;
+
+    .top-block {
+        .img-style {
+            height: 170px;
+            width: 170px;
+            object-fit: cover;
+        }
+
+        .app-detail {
+            .app-name {
+                margin-top: 10px;
+                font-size: 20px;
+                color: #5b5d66;
+            }
+            .app-publisher {
+                color: #c6c7ca;
+                margin-top: 10px;
+                .app-user-icon {
+                    position: relative;
+                    top: 2px;
+                    margin-right: 6px;
+                }
+            }
+            .app-description {
+                color: #94959b;
+                margin-top: 10px;
+            }
+        }
+
+        .download-block {
+            text-align: right;
+            .download-btn {
+                border-radius: 20px;
+                background-color: #7c99ef;
+                color: white;
+                width: 100px;
+            }
+
+            .download-hide-a {
+                display: none;
+            }
+        }
+    }
+
+    .mid-block {
+        margin-top: 20px;
+        .mid-left {
+            padding-right: 20px;
+            .carousel {
+                height: 300px;
+            }
+
+            .carousel-control {
+                margin-top: 20px;
+                .right-icon {
+                    text-align: right;
+                }
+
+                .mid-pic {
+                    .pic-lock {
+                        position: relative;
+                        display: -webkit-inline-box;
+                        left: 0px;
+
+                        .pic {
+                            height: 80px;
+                            width: 200px;
+                            margin-right: 10px;
+                            background-color: green;
+                        }
+                    }
+                }
+            }
+        }
+        .mid-right {
+            height: 500px;
+            padding-left: 30px;
+            padding-top: 30px;
+            background-color: #efeff0;
+            .text {
+                color: #aaa;
+                margin-bottom: 20px;
+            }
+        }
+    }
+
+    .tab-block {
+        text-align: left;
+    }
+
+    .other-block {
+        border-top: 1px solid #efeff0;
+        margin-top: 20px;
+        padding-top: 20px;
+
+        .title {
+            margin-bottom: 20px;
+        }
+
+        .app-card-block {
+            margin-top: -20px;
+            padding-bottom: 20px;
+            display: flex;
+            flex-flow: wrap;
+
+            .app-card {
+                height: 250px;
+                width: 353px;
+                margin: 20px 20px 20px 0px;
+                border-radius: 4px;
+                box-shadow: 2px 2px 8px 0 #aaa;
+                padding: 20px;
+                text-align: left;
+                font-size: 14px;
+
+                .app-icon {
+                    margin-bottom: 10px;
+                }
+
+                .app-title {
+                    margin-bottom: 10px;
+                    color: #5b5d66;
+                    font-size: 16px;
+                }
+
+                .app-publisher {
+                    color: #c6c7ca;
+                    margin-bottom: 10px;
+                    .app-user-icon {
+                        position: relative;
+                        top: 2px;
+                        margin-right: 6px;
+                    }
+                }
+
+                .app-description {
+                    width: 100%;
+                    height: 68px;
+                    overflow: hidden;
+                }
+            }
+        }
+
+        .tag-block {
+            .tag-title {
+                margin-right: 20px;
+            }
+            .tag-style {
+                margin-left: 20px;
+                color: #7c99ef;
+            }
+            .tag-style:hover {
+                color: #3762e8;
+                cursor: pointer;
+            }
+        }
+    }
+}
+
+// 走马灯
+.ant-carousel .slick-slide {
+    text-align: center;
+    height: 300px;
+    line-height: 300px;
+    background: #364d79;
+    overflow: hidden;
+}
+
+.ant-carousel .slick-slide h3 {
+    color: #fff;
+}

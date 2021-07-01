@@ -38,4 +38,6 @@ def main(name='jue_jin'):
 
 
 if __name__ == '__main__':
+    from multiprocessing import Process
+    from threading import Thread
     main("jue_jin")
