@@ -28,11 +28,10 @@ scheduler = BlockingScheduler()
 
 
 def job1():
-    from main import main
+    from main import t
     print("=======启动了爬虫=======")
-    main("jue_jin")
-
+    t.start()
 
 # 每天 2 点运行
-scheduler.add_job(job1, "cron", hour=18, minute=45)
+scheduler.add_job(job1, "cron", hour=11, minute=22)
 scheduler.start()

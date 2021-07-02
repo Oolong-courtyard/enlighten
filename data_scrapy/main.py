@@ -13,6 +13,8 @@ sys.path.insert(0, os.path.join(BASE_DIR, 'data_scrapy/utils'))
 
 from scrapy.crawler import CrawlerProcess
 from scrapy.utils.project import get_project_settings
+from multiprocessing import Process
+from threading import Thread
 
 from spiders.juejin_spider import JueJinSpiderSpider
 
@@ -38,6 +40,4 @@ def main(name='jue_jin'):
 
 
 if __name__ == '__main__':
-    from multiprocessing import Process
-    from threading import Thread
     main("jue_jin")

@@ -1,150 +1,17 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="d01334f3-17ab-4c6c-9fe1-ae1bc9b851cd" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/../blog_backend/blog_backend/apps/article/migrations/.gitignore" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../blog_backend/blog_backend/apps/business/migrations/.gitignore" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../blog_backend/blog_backend/apps/oauth/migrations/.gitignore" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../blog_backend/blog_backend/apps/users/migrations/.gitignore" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../blog_backend/blog_backend/apps/verification/migrations/.gitignore" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../blog_backend_go/test.go" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../blog_fronted_backstage/README.md" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../blog_fronted_backstage/config-overrides.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../blog_fronted_backstage/package-lock.json" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../blog_fronted_backstage/package.json" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../blog_fronted_backstage/public/favicon.ico" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../blog_fronted_backstage/public/index.html" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../blog_fronted_backstage/public/logo192.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../blog_fronted_backstage/public/logo512.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../blog_fronted_backstage/public/manifest.json" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../blog_fronted_backstage/public/robots.txt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../blog_fronted_backstage/src/__mocks__/axios.ts" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../blog_fronted_backstage/src/api/baseApi.ts" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../blog_fronted_backstage/src/api/responseCode.ts" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../blog_fronted_backstage/src/api/urls.ts" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../blog_fronted_backstage/src/assets/css/back/appDetailAction.less" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../blog_fronted_backstage/src/assets/css/back/fileList.less" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../blog_fronted_backstage/src/assets/css/bak/index.css" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../blog_fronted_backstage/src/assets/css/bak/upload.less" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../blog_fronted_backstage/src/assets/css/bak/webuploader.css" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../blog_fronted_backstage/src/assets/css/common.less" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../blog_fronted_backstage/src/assets/css/front/appDetail.less" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../blog_fronted_backstage/src/assets/css/front/homePage.less" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../blog_fronted_backstage/src/assets/css/front/searchList.less" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../blog_fronted_backstage/src/assets/css/front/swpierComponent.less" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../blog_fronted_backstage/src/assets/css/frontCommon.less" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../blog_fronted_backstage/src/assets/css/predefine.less" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../blog_fronted_backstage/src/assets/images/AnyBackup.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../blog_fronted_backstage/src/assets/images/AnyRobot.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../blog_fronted_backstage/src/assets/images/AnyShare.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../blog_fronted_backstage/src/assets/images/anyBackup1.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../blog_fronted_backstage/src/assets/images/anyRobot1.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../blog_fronted_backstage/src/assets/images/anyshare1.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../blog_fronted_backstage/src/assets/images/app-icon.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../blog_fronted_backstage/src/assets/images/back-icon.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../blog_fronted_backstage/src/assets/images/back-logo.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../blog_fronted_backstage/src/assets/images/banner-anybackup.jpg" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../blog_fronted_backstage/src/assets/images/banner-anyrobot.jpg" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../blog_fronted_backstage/src/assets/images/banner-anyshare.jpg" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../blog_fronted_backstage/src/assets/images/banner.jpg" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../blog_fronted_backstage/src/assets/images/logo-white.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../blog_fronted_backstage/src/assets/images/logo.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../blog_fronted_backstage/src/assets/images/searchList-banner.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../blog_fronted_backstage/src/assets/images/swiper-1.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../blog_fronted_backstage/src/assets/images/swiper-2.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../blog_fronted_backstage/src/assets/images/swiper-3.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../blog_fronted_backstage/src/assets/images/swiper-4.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../blog_fronted_backstage/src/assets/images/swiper-5.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../blog_fronted_backstage/src/assets/images/test.jpg" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../blog_fronted_backstage/src/assets/images/user-icon.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../blog_fronted_backstage/src/global.d.ts" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../blog_fronted_backstage/src/index.tsx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../blog_fronted_backstage/src/pages/back/appDetailAction.test.tsx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../blog_fronted_backstage/src/pages/back/appDetailAction.tsx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../blog_fronted_backstage/src/pages/back/appListManage.test.tsx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../blog_fronted_backstage/src/pages/back/appListManage.tsx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../blog_fronted_backstage/src/pages/back/classManage.test.tsx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../blog_fronted_backstage/src/pages/back/classManage.tsx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../blog_fronted_backstage/src/pages/back/draftListManage.test.tsx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../blog_fronted_backstage/src/pages/back/draftListManage.tsx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../blog_fronted_backstage/src/pages/back/fileManger/imageShower.test.tsx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../blog_fronted_backstage/src/pages/back/fileManger/imageShower.tsx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../blog_fronted_backstage/src/pages/back/fileManger/uploadFun.jsx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../blog_fronted_backstage/src/pages/back/fileManger/uploadFun.test.tsx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../blog_fronted_backstage/src/pages/back/offlineListManage.test.tsx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../blog_fronted_backstage/src/pages/back/offlineListManage.tsx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../blog_fronted_backstage/src/pages/back/tagManage.test.tsx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../blog_fronted_backstage/src/pages/back/tagManage.tsx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../blog_fronted_backstage/src/pages/front/appDetail.test.tsx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../blog_fronted_backstage/src/pages/front/appDetail.tsx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../blog_fronted_backstage/src/pages/front/homePage.test.tsx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../blog_fronted_backstage/src/pages/front/homePage.tsx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../blog_fronted_backstage/src/pages/front/listContent.test.tsx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../blog_fronted_backstage/src/pages/front/listContent.tsx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../blog_fronted_backstage/src/pages/front/searchList.test.tsx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../blog_fronted_backstage/src/pages/front/searchList.tsx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../blog_fronted_backstage/src/pages/front/swpierComponent.test.tsx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../blog_fronted_backstage/src/pages/front/swpierComponent.tsx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../blog_fronted_backstage/src/pages/layout/back/BaseLayout.less" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../blog_fronted_backstage/src/pages/layout/back/BaseLayout.test.tsx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../blog_fronted_backstage/src/pages/layout/back/BaseLayout.tsx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../blog_fronted_backstage/src/pages/layout/back/change.test.tsx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../blog_fronted_backstage/src/pages/layout/back/change.tsx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../blog_fronted_backstage/src/pages/layout/back/userLayout.test.tsx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../blog_fronted_backstage/src/pages/layout/back/userLayout.tsx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../blog_fronted_backstage/src/pages/layout/front/FrontLayout.test.tsx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../blog_fronted_backstage/src/pages/layout/front/FrontLayout.tsx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../blog_fronted_backstage/src/pages/layout/front/common/footer.test.tsx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../blog_fronted_backstage/src/pages/layout/front/common/footer.tsx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../blog_fronted_backstage/src/pages/layout/front/common/header.test.tsx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../blog_fronted_backstage/src/pages/layout/front/common/header.tsx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../blog_fronted_backstage/src/pages/user/admin.test.tsx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../blog_fronted_backstage/src/pages/user/admin.tsx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../blog_fronted_backstage/src/pages/user/login.test.tsx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../blog_fronted_backstage/src/pages/user/login.tsx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../blog_fronted_backstage/src/pages/user/style.less" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../blog_fronted_backstage/src/plugin/matchData/matchData.mock.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../blog_fronted_backstage/src/plugin/webUploader/bootstrap/css/bootstrap-theme.css" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../blog_fronted_backstage/src/plugin/webUploader/bootstrap/css/bootstrap-theme.css.map" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../blog_fronted_backstage/src/plugin/webUploader/bootstrap/css/bootstrap-theme.min.css" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../blog_fronted_backstage/src/plugin/webUploader/bootstrap/css/bootstrap-theme.min.css.map" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../blog_fronted_backstage/src/plugin/webUploader/bootstrap/css/bootstrap.css" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../blog_fronted_backstage/src/plugin/webUploader/bootstrap/css/bootstrap.css.map" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../blog_fronted_backstage/src/plugin/webUploader/bootstrap/css/bootstrap.min.css" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../blog_fronted_backstage/src/plugin/webUploader/bootstrap/css/bootstrap.min.css.map" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../blog_fronted_backstage/src/plugin/webUploader/bootstrap/fonts/glyphicons-halflings-regular.eot" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../blog_fronted_backstage/src/plugin/webUploader/bootstrap/fonts/glyphicons-halflings-regular.svg" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../blog_fronted_backstage/src/plugin/webUploader/bootstrap/fonts/glyphicons-halflings-regular.ttf" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../blog_fronted_backstage/src/plugin/webUploader/bootstrap/fonts/glyphicons-halflings-regular.woff" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../blog_fronted_backstage/src/plugin/webUploader/bootstrap/fonts/glyphicons-halflings-regular.woff2" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../blog_fronted_backstage/src/plugin/webUploader/bootstrap/js/bootstrap.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../blog_fronted_backstage/src/plugin/webUploader/bootstrap/js/bootstrap.min.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../blog_fronted_backstage/src/plugin/webUploader/bootstrap/js/npm.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../blog_fronted_backstage/src/plugin/webUploader/jquery-1.11.1.min.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../blog_fronted_backstage/src/plugin/webUploader/js/md5.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../blog_fronted_backstage/src/plugin/webUploader/webuploader/webuploader.css" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../blog_fronted_backstage/src/plugin/webUploader/webuploader/webuploader.min.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../blog_fronted_backstage/src/react-app-env.d.ts" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../blog_fronted_backstage/src/router/router.test.tsx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../blog_fronted_backstage/src/router/router.tsx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../blog_fronted_backstage/src/router/routerPath.ts" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../blog_fronted_backstage/src/tests/mockData/testAppDetail.ts" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../blog_fronted_backstage/src/tests/mockData/testAppDetailActionData.ts" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../blog_fronted_backstage/src/tests/mockData/testAppListData.ts" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../blog_fronted_backstage/src/tests/mockData/testClassManageData.ts" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../blog_fronted_backstage/src/tests/mockData/testDraftListData.ts" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../blog_fronted_backstage/src/tests/mockData/testListContentData.ts" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../blog_fronted_backstage/src/tests/mockData/testOfflineListManageData.ts" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../blog_fronted_backstage/src/tests/mockData/testTagListData.ts" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../blog_fronted_backstage/src/tests/mockData/testUploadFun.ts" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../blog_fronted_backstage/src/tests/mockData/testadminListData.ts" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../blog_fronted_backstage/src/until/until.ts" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../blog_fronted_backstage/tsconfig.json" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../blog_fronted_backstage/yarn.lock" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../blog_backend/.idea/blog_backend.iml" beforeDir="false" afterPath="$PROJECT_DIR$/../blog_backend/.idea/blog_backend.iml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../blog_backend/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../blog_backend/.idea/misc.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/data_scrapy.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/data_scrapy.iml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
+    <list default="true" id="d01334f3-17ab-4c6c-9fe1-ae1bc9b851cd" name="Default Changelist" comment="feat: react 后台管理系统初始化">
+      <change afterPath="$PROJECT_DIR$/../blog_backend_go/docker/Dockerfile" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../blog_backend_go/docker/docker_build.sh" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../blog_backend_go/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/../blog_backend_go/README.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../blog_backend_go/conf/app.ini" beforeDir="false" afterPath="$PROJECT_DIR$/../blog_backend_go/conf/app.ini" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../blog_backend_go/go.mod" beforeDir="false" afterPath="$PROJECT_DIR$/../blog_backend_go/go.mod" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../blog_backend_go/go.sum" beforeDir="false" afterPath="$PROJECT_DIR$/../blog_backend_go/go.sum" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../blog_backend_go/middleware/jwt/jwt.gp.go" beforeDir="false" afterPath="$PROJECT_DIR$/../blog_backend_go/middleware/jwt/jwt.gp.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../blog_backend_go/routers/api/v1/article.go" beforeDir="false" afterPath="$PROJECT_DIR$/../blog_backend_go/routers/api/v1/article.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../blog_backend_go/routers/router.go" beforeDir="false" afterPath="$PROJECT_DIR$/../blog_backend_go/routers/router.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../blog_backend_go/test.go" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/crontab_job.py" beforeDir="false" afterPath="$PROJECT_DIR$/crontab_job.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/main.py" beforeDir="false" afterPath="$PROJECT_DIR$/main.py" afterDir="false" />
@@ -168,7 +35,7 @@
     <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
     <property name="settings.editor.selected.configurable" value="com.jetbrains.python.configuration.PyActiveSdkModuleConfigurable" />
   </component>
-  <component name="RunManager" selected="Python.crontab_job">
+  <component name="RunManager" selected="Python.main">
     <configuration name="crontab_job" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
       <module name="data_scrapy" />
       <option name="INTERPRETER_OPTIONS" value="" />
@@ -213,8 +80,8 @@
     </configuration>
     <recent_temporary>
       <list>
-        <item itemvalue="Python.crontab_job" />
         <item itemvalue="Python.main" />
+        <item itemvalue="Python.crontab_job" />
       </list>
     </recent_temporary>
   </component>
@@ -227,6 +94,14 @@
       <option name="presentableId" value="Default" />
       <updated>1624976469697</updated>
     </task>
+    <task id="LOCAL-00001" summary="feat: react 后台管理系统初始化">
+      <created>1625137583344</created>
+      <option name="number" value="00001" />
+      <option name="presentableId" value="LOCAL-00001" />
+      <option name="project" value="LOCAL" />
+      <updated>1625137583349</updated>
+    </task>
+    <option name="localTasksCounter" value="2" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -240,5 +115,9 @@
       </map>
     </option>
     <option name="oldMeFiltersMigrated" value="true" />
+  </component>
+  <component name="VcsManagerConfiguration">
+    <MESSAGE value="feat: react 后台管理系统初始化" />
+    <option name="LAST_COMMIT_MESSAGE" value="feat: react 后台管理系统初始化" />
   </component>
 </project>

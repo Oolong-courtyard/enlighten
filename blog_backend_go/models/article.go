@@ -15,6 +15,14 @@ type Article struct {
 	State         int    `json:"state"`
 }
 
+func GetArticleTotal(maps interface{}) (int, error) {
+	var count int
+	if err := db.Model(&Article{}).Where(maps).Count(&count).Error; err != nil {
+		return 0, err
+	}
+	return count, nil
+}
+
 func AddArticle(data map[string]interface{}) error {
 	article := Article{
 		TagID:         data["tag_id"].(int),
