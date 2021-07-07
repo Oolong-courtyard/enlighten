@@ -50,8 +50,17 @@ func GetArticles(c *gin.Context) {
 		return
 	}
 
-	article, err := articleService.GetAll()
+	articles, err := articleService.GetAll()
+	if err != nil {
+		appG.Response(http.StatusInternalServerError, e.ERROR_GET_ARTICLES_FAIL, nil)
+		return
+	}
 
+	data := make(map[string]interface{})
+	data["lists"] = articles
+	data["total"] = total
+
+	appG.Response(http.StatusOK, e.SUCCESS, data)
 }
 
 type AddArticleForm struct {

@@ -1,6 +1,12 @@
 package article_service
 
-import "blog_backend_go/models"
+import (
+	"blog_backend_go/models"
+	"blog_backend_go/pkg/gredis"
+	"blog_backend_go/service/cache_service"
+	"encoding/json"
+	"fmt"
+)
 
 type Article struct {
 	ID            int
@@ -43,10 +49,34 @@ func (a *Article) Count() (int, error) {
 }
 
 func (a *Article) GetAll() ([]*models.Article, error) {
-	//var (
-	//	articles,cacheArticles []*models.Article
-	//)
-	//TODO cache service 继续写
+	var (
+		articles, cacheArticles []*models.Article
+	)
+
+	cache := cache_service.Article{
+		TagID: a.TagID,
+		State: a.State,
+
+		PageNum:  a.PageNum,
+		PageSize: a.PageSize,
+	}
+	key := cache.GetArticlesKey()
+	if gredis.Exists(key) {
+		data, err := gredis.Get(key)
+		if err != nil {
+			fmt.Println(err)
+		} else {
+			json.Unmarshal(data, &cacheArticles)
+			return cacheArticles, nil
+		}
+	}
+
+	articles, err := models.GetArticles(a.PageNum, a.PageSize, a.getMaps())
+	if err != nil {
+		return nil, err
+	}
+	gredis.Set(key, articles, 3600)
+	return articles, nil
 
 }
 

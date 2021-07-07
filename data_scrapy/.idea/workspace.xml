@@ -2,19 +2,7 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="d01334f3-17ab-4c6c-9fe1-ae1bc9b851cd" name="Default Changelist" comment="feat: react 后台管理系统初始化">
-      <change afterPath="$PROJECT_DIR$/../blog_backend_go/docker/Dockerfile" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../blog_backend_go/docker/docker_build.sh" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../blog_backend_go/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/../blog_backend_go/README.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../blog_backend_go/conf/app.ini" beforeDir="false" afterPath="$PROJECT_DIR$/../blog_backend_go/conf/app.ini" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../blog_backend_go/go.mod" beforeDir="false" afterPath="$PROJECT_DIR$/../blog_backend_go/go.mod" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../blog_backend_go/go.sum" beforeDir="false" afterPath="$PROJECT_DIR$/../blog_backend_go/go.sum" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../blog_backend_go/middleware/jwt/jwt.gp.go" beforeDir="false" afterPath="$PROJECT_DIR$/../blog_backend_go/middleware/jwt/jwt.gp.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../blog_backend_go/routers/api/v1/article.go" beforeDir="false" afterPath="$PROJECT_DIR$/../blog_backend_go/routers/api/v1/article.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../blog_backend_go/routers/router.go" beforeDir="false" afterPath="$PROJECT_DIR$/../blog_backend_go/routers/router.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../blog_backend_go/test.go" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/crontab_job.py" beforeDir="false" afterPath="$PROJECT_DIR$/crontab_job.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/main.py" beforeDir="false" afterPath="$PROJECT_DIR$/main.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
