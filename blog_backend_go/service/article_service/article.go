@@ -109,3 +109,7 @@ func (a *Article) Edit() error {
 		"modified_by":     a.ModifiedBy,
 	})
 }
+
+func (a *Article) Delete() error {
+	return models.DeleteArticle(a.ID)
+}

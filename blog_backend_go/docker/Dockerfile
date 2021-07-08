@@ -1,7 +1,7 @@
 # builder
 FROM golang:alpine AS builder
 ENV GO111MODULE=on 
-ENV GOPROXY="https://goproxy.cn,direct"
+ENV GOPROXY="https://goproxy.io,direct"
 WORKDIR /go/src/app
 COPY . .
 RUN go build .

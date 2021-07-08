@@ -74,3 +74,19 @@ func EditArticle(id int, data interface{}) error {
 	}
 	return nil
 }
+
+//DeleteArticle delete a single article
+func DeleteArticle(id int) error {
+	data := map[string]int{
+		"deleted_on": 1,
+	}
+	if err := db.Model(&Article{}).Where("id = ? AND deleted_on = ?", id, 0).Updates(data).Error; err != nil {
+		return err
+	}
+	return nil
+
+	//if err:= db.Where("id = ?",id).Delete(Article{}).Error; err != nil {
+	//	return err
+	//}
+	//return nil
+}
