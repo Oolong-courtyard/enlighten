@@ -48,6 +48,8 @@ type Redis struct {
 	MaxIdle     int
 	MaxActive   int
 	IdleTimeout time.Duration
+	// 设置redis的过期时间
+	RedisExpiredIn int
 }
 
 var RedisSetting = &Redis{}

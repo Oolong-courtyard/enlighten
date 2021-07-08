@@ -19,9 +19,13 @@ func InitRouter() *gin.Engine {
 	{
 
 		// 获取文章列表
-		apiv1.GET("articles", v1.GetArticles)
+		apiv1.GET("/articles", v1.GetArticles)
 		// 新建文章
-		apiv1.POST("articles", v1.AddArticle)
+		apiv1.POST("/articles", v1.AddArticle)
+		// 更新指定文章
+		apiv1.PUT("/articles/:id", v1.EditArticle)
+		// 删除指定文章
+		apiv1.DELETE("/articles/:id", v1.DeleteArticle)
 	}
 
 	return r

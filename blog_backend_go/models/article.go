@@ -53,3 +53,24 @@ func AddArticle(data map[string]interface{}) error {
 
 	return nil
 }
+
+// ExistArticleByID checks if an article exists based on ID
+func ExistArticleByID(id int) (bool, error) {
+	var article Article
+	err := db.Select("id").Where("id = ? AND deleted_on = ?", id, 0).First(&article).Error
+	if err != nil && err != gorm.ErrRecordNotFound {
+		return false, err
+	}
+	if article.ID > 0 {
+		return true, nil
+	}
+	return false, nil
+}
+
+//EditArticle modify a single article
+func EditArticle(id int, data interface{}) error {
+	if err := db.Model(&Article{}).Where("id = ? AND deleted_on = ?", id, 0).Updates(data).Error; err != nil {
+		return err
+	}
+	return nil
+}

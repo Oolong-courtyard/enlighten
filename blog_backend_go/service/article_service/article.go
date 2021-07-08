@@ -3,6 +3,7 @@ package article_service
 import (
 	"blog_backend_go/models"
 	"blog_backend_go/pkg/gredis"
+	"blog_backend_go/pkg/setting"
 	"blog_backend_go/service/cache_service"
 	"encoding/json"
 	"fmt"
@@ -75,7 +76,7 @@ func (a *Article) GetAll() ([]*models.Article, error) {
 	if err != nil {
 		return nil, err
 	}
-	gredis.Set(key, articles, 3600)
+	gredis.Set(key, articles, setting.RedisSetting.RedisExpiredIn)
 	return articles, nil
 
 }
@@ -91,4 +92,20 @@ func (a *Article) getMaps() map[string]interface{} {
 		maps["tag_id"] = a.TagID
 	}
 	return maps
+}
+
+func (a *Article) ExistByID() (bool, error) {
+	return models.ExistArticleByID(a.ID)
+}
+
+func (a *Article) Edit() error {
+	return models.EditArticle(a.ID, map[string]interface{}{
+		"tag_id":          a.TagID,
+		"title":           a.Title,
+		"desc":            a.Desc,
+		"content":         a.Content,
+		"cover_image_url": a.CoverImageUrl,
+		"state":           a.State,
+		"modified_by":     a.ModifiedBy,
+	})
 }

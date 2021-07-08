@@ -63,6 +63,8 @@ func GetArticles(c *gin.Context) {
 	appG.Response(http.StatusOK, e.SUCCESS, data)
 }
 
+// TODO 获取指定文章详情
+
 type AddArticleForm struct {
 	TagID         int    `form:"tag_id" valid:"Required;Min(1)"`
 	Title         string `form:"title" valid:"Required;MaxSize(100)"`
@@ -105,4 +107,71 @@ func AddArticle(c *gin.Context) {
 
 	appG.Response(http.StatusOK, e.SUCCESS, nil)
 
+}
+
+type EditArticleForm struct {
+	ID            int    `form:"id" valid:"Required;Min(1)"`
+	TagID         int    `form:"tag_id"`
+	Title         string `form:"title" valid:"MaxSize(100)"`
+	Desc          string `form:"desc" valid:"MaxSize(255)"`
+	Content       string `form:"content" valid:"MaxSize(65535)"`
+	ModifiedBy    string `form:"modified_by" valid:"MaxSize(100)"`
+	CoverImageUrl string `form:"cover_image_url" valid:"MaxSize(255)"`
+	State         int    `form:"state" valid:"Range(0,1)"`
+}
+
+//EditArticle 更新指定文章
+func EditArticle(c *gin.Context) {
+	var (
+		appG = app.Gin{C: c}
+		form = EditArticleForm{ID: com.StrTo(c.Param("id")).MustInt()}
+	)
+	httpCode, errCode := app.BindAndValid(c, &form)
+	if errCode != e.SUCCESS {
+		appG.Response(httpCode, errCode, nil)
+		return
+	}
+
+	articleService := article_service.Article{
+		ID:            form.ID,
+		TagID:         form.TagID,
+		Title:         form.Title,
+		Desc:          form.Desc,
+		Content:       form.Content,
+		CoverImageUrl: form.CoverImageUrl,
+		ModifiedBy:    form.ModifiedBy,
+		State:         form.State,
+	}
+	exists, err := articleService.ExistByID()
+	if err != nil {
+		appG.Response(http.StatusInternalServerError, e.ERROR_CHECK_EXIST_ARTICLE_FAIL, nil)
+		return
+	}
+
+	if !exists {
+		appG.Response(http.StatusOK, e.ERROR_NOT_EXIST_ARTICLE, nil)
+		return
+	}
+
+	//TODO tag_id的校验还未做
+
+	err = articleService.Edit()
+	if err != nil {
+		appG.Response(http.StatusInternalServerError, e.ERROR_EDIT_ARTICLE_FAIL, nil)
+		return
+	}
+	resData := map[string]string{
+		"msg": "修改成功",
+	}
+	appG.Response(http.StatusOK, e.SUCCESS, resData)
+}
+
+//DeleteArticle 删除指定文章
+func DeleteArticle(c *gin.Context) {
+	appG := app.Gin{C: c}
+	valid := validation.Validation{}
+	id := com.StrTo(c.Param("id")).MustInt()
+	valid.Min(id, 1, "id").Message("ID必须大于0")
+
+	//TODO 继续写删除文章接口
 }
